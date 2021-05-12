@@ -3,7 +3,7 @@ import { Button, Table } from 'semantic-ui-react';
 const TeacherSubmissions = () => {
   return (
     <>
-      <h2>Previously Submitted Timesheets</h2>
+      <h2>previously submitted timesheets</h2>
       <Table celled>
         <Table.Header>
           <Table.Row>

@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "i": "^0.3.6",
+    "npm": "^7.12.1",
+    "signature_pad": "^3.0.0-beta.4"
+  }
+}

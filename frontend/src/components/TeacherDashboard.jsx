@@ -1,5 +1,6 @@
-import { Button } from 'semantic-ui-react';
+import { Button, Divider } from 'semantic-ui-react';
 import TeacherSubmissions from './TeacherSubmissions';
+import TimesheetGenerator from './TimesheetGenerator';
 
 const TeacherDashboard = (props) => {
   const { user, userId, userData, handleLogout } = props;
@@ -10,10 +11,13 @@ const TeacherDashboard = (props) => {
       <Button floated="right" onClick={() => handleLogout()}>
         Log Out
       </Button>
-      <h1>{`Welcome ${teacher.firstName} ${teacher.lastName}!`}</h1>
+      <h1>{`welcome ${teacher.firstName} ${teacher.lastName}`}</h1>
       <p>userId: {userId} -- should not be seen by the user in production</p>
       <p>File Number: {teacher.fileNumber}</p>
       <p>Email: {user.email}</p>
+      <Divider />
+      <TimesheetGenerator />
+      <Divider />
       <TeacherSubmissions />
     </section>
   );
