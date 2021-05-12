@@ -1,4 +1,5 @@
 import { Button } from 'semantic-ui-react';
+import TeacherSubmissions from './TeacherSubmissions';
 
 const TeacherDashboard = (props) => {
   const { user, userId, userData, handleLogout } = props;
@@ -13,6 +14,7 @@ const TeacherDashboard = (props) => {
       <p>userId: {userId} -- should not be seen by the user in production</p>
       <p>File Number: {teacher.fileNumber}</p>
       <p>Email: {user.email}</p>
+      <TeacherSubmissions />
     </section>
   );
 };
