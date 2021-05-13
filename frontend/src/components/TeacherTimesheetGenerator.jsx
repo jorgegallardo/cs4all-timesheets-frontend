@@ -14,7 +14,7 @@ const TeacherTimesheetGenerator = () => {
       alert('you forgot to sign the pad!');
       return;
     }
-    const dataUrl = signaturePad.toDataURL();
+    // const dataUrl = signaturePad.toDataURL();
     // console.log(dataUrl);
     signaturePad.clear();
 
