@@ -14,26 +14,30 @@ const TeacherTimesheetGenerator = () => {
       alert('you forgot to sign the pad!');
       return;
     }
-    // const dataUrl = signaturePad.toDataURL();
-    // console.log(dataUrl);
+    const dataUrl = signaturePad.toDataURL();
+    console.log(dataUrl);
     signaturePad.clear();
 
-    // const response = await fetch('http://localhost:3004/timesheets', {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     firstName,
-    //     lastName,
-    //     fileNumber,
-    //     signatureData: dataUrl,
-    //   }),
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    // });
+    const firstName = 'Dave';
+    const lastName = 'Idell';
+    const fileNumber = '12345';
 
-    // const resData = await response.json();
-    // console.log(resData);
-    // alert('timesheet submitted.');
+    const response = await fetch(process.env.REACT_APP_API_SERVER + '/timesheets', {
+      method: 'POST',
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        fileNumber,
+        signatureData: dataUrl,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const resData = await response.json();
+    console.log(resData);
+    alert('timesheet submitted.');
   };
 
   useEffect(() => {
