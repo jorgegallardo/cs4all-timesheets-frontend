@@ -42,8 +42,7 @@ const TeacherTimesheetGenerator = () => {
 
   return (
     <>
-      <h1>submit a timesheet</h1>
-      <h4 style={{ marginTop: '0', marginBottom: '5px' }}>Instructions:</h4>
+      <h2>instructions</h2>
       <div>
         <Step.Group ordered fluid attached="top" widths={3}>
           <Step active>

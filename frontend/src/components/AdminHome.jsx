@@ -78,34 +78,11 @@ const AdminHome = () => {
           view all pds/events
         </Menu.Item>
       </Menu>
-      {activeTab === 'approveTimesheets' && (
-        <>
-          <h1>approve timesheets</h1>
-          <AdminTimesheetApproval />
-        </>
-      )}
-      {activeTab === 'viewAllTimesheets' && (
-        <>
-          <h1>view all timesheets</h1>
-          <AdminViewAllTimesheets />
-        </>
-      )}
-      {activeTab === 'createPdEvent' && (
-        <>
-          <h1>create pd/event</h1>
-          <AdminPdEventCreator />
-        </>
-      )}
-      {activeTab === 'viewAllPdEvents' && (
-        <>
-          <h1>view all pds/events</h1>
-          <AdminPdEventList />
-        </>
-      )}
-      <p>
-        view all or filtered/sorted by program or by whether you are the
-        facilitator
-      </p>
+      {activeTab === 'approveTimesheets' && <AdminTimesheetApproval />}
+      {activeTab === 'viewAllTimesheets' && <AdminViewAllTimesheets />}
+      {activeTab === 'createPdEvent' && <AdminPdEventCreator />}
+      {activeTab === 'viewAllPdEvents' && <AdminPdEventList />}
+
       {/* future feature
       <h1>teacher lookup</h1>
       <h1>school lookup</h1> */}

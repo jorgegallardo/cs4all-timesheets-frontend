@@ -19,13 +19,14 @@ const PdEventCreator = () => {
   ];
 
   const handlePdEventCreation = () => {
-    console.log('created event');
+    alert('event would be created at this point');
   };
 
   const handleChange = (e, { value }) => setValue(value);
 
   return (
     <>
+      <h2>create pd/event</h2>
       <Message>
         <Message.Header>Note</Message.Header>
         <p>
