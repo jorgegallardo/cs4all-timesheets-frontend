@@ -2,6 +2,7 @@
   "dependencies": {
     "i": "^0.3.6",
     "npm": "^7.12.1",
+    "pdf-lib": "^1.6.0",
     "signature_pad": "^3.0.0-beta.4"
   }
 }
