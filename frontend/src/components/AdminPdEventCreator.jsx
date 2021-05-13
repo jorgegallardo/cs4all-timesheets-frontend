@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Button, Radio } from 'semantic-ui-react';
+import { Form, Button, Radio, Message } from 'semantic-ui-react';
 
 const PdEventCreator = () => {
   const [pdEventTitle, setPdEventTitle] = useState('');
@@ -26,6 +26,18 @@ const PdEventCreator = () => {
 
   return (
     <>
+      <Message>
+        <Message.Header>Note</Message.Header>
+        <p>
+          Creating a PD/Event here will cause all of the teachers in the
+          selected program to see this PD as an option for when they are trying
+          to submit a per session timesheet. If you select "general" as the
+          CS4All program, all of the teachers participating in CS4ALl training
+          will see the PD/Event. Use general for events such as Teacher Con, CS
+          Ed Week training, etc.
+        </p>
+      </Message>
+
       <Form>
         <Form.Input
           label="pd/event title"
