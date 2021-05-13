@@ -1,7 +1,7 @@
 import { Grid, Menu } from 'semantic-ui-react';
 
 const TeacherDetails = (props) => {
-  const { user, userId, teacher } = props;
+  const { user, teacher } = props;
   return (
     <Grid textAlign="center" columns={4}>
       <Grid.Row>

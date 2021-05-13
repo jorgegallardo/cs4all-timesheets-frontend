@@ -1,5 +1,4 @@
 import { Table, Dropdown, Button } from 'semantic-ui-react';
-import { useState } from 'react';
 
 const PdEventList = () => {
   const timesheetStatusOptions = [

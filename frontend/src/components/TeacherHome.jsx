@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import Login from './Login';
 import TeacherDashboard from './TeacherDashboard';
-import fire, { db } from '../firebase';
 
 const Home = () => {
   const [user, setUser] = useState('');
