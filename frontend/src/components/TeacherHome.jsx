@@ -17,97 +17,113 @@ const Home = () => {
   const [lastName, setLastName] = useState('');
   const [loading, setLoading] = useState(true);
   const clearFormInputs = () => {
-    setEmail('');
-    setPassword('');
-    setFileNumber('');
+    // setEmail('');
+    // setPassword('');
+    // setFileNumber('');
   };
 
   const clearErrors = () => {
-    setEmailError('');
-    setPasswordError('');
+    // setEmailError('');
+    // setPasswordError('');
   };
 
   const handleLogin = () => {
-    clearErrors();
-    fire
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((credential) => {
-        console.log('user id is ' + credential.user.uid);
-      })
-      .catch((err) => {
-        switch (err.code) {
-          case 'auth/invalid-email':
-          case 'auth/user-not-found':
-            setEmailError(err.message);
-            break;
-          case 'auth/wrong-password':
-            setPasswordError(err.message);
-            break;
-          default:
-            console.log('something went wrong: ' + err.message);
-        }
-      });
+    // clearErrors();
+    // fire
+    //   .auth()
+    //   .signInWithEmailAndPassword(email, password)
+    //   .then((credential) => {
+    //     console.log('user id is ' + credential.user.uid);
+    //   })
+    //   .catch((err) => {
+    //     switch (err.code) {
+    //       case 'auth/invalid-email':
+    //       case 'auth/user-not-found':
+    //         setEmailError(err.message);
+    //         break;
+    //       case 'auth/wrong-password':
+    //         setPasswordError(err.message);
+    //         break;
+    //       default:
+    //         console.log('something went wrong: ' + err.message);
+    //     }
+    //   });
   };
 
   const handleRegistration = () => {
-    clearErrors();
-    fire
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((credential) => {
-        return db.collection('users').doc(credential.user.uid).set({
-          fileNumber,
-          firstName,
-          lastName,
-        });
-      })
-      .catch((err) => {
-        switch (err.code) {
-          case 'auth/email-already-in-use':
-          case 'auth/invalid-email':
-            setEmailError(err.message);
-            break;
-          case 'auth/weak-password':
-            setPasswordError(err.message);
-            break;
-          default:
-            console.log('something went wrong: ' + err.message);
-        }
-      });
+    // clearErrors();
+    // fire
+    //   .auth()
+    //   .createUserWithEmailAndPassword(email, password)
+    //   .then((credential) => {
+    //     return db.collection('users').doc(credential.user.uid).set({
+    //       fileNumber,
+    //       firstName,
+    //       lastName,
+    //     });
+    //   })
+    //   .catch((err) => {
+    //     switch (err.code) {
+    //       case 'auth/email-already-in-use':
+    //       case 'auth/invalid-email':
+    //         setEmailError(err.message);
+    //         break;
+    //       case 'auth/weak-password':
+    //         setPasswordError(err.message);
+    //         break;
+    //       default:
+    //         console.log('something went wrong: ' + err.message);
+    //     }
+    //   });
   };
 
   const handleLogout = () => {
-    fire.auth().signOut();
+    alert('user would be logged out');
+    // fire.auth().signOut();
   };
 
   const getUserData = () => {
-    db.collection('users').onSnapshot((querySnapshot) => {
-      const items = [];
-      querySnapshot.forEach((doc) => {
-        items.push(doc.data());
-      });
-      setUserData(items);
-      setLoading(false);
-    });
+    // db.collection('users').onSnapshot((querySnapshot) => {
+    //   const items = [];
+    //   querySnapshot.forEach((doc) => {
+    //     items.push(doc.data());
+    //   });
+    //   setUserData(items);
+    //   setLoading(false);
+    // });
   };
 
   // listener to check for any auth state changes
   // if user is logged in, show things. if logged out, don't show certain things
   const authListener = () => {
-    fire.auth().onAuthStateChanged((user) => {
-      // if the user successfully logs in, clear the form and set the user
-      if (user) {
-        clearFormInputs();
-        setUser(user);
-        setUserId(user.uid);
-      } else setUser(''); // user is logged out
-    });
+    // fire.auth().onAuthStateChanged((user) => {
+    //   // if the user successfully logs in, clear the form and set the user
+    //   if (user) {
+    //     clearFormInputs();
+    //     setUser(user);
+    //     setUserId(user.uid);
+    //   } else setUser(''); // user is logged out
+    // });
   };
 
   useEffect(() => {
-    authListener();
-    getUserData(); // i THINK this causes a bug when the db is empty. the fix is to refresh after the first user is created.
+    setUser({
+      firstName: 'happy',
+      lastName: 'gilmore',
+      fileNumber: '1234567',
+      email: 'a@b.com',
+    });
+    setUserId('asdfasdf');
+    setUserData([
+      {
+        firstName: 'happy',
+        lastName: 'gilmore',
+        fileNumber: '1234567',
+      },
+    ]);
+    setLoading(false);
+    //  authListener();
+    //  getUserData(); // i THINK this causes a bug when the db is empty. the fix is to refresh after the first user is created.
   }, []);
 
   if (loading) {
