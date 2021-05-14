@@ -26,18 +26,22 @@ const PdEventCreator = () => {
 
   return (
     <>
-      <h2>create pd/event</h2>
-      <Message>
-        <Message.Header>Note</Message.Header>
-        <p>
-          Creating a PD/Event here will cause all of the teachers in the
-          selected program to see this PD as an option for when they are trying
-          to submit a per session timesheet. If you select "general" as the
-          CS4All program, all of the teachers participating in CS4ALl training
-          will see the PD/Event. Use general for events such as Teacher Con, CS
-          Ed Week training, etc.
-        </p>
+      <Message negative>
+        <Message.Header>jorge's notes</Message.Header>
+        <Message.List>
+          <Message.Item>
+            <p>
+              creating a PD/Event here will cause all of the teachers in the
+              selected program to see this PD as an option for when they are
+              trying to submit a per session timesheet. if you select "general"
+              as the cs4all program, ALL of the teachers participating in cs4all
+              training will see that PD/Event. use "general" for events such as
+              Teacher Con, CS Ed Week training, CS First, Minecraft, etc.
+            </p>
+          </Message.Item>
+        </Message.List>
       </Message>
+      <h2>create pd/event</h2>
 
       <Form>
         <Form.Input
