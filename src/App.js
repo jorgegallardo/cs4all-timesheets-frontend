@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 import TeacherHome from './components/TeacherHome';
 import AdminHome from './components/AdminHome';
+import Homepage from './components/Homepage';
 
 const App = () => {
   return (
@@ -9,7 +10,7 @@ const App = () => {
       <Router>
         <Switch>
           <Route exact path="/">
-            <TeacherHome />
+            <Homepage />
           </Route>
           <Route path="/teacher">
             <TeacherHome />

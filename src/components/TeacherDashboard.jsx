@@ -1,7 +1,6 @@
-import { Button, Divider } from 'semantic-ui-react';
+import { Button, Divider, Message } from 'semantic-ui-react';
 import TeacherDetails from './TeacherDetails';
 import TeacherMenu from './TeacherMenu';
-import { Message } from 'semantic-ui-react';
 
 const TeacherDashboard = (props) => {
   const { user, userId, userData, handleLogout } = props;
