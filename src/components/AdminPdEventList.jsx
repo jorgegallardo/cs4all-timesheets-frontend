@@ -1,13 +1,6 @@
 import { Table, Dropdown, Button, Message } from 'semantic-ui-react';
 
 const PdEventList = () => {
-  const timesheetStatusOptions = [
-    { key: 1, text: 'pending approval', value: 1 },
-    { key: 2, text: 'approved, processing', value: 2 },
-    { key: 3, text: 'processed', value: 3 },
-    { key: 4, text: 'denied', value: 4 },
-  ];
-
   return (
     <>
       <Message negative>
