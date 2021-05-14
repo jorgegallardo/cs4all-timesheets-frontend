@@ -3,9 +3,9 @@ import { Grid, Menu } from 'semantic-ui-react';
 const TeacherDetails = (props) => {
   const { user, teacher } = props;
   return (
-    <Grid textAlign="center" columns={4}>
+    <Grid textAlign="center" columns={4} stackable>
       <Grid.Row>
-        <Grid.Column>
+        <Grid.Column only="tablet computer">
           <Menu fluid vertical>
             <Menu.Item
               className="header"
@@ -23,7 +23,7 @@ const TeacherDetails = (props) => {
             <Menu.Item>{teacher.fileNumber}</Menu.Item>
           </Menu>
         </Grid.Column>
-        <Grid.Column>
+        <Grid.Column only="tablet computer">
           <Menu fluid vertical>
             <Menu.Item
               className="header"
@@ -41,7 +41,7 @@ const TeacherDetails = (props) => {
             <Menu.Item>Potato Elementary School</Menu.Item>
           </Menu>
         </Grid.Column>
-        <Grid.Column textAlign="center">
+        <Grid.Column only="tablet computer">
           <Menu fluid vertical>
             <Menu.Item
               className="header"
@@ -59,7 +59,7 @@ const TeacherDetails = (props) => {
             <Menu.Item>Integrated Units</Menu.Item>
           </Menu>
         </Grid.Column>
-        <Grid.Column textAlign="center">
+        <Grid.Column>
           <Menu fluid vertical>
             <Menu.Item
               className="header"
