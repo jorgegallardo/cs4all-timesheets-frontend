@@ -1,4 +1,4 @@
-import { Table, Icon, Button } from 'semantic-ui-react';
+import { Table, Icon } from 'semantic-ui-react';
 
 const TeacherDetails = () => {
   return (

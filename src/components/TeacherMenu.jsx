@@ -16,7 +16,7 @@ const TeacherMenu = () => {
           active={activeTab === 'generateTimesheet'}
         >
           <Icon name="plus" />
-          create a timesheet
+          submit timesheet
         </Menu.Item>
 
         <Menu.Item
