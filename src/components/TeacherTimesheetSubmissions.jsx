@@ -4,7 +4,7 @@ const TeacherTimesheetSubmissions = () => {
   return (
     <>
       <h2>previously submitted timesheets</h2>
-      <Table celled>
+      <Table celled selectable>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Submitted On</Table.HeaderCell>

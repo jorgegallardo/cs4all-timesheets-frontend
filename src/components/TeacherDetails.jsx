@@ -1,78 +1,73 @@
-import { Grid, Menu } from 'semantic-ui-react';
+import { Table, Icon, Button } from 'semantic-ui-react';
 
-const TeacherDetails = (props) => {
-  const { user, teacher } = props;
+const TeacherDetails = () => {
   return (
-    <Grid textAlign="center" columns={4} stackable>
-      <Grid.Row>
-        <Grid.Column only="tablet computer">
-          <Menu fluid vertical>
-            <Menu.Item
-              className="header"
-              style={{ backgroundColor: 'rgba(34, 36, 38, 0.1)' }}
-            >
-              Email
-            </Menu.Item>
-            <Menu.Item>{user.email}</Menu.Item>
-            <Menu.Item
-              className="header"
-              style={{ backgroundColor: 'rgba(34, 36, 38, 0.1)' }}
-            >
-              File Number
-            </Menu.Item>
-            <Menu.Item>{teacher.fileNumber}</Menu.Item>
-          </Menu>
-        </Grid.Column>
-        <Grid.Column only="tablet computer">
-          <Menu fluid vertical>
-            <Menu.Item
-              className="header"
-              style={{ backgroundColor: 'rgba(34, 36, 38, 0.1)' }}
-            >
-              DBN
-            </Menu.Item>
-            <Menu.Item>12K345</Menu.Item>
-            <Menu.Item
-              className="header"
-              style={{ backgroundColor: 'rgba(34, 36, 38, 0.1)' }}
-            >
-              School Name
-            </Menu.Item>
-            <Menu.Item>Potato Elementary School</Menu.Item>
-          </Menu>
-        </Grid.Column>
-        <Grid.Column only="tablet computer">
-          <Menu fluid vertical>
-            <Menu.Item
-              className="header"
-              style={{ backgroundColor: 'rgba(34, 36, 38, 0.1)' }}
-            >
-              Grade Taught
-            </Menu.Item>
-            <Menu.Item>4th</Menu.Item>
-            <Menu.Item
-              className="header"
-              style={{ backgroundColor: 'rgba(34, 36, 38, 0.1)' }}
-            >
-              CS4All Program Name
-            </Menu.Item>
-            <Menu.Item>Integrated Units</Menu.Item>
-          </Menu>
-        </Grid.Column>
-        <Grid.Column>
-          <Menu fluid vertical>
-            <Menu.Item
-              className="header"
-              style={{ backgroundColor: 'rgba(34, 36, 38, 0.1)' }}
-            >
-              CS4All Point of Contact
-            </Menu.Item>
-            <Menu.Item>Jorge Gallardo</Menu.Item>
-            <Menu.Item>jgallardo2@schools.nyc.gov</Menu.Item>
-          </Menu>
-        </Grid.Column>
-      </Grid.Row>
-    </Grid>
+    <>
+      <Table celled striped columns={2} compact selectable>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell colSpan="2">My Details</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell collapsing>
+              <Icon name="envelope outline" /> Program Name
+            </Table.Cell>
+            <Table.Cell>CS4All Integrated Units</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell collapsing>
+              <Icon name="envelope outline" /> CS4All Point of Contact
+            </Table.Cell>
+            <Table.Cell>Jorge Gallardo (jgallardo2@schools.nyc.gov)</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell collapsing>
+              <Icon name="envelope outline" /> Email Address
+            </Table.Cell>
+            <Table.Cell>hgilmore@schools.nyc.gov</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>
+              <Icon name="hashtag" /> File Number
+            </Table.Cell>
+            <Table.Cell>123456</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>
+              <Icon name="building outline" /> DBN
+            </Table.Cell>
+            <Table.Cell>17K123</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>
+              <Icon name="building outline" /> Borough Citywide Office
+            </Table.Cell>
+            <Table.Cell>Brooklyn South</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>
+              <Icon name="building outline" /> District
+            </Table.Cell>
+            <Table.Cell>17</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>
+              <Icon name="building outline" /> School
+            </Table.Cell>
+            <Table.Cell>Potato Elementary School</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>
+              <Icon name="building outline" /> Grade Taught
+            </Table.Cell>
+            <Table.Cell>4th</Table.Cell>
+          </Table.Row>
+        </Table.Body>
+      </Table>
+    </>
   );
 };
 
