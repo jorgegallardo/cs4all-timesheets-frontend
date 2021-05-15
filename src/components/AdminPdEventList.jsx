@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { Table, Dropdown, Button, Message } from 'semantic-ui-react';
 import axios from 'axios';
 
-const authAxios = axios.create({
-  headers: { 'x-access-token': localStorage.getItem('token') },
-});
+// const authAxios = axios.create({
+//   headers: { 'x-access-token': localStorage.getItem('token') },
+// });
 
 const PdEventList = () => {
   const [events, setEvents] = useState([]);
@@ -16,7 +16,8 @@ const PdEventList = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await authAxios.get('http://localhost:3008/api/events');
+      // const response = await authAxios.get('http://localhost:3008/api/events');
+      const response = await axios.get('http://localhost:3008/api/events');
       if (response.data.events === undefined) throw Error;
 
       // we received a list of events
