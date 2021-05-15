@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Form, Button, Message } from 'semantic-ui-react';
+import axios from 'axios';
 
 const TeacherRegistration = (props) => {
   const { hasAccount, setHasAccount } = props;
@@ -9,8 +10,33 @@ const TeacherRegistration = (props) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
 
-  const handleRegistration = () => {
-    alert('account would be created now');
+  const resetForm = () => {
+    setEmail('');
+    setPassword('');
+    setFirstName('');
+    setLastName('');
+    setFileNumber('');
+  };
+
+  const handleRegistration = async () => {
+    try {
+      const response = await axios.post(
+        'https://server-mongodb-practice.herokuapp.com/api/register',
+        {
+          email,
+          password,
+          firstName,
+          lastName,
+          fileNumber,
+        }
+      );
+      console.log('the response is ' + JSON.stringify(response));
+      resetForm();
+      alert('your account has been successfully created');
+    } catch (err) {
+      alert('something went wrong');
+      console.log(err);
+    }
   };
 
   return (
@@ -75,7 +101,7 @@ const TeacherRegistration = (props) => {
           onChange={(e) => setEmail(e.target.value)}
         />
         <Form.Input
-          label="Password"
+          label="Password - DO NOT USE A REAL PASSWORD FOR NOW - CURRENTLY PASSWORDS ARE PLAINTEXT!!!!"
           type="password"
           required
           value={password}
