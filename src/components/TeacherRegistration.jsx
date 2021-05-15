@@ -20,16 +20,23 @@ const TeacherRegistration = (props) => {
 
   const handleRegistration = async () => {
     try {
-      const response = await axios.post(
-        'https://server-mongodb-practice.herokuapp.com/api/register',
-        {
-          email,
-          password,
-          firstName,
-          lastName,
-          fileNumber,
-        }
-      );
+      // const response = await axios.post(
+      //   'https://server-mongodb-practice.herokuapp.com/api/register',
+      //   {
+      //     email,
+      //     password,
+      //     firstName,
+      //     lastName,
+      //     fileNumber,
+      //   }
+      // );
+      const response = await axios.post('http://localhost:3008/api/register', {
+        email,
+        password,
+        firstName,
+        lastName,
+        fileNumber,
+      });
       console.log('the response is ' + JSON.stringify(response));
       resetForm();
       alert('your account has been successfully created');
@@ -101,7 +108,7 @@ const TeacherRegistration = (props) => {
           onChange={(e) => setEmail(e.target.value)}
         />
         <Form.Input
-          label="Password - DO NOT USE A REAL PASSWORD FOR NOW - CURRENTLY PASSWORDS ARE PLAINTEXT!!!!"
+          label="Password"
           type="password"
           required
           value={password}

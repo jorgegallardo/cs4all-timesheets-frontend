@@ -3,7 +3,7 @@ import Login from './Login';
 import TeacherRegistration from './TeacherRegistration';
 
 const Homepage = () => {
-  const [hasAccount, setHasAccount] = useState(false);
+  const [hasAccount, setHasAccount] = useState(true);
 
   return (
     <>

@@ -1,13 +1,37 @@
 import { useState } from 'react';
 import { Form, Button } from 'semantic-ui-react';
+import axios from 'axios';
 
 const Login2 = (props) => {
   const { hasAccount, setHasAccount } = props;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    alert('you would be logged in');
+  const resetForm = () => {
+    setEmail('');
+    setPassword('');
+  };
+
+  const handleLogin = async () => {
+    try {
+      // const response = await axios.post(
+      //   'https://server-mongodb-practice.herokuapp.com/api/login',
+      //   {
+      //     email,
+      //     password,
+      //   }
+      // );
+      const response = await axios.post('http://localhost:3008/api/login', {
+        email,
+        password,
+      });
+      console.log('login response is ' + JSON.stringify(response));
+      resetForm();
+      alert('login successful');
+    } catch (err) {
+      console.log(err.message);
+      alert('login failed');
+    }
   };
 
   return (
