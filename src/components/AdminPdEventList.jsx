@@ -1,6 +1,35 @@
+import { useState, useEffect } from 'react';
 import { Table, Dropdown, Button, Message } from 'semantic-ui-react';
+import axios from 'axios';
+
+const authAxios = axios.create({
+  headers: { 'x-access-token': localStorage.getItem('token') },
+});
 
 const PdEventList = () => {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await authAxios.get('http://localhost:3008/api/events');
+      if (response.data.events === undefined) throw Error;
+
+      // we received a list of events
+      setEvents(response.data.events);
+      setLoading(false);
+    } catch (error) {
+      console.log('unable to retrieve events');
+      console.log(error);
+    }
+  };
+
+  if (loading) return <h1>loading...</h1>;
+
   return (
     <>
       <Message negative>
@@ -45,7 +74,7 @@ const PdEventList = () => {
         </Dropdown.Menu>
       </Dropdown>
 
-      <Table compact="very" selectable celled>
+      <Table compact="very" selectable celled striped>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Date</Table.HeaderCell>
@@ -59,45 +88,34 @@ const PdEventList = () => {
         </Table.Header>
 
         <Table.Body>
-          <Table.Row>
-            <Table.Cell>5/5/21</Table.Cell>
-            <Table.Cell>Units</Table.Cell>
-            <Table.Cell>Abstraction</Table.Cell>
-            <Table.Cell>3:00</Table.Cell>
-            <Table.Cell>4:00</Table.Cell>
-            <Table.Cell>Jorge Gallardo</Table.Cell>
-            <Table.Cell>
-              <Button color="teal" compact>
-                edit
-              </Button>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Cell>5/4/21</Table.Cell>
-            <Table.Cell>Units</Table.Cell>
-            <Table.Cell>Algorithms</Table.Cell>
-            <Table.Cell>3:00</Table.Cell>
-            <Table.Cell>4:00</Table.Cell>
-            <Table.Cell>Jorge Gallardo</Table.Cell>
-            <Table.Cell>
-              <Button color="teal" compact>
-                edit
-              </Button>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Cell>5/3/21</Table.Cell>
-            <Table.Cell>Units</Table.Cell>
-            <Table.Cell>Intro to CS</Table.Cell>
-            <Table.Cell>3:00</Table.Cell>
-            <Table.Cell>4:00</Table.Cell>
-            <Table.Cell>Jorge Gallardo</Table.Cell>
-            <Table.Cell>
-              <Button color="teal" compact>
-                edit
-              </Button>
-            </Table.Cell>
-          </Table.Row>
+          {events &&
+            events.map((event) => {
+              return (
+                <Table.Row key={event.id}>
+                  <Table.Cell>{event.date}</Table.Cell>
+                  <Table.Cell>{event.program}</Table.Cell>
+                  <Table.Cell>{event.title}</Table.Cell>
+                  <Table.Cell>{event.startTime}</Table.Cell>
+                  <Table.Cell>{event.endTime}</Table.Cell>
+                  <Table.Cell>
+                    {event.facilitators.length === 1
+                      ? event.facilitators.map((facilitator) => (
+                          // use actual facilitator ids for keys, not a random num
+                          <span key={Math.random()}>{facilitator}</span>
+                        ))
+                      : event.facilitators.map((facilitator) => (
+                          <span key={Math.random()}>{facilitator}, </span>
+                          // figure out a way to remove the comma from the last item
+                        ))}
+                  </Table.Cell>
+                  <Table.Cell>
+                    <Button color="teal" compact>
+                      edit
+                    </Button>
+                  </Table.Cell>
+                </Table.Row>
+              );
+            })}
         </Table.Body>
       </Table>
     </>
