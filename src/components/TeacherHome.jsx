@@ -6,8 +6,8 @@ const Home = () => {
   const [user, setUser] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [emailError, ] = useState('');
-  const [passwordError, ] = useState('');
+  const [emailError] = useState('');
+  const [passwordError] = useState('');
   const [hasAccount, setHasAccount] = useState(false);
   const [fileNumber, setFileNumber] = useState('');
   const [userId, setUserId] = useState('');
@@ -16,14 +16,12 @@ const Home = () => {
   const [lastName, setLastName] = useState('');
   const [loading, setLoading] = useState(true);
 
+  const handleLogin = () => {};
 
-  const handleLogin = () => {
-  };
-
-  const handleRegistration = () => {
-  };
+  const handleRegistration = () => {};
 
   const handleLogout = () => {
+    localStorage.clear();
     alert('user would be logged out');
   };
 

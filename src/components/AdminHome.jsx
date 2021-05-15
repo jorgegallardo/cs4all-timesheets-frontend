@@ -11,6 +11,7 @@ const AdminHome = () => {
   const [activeTab, setActiveTab] = useState('approveTimesheets');
 
   const handleLogout = () => {
+    localStorage.clear();
     alert('you would be logged out if this was currently working');
   };
 
