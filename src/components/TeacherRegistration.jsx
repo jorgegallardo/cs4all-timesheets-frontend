@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Form, Button, Message } from 'semantic-ui-react';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 const TeacherRegistration = (props) => {
   const { hasAccount, setHasAccount } = props;
@@ -9,6 +10,7 @@ const TeacherRegistration = (props) => {
   const [fileNumber, setFileNumber] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const history = useHistory();
 
   const resetForm = () => {
     setEmail('');
@@ -37,9 +39,11 @@ const TeacherRegistration = (props) => {
         lastName,
         fileNumber,
       });
-      console.log('the response is ' + JSON.stringify(response));
+      const tokenFromServer = response.data.token;
+      localStorage.setItem('token', tokenFromServer);
       resetForm();
       alert('your account has been successfully created');
+      history.push('/teacher');
     } catch (err) {
       alert('something went wrong');
       console.log(err);

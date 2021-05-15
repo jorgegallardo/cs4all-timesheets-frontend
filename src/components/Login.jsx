@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Form, Button } from 'semantic-ui-react';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
-const Login2 = (props) => {
+const Login = (props) => {
   const { hasAccount, setHasAccount } = props;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory();
 
   const resetForm = () => {
     setEmail('');
@@ -25,11 +27,14 @@ const Login2 = (props) => {
         email,
         password,
       });
-      console.log('login response is ' + JSON.stringify(response));
+      const tokenFromServer = response.data.token;
+      localStorage.setItem('token', tokenFromServer);
       resetForm();
       alert('login successful');
+      history.push('/teacher');
     } catch (err) {
-      console.log(err.message);
+      alert(err.message);
+      resetForm();
       alert('login failed');
     }
   };
@@ -74,4 +79,4 @@ const Login2 = (props) => {
   );
 };
 
-export default Login2;
+export default Login;
