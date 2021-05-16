@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Button, Message } from 'semantic-ui-react';
+import { Form, Button, Message, Dropdown } from 'semantic-ui-react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 
@@ -10,6 +10,7 @@ const TeacherRegistration = (props) => {
   const [fileNumber, setFileNumber] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [program, setProgram] = useState('');
   const history = useHistory();
 
   const resetForm = () => {
@@ -18,7 +19,31 @@ const TeacherRegistration = (props) => {
     setFirstName('');
     setLastName('');
     setFileNumber('');
+    setProgram('');
   };
+
+  const cs4allPrograms = [
+    {
+      key: 'units',
+      text: 'units',
+      value: 'units',
+    },
+    {
+      key: 'courses',
+      text: 'courses',
+      value: 'courses',
+    },
+    {
+      key: 'sep jr',
+      text: 'sep jr',
+      value: 'sep jr',
+    },
+    {
+      key: 'cs leads',
+      text: 'cs leads',
+      value: 'cs leads',
+    },
+  ];
 
   const handleRegistration = async () => {
     try {
@@ -38,6 +63,7 @@ const TeacherRegistration = (props) => {
         firstName,
         lastName,
         fileNumber,
+        program,
       });
       const tokenFromServer = response.data.token;
       localStorage.setItem('token', tokenFromServer);
@@ -139,6 +165,17 @@ const TeacherRegistration = (props) => {
           value={fileNumber}
           onChange={(e) => setFileNumber(e.target.value)}
         />
+        <Form.Field required>
+          <label>CS4All Program</label>
+          <Dropdown
+            placeholder="select the cs4all program you're enrolled in"
+            fluid
+            selection
+            options={cs4allPrograms}
+            onChange={(e, { value }) => setProgram(value)}
+          />
+        </Form.Field>
+
         <Button onClick={handleRegistration}>create an account</Button>
         <p>
           already have an account?{' '}
