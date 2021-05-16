@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Button, Message, Dropdown } from 'semantic-ui-react';
+import { Form, Button, Dropdown, Segment, Grid } from 'semantic-ui-react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 
@@ -11,6 +11,9 @@ const TeacherRegistration = (props) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [program, setProgram] = useState('');
+  const [pointOfContact, setPointOfContact] = useState('');
+  const [school, setSchool] = useState('');
+  // const [grades, setGrades] = useState([]);
   const history = useHistory();
 
   const resetForm = () => {
@@ -20,6 +23,8 @@ const TeacherRegistration = (props) => {
     setLastName('');
     setFileNumber('');
     setProgram('');
+    setPointOfContact('');
+    setSchool('');
   };
 
   const cs4allPrograms = [
@@ -45,6 +50,32 @@ const TeacherRegistration = (props) => {
     },
   ];
 
+  const gradeOptions = [
+    { key: 'K', text: 'Kindergarten', value: 'Kindergarten' },
+    { key: '1', text: '1st', value: '1st' },
+    { key: '2', text: '2nd', value: '2nd' },
+    { key: '3', text: '3rd', value: '3rd' },
+    { key: '4', text: '4th', value: '4th' },
+    { key: '5', text: '5th', value: '5th' },
+    { key: '6', text: '6th', value: '6th' },
+    { key: '7', text: '7th', value: '7th' },
+    { key: '8', text: '8th', value: '8th' },
+    { key: '9', text: '9th', value: '9th' },
+    { key: '10', text: '10th', value: '10th' },
+    { key: '11', text: '11th', value: '11th' },
+    { key: '12', text: '12th', value: '12' },
+  ];
+
+  const cs4allStaff = [
+    { key: 'jorge gallardo', text: 'jorge gallardo', value: 'jorge gallardo' },
+    { key: 'someone else', text: 'someone else', value: 'someone else' },
+  ];
+
+  const schoolOptions = [
+    { key: 'school1', text: 'school1', value: 'school1' },
+    { key: 'school2', text: 'school2', value: 'school2' },
+  ];
+
   const handleRegistration = async () => {
     try {
       // const response = await axios.post(
@@ -64,6 +95,8 @@ const TeacherRegistration = (props) => {
         lastName,
         fileNumber,
         program,
+        pointOfContact,
+        school,
       });
       const tokenFromServer = response.data.token;
       localStorage.setItem('token', tokenFromServer);
@@ -78,119 +111,116 @@ const TeacherRegistration = (props) => {
 
   return (
     <>
-      <Message negative>
-        <Message.Header>
-          jorge's notes - teachers can register here. this is where we can
-          capture all of the fields that we need:
-        </Message.Header>
-        <Message.List>
-          <Message.Item>
-            <p>first & last name - textbox</p>
-          </Message.Item>
-          <Message.Item>
-            <p>file number - textbox</p>
-          </Message.Item>
-          <Message.Item>
-            <p>
-              email & password - textbox - password salted + hashed so that no
-              one can see it in the db
-            </p>
-          </Message.Item>
-          <Message.Item>
-            <p>
-              school - picked from a searchable dropdown - if we have all of the
-              schools in the doe as objects, we'll know the district, borough
-              office, dbn, principal, address, superintendent, etc.
-            </p>
-          </Message.Item>
-          <Message.Item>
-            <p>grade(s) taught - checkboxes</p>
-          </Message.Item>
-          <Message.Item>
-            <p>
-              cs4all program - from dropdown - we *could* let teachers create an
-              account at their first pd and tell them exactly which program they
-              should choose. the alternative is to have a teacher pane in the
-              admin console and manually have an admin select their program on
-              our end. but that would be hundreds of teachers worth of work.
-            </p>
-          </Message.Item>
-          <Message.Item>
-            <p>cs4all point of contact - same "issue" as cs4all program...</p>
-          </Message.Item>
-        </Message.List>
-        <hr />
-        <Message.Header>
-          i think i like the idea of having teachers create their accounts at
-          their first pd w/ our guidance and then have a teacher pane in the
-          admin dashboard that allows us to go back in an edit teacher details
-          if they made mistakes
-        </Message.Header>
-      </Message>
       <h1>teacher registration</h1>
-      <Form>
-        <Form.Input
-          label="Email Address"
-          type="email"
-          required
-          autoFocus
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <Form.Input
-          label="Password"
-          type="password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Form.Input
-          label="First Name"
-          type="text"
-          required
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-        />
-        <Form.Input
-          label="Last Name"
-          type="text"
-          required
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-        />
-        <Form.Input
-          label="File Number"
-          type="text"
-          required
-          value={fileNumber}
-          onChange={(e) => setFileNumber(e.target.value)}
-        />
-        <Form.Field required>
-          <label>CS4All Program</label>
-          <Dropdown
-            placeholder="select the cs4all program you're enrolled in"
-            fluid
-            selection
-            options={cs4allPrograms}
-            onChange={(e, { value }) => setProgram(value)}
-          />
-        </Form.Field>
+      <Segment>
+        <Form>
+          <Grid stackable columns={2}>
+            <Grid.Column>
+              <Form.Input
+                required
+                label="Email Address"
+                type="email"
+                autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <Form.Input
+                required
+                label="Password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <Form.Input
+                required
+                label="First Name"
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+              <Form.Input
+                required
+                label="Last Name"
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+              <Form.Input
+                required
+                label="File Number"
+                type="text"
+                value={fileNumber}
+                onChange={(e) => setFileNumber(e.target.value)}
+              />
+            </Grid.Column>
+            <Grid.Column>
+              <Form.Field required>
+                <label>CS4All Program</label>
+                <Dropdown
+                  placeholder="select the cs4all program you're enrolled in"
+                  fluid
+                  selection
+                  options={cs4allPrograms}
+                  onChange={(e, { value }) => setProgram(value)}
+                />
+              </Form.Field>
+              <Form.Field required>
+                <label>CS4All Point of Contact</label>
+                <Dropdown
+                  placeholder="select your cs4all point of contact"
+                  fluid
+                  selection
+                  options={cs4allStaff}
+                  onChange={(e, { value }) => setPointOfContact(value)}
+                />
+              </Form.Field>
+              <Form.Field required>
+                <label>Your School</label>
+                <Dropdown
+                  placeholder="find your school"
+                  fluid
+                  search
+                  selection
+                  options={schoolOptions}
+                  onChange={(e, { value }) => setSchool(value)}
+                />
+              </Form.Field>
 
-        <Button onClick={handleRegistration}>create an account</Button>
-        <p>
-          already have an account?{' '}
-          <span
-            style={{
-              color: 'blue',
-              textDecoration: 'underline',
-              cursor: 'pointer',
-            }}
-            onClick={() => setHasAccount(!hasAccount)}
-          >
-            sign in
-          </span>
-        </p>
-      </Form>
+              <Form.Select
+                required
+                placeholder="select the grade(s) you teach"
+                fluid
+                multiple
+                label="Grade(s) Taught"
+                options={gradeOptions}
+              />
+
+              <p style={{ color: 'red' }}>
+                NOTE: the CREATE ACCOUNT button below should be disabled until
+                all of the fields are filled/selected
+              </p>
+
+              <Button fluid onClick={handleRegistration}>
+                create an account
+              </Button>
+
+              <p style={{ marginTop: '10px' }}>
+                already have an account?{' '}
+                <span
+                  style={{
+                    color: 'blue',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => setHasAccount(!hasAccount)}
+                >
+                  sign in
+                </span>
+              </p>
+            </Grid.Column>
+          </Grid>
+        </Form>
+      </Segment>
     </>
   );
 };
