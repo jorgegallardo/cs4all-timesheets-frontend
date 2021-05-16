@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Divider } from 'semantic-ui-react';
 import AdminViewAllTimesheets from './AdminViewAllTimesheets';
 import AdminPdEventCreator from './AdminPdEventCreator';
@@ -6,15 +6,25 @@ import AdminPdEventList from './AdminPdEventList';
 import AdminTimesheetApproval from './AdminTimesheetApproval';
 import AdminMenuBar from './AdminMenuBar';
 import AdminReminders from './AdminReminders';
+import { useHistory } from 'react-router-dom';
 
 const AdminHome = () => {
+  const history = useHistory();
   const [activeTab, setActiveTab] = useState('approveTimesheets');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
-    alert('you would be logged out if this was currently working');
+    history.push('/');
   };
 
+  if (loading) {
+    return <h1>loading...</h1>;
+  }
   return (
     <>
       <Button floated="right" onClick={() => handleLogout()}>

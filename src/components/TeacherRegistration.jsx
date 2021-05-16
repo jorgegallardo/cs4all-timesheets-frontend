@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { Form, Button, Dropdown, Segment, Grid } from 'semantic-ui-react';
+import {
+  Form,
+  Button,
+  Dropdown,
+  Segment,
+  Grid,
+  Divider,
+} from 'semantic-ui-react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 
@@ -221,6 +228,17 @@ const TeacherRegistration = (props) => {
           </Grid>
         </Form>
       </Segment>
+      <Divider />
+      <h1>for dev purposes:</h1>
+      <Button
+        content="go to teacher dashboard"
+        onClick={() => history.push('/teacher')}
+      />
+      <Button
+        content="go to admin dashboard"
+        secondary
+        onClick={() => history.push('/admin')}
+      />
     </>
   );
 };
