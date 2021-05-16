@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import { Form, Button, Radio, Message } from 'semantic-ui-react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import setHours from 'date-fns/setHours';
+import setMinutes from 'date-fns/setMinutes';
 
 const PdEventCreator = () => {
   const [pdEventTitle, setPdEventTitle] = useState('');
@@ -9,7 +13,7 @@ const PdEventCreator = () => {
   const [value, setValue] = useState('');
 
   const facilitatorOptions = [
-    { key: 'valerie', text: 'valerie', valerieue: 'valerie' },
+    { key: 'valerie', text: 'valerie', value: 'valerie' },
     { key: 'kevin', text: 'kevin', value: 'kevin' },
     { key: 'felix', text: 'felix', value: 'felix' },
     { key: 'marie', text: 'marie', value: 'marie' },
@@ -19,7 +23,7 @@ const PdEventCreator = () => {
   ];
 
   const handlePdEventCreation = () => {
-    alert('event would be created at this point');
+    alert('event would be created now');
   };
 
   const handleChange = (e, { value }) => setValue(value);
@@ -45,34 +49,57 @@ const PdEventCreator = () => {
 
       <Form>
         <Form.Input
-          label="pd/event title"
+          label="PD/Event Title"
           type="text"
           required
           autoFocus
           value={pdEventTitle}
           onChange={(e) => setPdEventTitle(e.target.value)}
         />
-        <Form.Input
-          label="pd/event date"
-          type="text"
-          required
-          value={pdEventDate}
-          onChange={(e) => setPdEventDate(e.target.value)}
-        />
-        <Form.Input
-          label="pd/event start time"
-          type="text"
-          required
-          value={pdEventStartTime}
-          onChange={(e) => setPdEventStartTime(e.target.value)}
-        />
-        <Form.Input
-          label="pd/event end time"
-          type="text"
-          required
-          value={pdEventEndTime}
-          onChange={(e) => setPdEventEndTime(e.target.value)}
-        />
+
+        {/* pd/event date, start time, end time */}
+        <Form.Group style={{ marginBottom: '1em' }}>
+          <Form.Field required>
+            <label>PD/Event Date</label>
+            <DatePicker
+              selected={pdEventDate}
+              onChange={(date) => setPdEventDate(date)}
+              placeholderText="Choose date"
+            />
+          </Form.Field>
+          <Form.Field required>
+            <label>Start Time</label>
+            <DatePicker
+              selected={pdEventStartTime}
+              onChange={(date) => setPdEventStartTime(date)}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={30}
+              timeCaption="Start At"
+              dateFormat="h:mm aa"
+              minTime={setHours(setMinutes(new Date(), 0), 8)}
+              maxTime={setHours(setMinutes(new Date(), 0), 21)}
+              placeholderText="Choose start time"
+            />
+          </Form.Field>
+          <Form.Field required>
+            <label>End Time</label>
+            <DatePicker
+              selected={pdEventEndTime}
+              onChange={(date) => setPdEventEndTime(date)}
+              showTimeSelect
+              showTimeSelectOnly
+              timeIntervals={30}
+              timeCaption="End At"
+              dateFormat="h:mm aa"
+              minTime={setHours(setMinutes(new Date(), 0), 9)}
+              maxTime={setHours(setMinutes(new Date(), 0), 21)}
+              placeholderText="Choose end time"
+            />
+          </Form.Field>
+        </Form.Group>
+
+        {/* cs4all program */}
         <Form.Group inline>
           <label>CS4All Program</label>
           <Form.Field
@@ -104,6 +131,7 @@ const PdEventCreator = () => {
             onChange={handleChange}
           />
         </Form.Group>
+
         <Form.Select
           placeholder="select facilitator(s)"
           fluid
