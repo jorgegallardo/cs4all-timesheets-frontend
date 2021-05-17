@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Form,
   Button,
@@ -8,19 +9,18 @@ import {
   Divider,
 } from 'semantic-ui-react';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
 
 const TeacherRegistration = (props) => {
   const { hasAccount, setHasAccount } = props;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fileNumber, setFileNumber] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [program, setProgram] = useState('');
-  const [pointOfContact, setPointOfContact] = useState('');
+  const [fileNumber, setFileNumber] = useState('');
+  const [cs4AllProgramTitle, setCs4AllProgramTitle] = useState('');
+  const [cs4AllPointOfContact, setCs4AllPointOfContact] = useState('');
   const [school, setSchool] = useState('');
-  // const [grades, setGrades] = useState([]);
+  // const [gradesTaught, setGradesTaught] = useState([]);
   const history = useHistory();
 
   const resetForm = () => {
@@ -29,12 +29,13 @@ const TeacherRegistration = (props) => {
     setFirstName('');
     setLastName('');
     setFileNumber('');
-    setProgram('');
-    setPointOfContact('');
+    setCs4AllProgramTitle('');
+    setCs4AllPointOfContact('');
     setSchool('');
+    // setGradesTaught('');
   };
 
-  const cs4allPrograms = [
+  const cs4AllProgramOptions = [
     {
       key: 'units',
       text: 'units',
@@ -73,11 +74,12 @@ const TeacherRegistration = (props) => {
     { key: '12', text: '12th', value: '12' },
   ];
 
-  const cs4allStaff = [
+  const cs4AllStaffOptions = [
     { key: 'jorge gallardo', text: 'jorge gallardo', value: 'jorge gallardo' },
     { key: 'someone else', text: 'someone else', value: 'someone else' },
   ];
 
+  // should be pulled in from db
   const schoolOptions = [
     { key: 'school1', text: 'school1', value: 'school1' },
     { key: 'school2', text: 'school2', value: 'school2' },
@@ -101,9 +103,10 @@ const TeacherRegistration = (props) => {
         firstName,
         lastName,
         fileNumber,
-        program,
-        pointOfContact,
+        cs4AllProgramTitle,
+        cs4AllPointOfContact,
         school,
+        // gradesTaught,
       });
       const tokenFromServer = response.data.token;
       localStorage.setItem('token', tokenFromServer);
@@ -167,8 +170,8 @@ const TeacherRegistration = (props) => {
                   placeholder="select the cs4all program you're enrolled in"
                   fluid
                   selection
-                  options={cs4allPrograms}
-                  onChange={(e, { value }) => setProgram(value)}
+                  options={cs4AllProgramOptions}
+                  onChange={(e, { value }) => setCs4AllProgramTitle(value)}
                 />
               </Form.Field>
               <Form.Field required>
@@ -177,8 +180,8 @@ const TeacherRegistration = (props) => {
                   placeholder="select your cs4all point of contact"
                   fluid
                   selection
-                  options={cs4allStaff}
-                  onChange={(e, { value }) => setPointOfContact(value)}
+                  options={cs4AllStaffOptions}
+                  onChange={(e, { value }) => setCs4AllPointOfContact(value)}
                 />
               </Form.Field>
               <Form.Field required>
@@ -204,7 +207,8 @@ const TeacherRegistration = (props) => {
 
               <p style={{ color: 'red' }}>
                 NOTE: the CREATE ACCOUNT button below should be disabled until
-                all of the fields are filled/selected
+                all of the fields are filled/selected. grades taught not yet
+                hooked up.
               </p>
 
               <Button fluid onClick={handleRegistration}>
