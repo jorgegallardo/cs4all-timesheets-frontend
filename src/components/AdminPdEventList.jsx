@@ -17,7 +17,10 @@ const PdEventList = () => {
   const fetchEvents = async () => {
     try {
       // const response = await authAxios.get('http://localhost:3008/api/events');
-      const response = await axios.get('http://localhost:3008/api/events');
+      // const response = await axios.get('http://localhost:3008/api/events');
+      const response = await axios.get(
+        'https://server-mongodb-practice.herokuapp.com/api/events'
+      );
       if (response.data.events === undefined) throw Error;
 
       // we received a list of events

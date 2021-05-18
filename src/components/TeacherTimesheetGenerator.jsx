@@ -20,7 +20,10 @@ const TeacherTimesheetGenerator = (props) => {
   const fetchEvents = async () => {
     try {
       // const response = await authAxios.get('http://localhost:3008/api/events');
-      const response = await axios.get('http://localhost:3008/api/events');
+      // const response = await axios.get('http://localhost:3008/api/events');
+      const response = await axios.get(
+        'https://server-mongodb-practice.herokuapp.com/api/events'
+      );
       if (response.data.events === undefined) throw Error;
       // the events request to the server must be appropriately structured to only pull the events that would be relevant to the teacher based on the program they're in (and pd/events for "all teachers")
 
