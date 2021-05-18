@@ -13,9 +13,9 @@ const TeacherDetails = () => {
         <Table.Body>
           <Table.Row>
             <Table.Cell collapsing>
-              <Icon name="envelope outline" /> Program Name
+              <Icon name="envelope outline" /> CS4All Program Name
             </Table.Cell>
-            <Table.Cell>CS4All Integrated Units</Table.Cell>
+            <Table.Cell>Integrated Units</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell collapsing>

@@ -1,5 +1,15 @@
 import { useState } from 'react';
-import { Form, Button, Radio, Message } from 'semantic-ui-react';
+import {
+  Form,
+  Button,
+  Radio,
+  Message,
+  Segment,
+  Divider,
+  Label,
+  Grid,
+  Image,
+} from 'semantic-ui-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import setHours from 'date-fns/setHours';
@@ -48,99 +58,120 @@ const PdEventCreator = () => {
       <h2>create pd/event</h2>
 
       <Form>
-        <Form.Input
-          label="PD/Event Title"
-          type="text"
-          required
-          autoFocus
-          value={pdEventTitle}
-          onChange={(e) => setPdEventTitle(e.target.value)}
-        />
-
-        {/* pd/event date, start time, end time */}
-        <Form.Group style={{ marginBottom: '1em' }}>
-          <Form.Field required>
-            <label>PD/Event Date</label>
-            <DatePicker
-              selected={pdEventDate}
-              onChange={(date) => setPdEventDate(date)}
-              placeholderText="Choose date"
-            />
-          </Form.Field>
-          <Form.Field required>
-            <label>Start Time</label>
-            <DatePicker
-              selected={pdEventStartTime}
-              onChange={(date) => setPdEventStartTime(date)}
-              showTimeSelect
-              showTimeSelectOnly
-              timeIntervals={30}
-              timeCaption="Start At"
-              dateFormat="h:mm aa"
-              minTime={setHours(setMinutes(new Date(), 0), 8)}
-              maxTime={setHours(setMinutes(new Date(), 0), 21)}
-              placeholderText="Choose start time"
-            />
-          </Form.Field>
-          <Form.Field required>
-            <label>End Time</label>
-            <DatePicker
-              selected={pdEventEndTime}
-              onChange={(date) => setPdEventEndTime(date)}
-              showTimeSelect
-              showTimeSelectOnly
-              timeIntervals={30}
-              timeCaption="End At"
-              dateFormat="h:mm aa"
-              minTime={setHours(setMinutes(new Date(), 0), 9)}
-              maxTime={setHours(setMinutes(new Date(), 0), 21)}
-              placeholderText="Choose end time"
-            />
-          </Form.Field>
+        <Form.Group widths="equal">
+          <Form.Input
+            label="PD/Event Title"
+            type="text"
+            required
+            autoFocus
+            value={pdEventTitle}
+            onChange={(e) => setPdEventTitle(e.target.value)}
+          />
+          {/* facilitator(s) multiple select */}
+          <Form.Select
+            required
+            placeholder="select facilitator(s)"
+            fluid
+            multiple
+            label="CS4All Facilitator(s)"
+            options={facilitatorOptions}
+          />
         </Form.Group>
-
-        {/* cs4all program */}
+        {/* cs4all program - to do: add required asterisk or switch to dropdown */}
         <Form.Group inline>
           <label>CS4All Program</label>
           <Form.Field
             control={Radio}
-            label="integrated units"
+            label="Integrated Units"
             value="1"
             checked={value === '1'}
             onChange={handleChange}
           />
           <Form.Field
             control={Radio}
-            label="courses"
+            label="Courses"
             value="2"
             checked={value === '2'}
             onChange={handleChange}
           />
           <Form.Field
             control={Radio}
-            label="sepJr"
+            label="SEP Jr"
             value="3"
             checked={value === '3'}
             onChange={handleChange}
           />
           <Form.Field
             control={Radio}
-            label="general"
+            label="open to all teachers"
             value="4"
             checked={value === '4'}
             onChange={handleChange}
           />
         </Form.Group>
 
-        <Form.Select
-          placeholder="select facilitator(s)"
-          fluid
-          multiple
-          label="CS4All Facilitator(s)"
-          options={facilitatorOptions}
-        />
+        <Segment attached>
+          <Grid stackable columns={4}>
+            <Grid.Row>
+              <Grid.Column>
+                <Form.Field>
+                  <label style={{ textAlign: 'center' }}>Occurence</label>
+                  <h1 style={{ textAlign: 'center', margin: '0' }}>1</h1>
+                </Form.Field>
+              </Grid.Column>
+              <Grid.Column>
+                <Form.Field required>
+                  <label style={{ textAlign: 'center' }}>PD/Event Date</label>
+                  <DatePicker
+                    selected={pdEventDate}
+                    onChange={(date) => setPdEventDate(date)}
+                    placeholderText="Choose date"
+                  />
+                </Form.Field>
+              </Grid.Column>
+              <Grid.Column>
+                <Form.Field required>
+                  <label style={{ textAlign: 'center' }}>Start Time</label>
+                  <DatePicker
+                    selected={pdEventStartTime}
+                    onChange={(date) => setPdEventStartTime(date)}
+                    showTimeSelect
+                    showTimeSelectOnly
+                    timeIntervals={30}
+                    timeCaption="Start At"
+                    dateFormat="h:mm aa"
+                    minTime={setHours(setMinutes(new Date(), 0), 8)}
+                    maxTime={setHours(setMinutes(new Date(), 0), 21)}
+                    placeholderText="Choose start time"
+                  />
+                </Form.Field>
+              </Grid.Column>
+              <Grid.Column>
+                <Form.Field required>
+                  <label style={{ textAlign: 'center' }}>End Time</label>
+                  <DatePicker
+                    selected={pdEventEndTime}
+                    onChange={(date) => setPdEventEndTime(date)}
+                    showTimeSelect
+                    showTimeSelectOnly
+                    timeIntervals={30}
+                    timeCaption="End At"
+                    dateFormat="h:mm aa"
+                    minTime={setHours(setMinutes(new Date(), 0), 9)}
+                    maxTime={setHours(setMinutes(new Date(), 0), 21)}
+                    placeholderText="Choose end time"
+                  />
+                </Form.Field>
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
+        </Segment>
+        <Button attached="bottom">add another occurence of this event</Button>
 
-        <Button onClick={handlePdEventCreation}>create pd/event</Button>
+        <Divider />
+        <Button color="blue" onClick={handlePdEventCreation}>
+          create pd/event
+        </Button>
       </Form>
     </>
   );
