@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Divider, Message } from 'semantic-ui-react';
+import { Button, Divider, Message, Label } from 'semantic-ui-react';
 import TeacherMenu from './TeacherMenu';
 
 const TeacherHome = () => {
@@ -33,6 +33,18 @@ const TeacherHome = () => {
         Log Out
       </Button>
       <h1>{`welcome, ${teacherData.firstName} ${teacherData.lastName} (teacher account)`}</h1>
+      <Label color="purple">
+        CS4All Program:<Label.Detail>Integrated Units</Label.Detail>
+      </Label>
+      <Label color="purple">
+        CS4All Point of Contact:<Label.Detail>Jorge Gallardo</Label.Detail>
+      </Label>
+      {/* <Label basic color="purple">
+        CS4All Program:<Label.Detail>Integrated Units</Label.Detail>
+      </Label>
+      <Label basic color="purple">
+        CS4All Point of Contact:<Label.Detail>Jorge Gallardo</Label.Detail>
+      </Label> */}
 
       <Message warning>
         <Message.Header>reminders</Message.Header>
