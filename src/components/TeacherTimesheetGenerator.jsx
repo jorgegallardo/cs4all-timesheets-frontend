@@ -1,43 +1,83 @@
 import { useEffect, useRef, useState } from 'react';
 import SignaturePad from 'signature_pad';
 import { Button, Form, Radio, Step, Segment } from 'semantic-ui-react';
+import axios from 'axios';
 
-const TeacherTimesheetGenerator = () => {
+const TeacherTimesheetGenerator = (props) => {
+  const { teacherData } = props;
   const canvas = useRef(null);
   const [signaturePad, setSignaturePad] = useState(null);
-  const [value, setValue] = useState('001');
-  const handleChange = (event, { value }) => setValue(value);
+  const [value, setValue] = useState('1');
+  const handleSelectedEventChange = (event, { value }) => setValue(value);
+
+  // hardcoded events for dev purposes
+  const events = [
+    {
+      id: '1',
+      title: 'Introduction to CS',
+      date: '5/1/21',
+      startTime: '4:00',
+      endTime: '5:00',
+    },
+    {
+      id: '2',
+      title: 'Abstraction',
+      date: '5/2/21',
+      startTime: '3:00',
+      endTime: '4:00',
+    },
+  ];
 
   const handleSubmit = async () => {
-    // we should add frontend validation checks here too (in addition to the empty signature check below)
-    if (signaturePad.isEmpty()) {
-      alert('you forgot to sign the pad!');
-      return;
+    // steps:
+    // 1. on component load: grab/load the logged in user's (teacher) info.
+    // 2. on component load: hit the db and download the events that are relevant to that teacher
+    // 3. display events as radio button options
+    // 4. when a radio button is selected, load that info in preparation for POST request
+    // 5. frontend validation checks (empty signature, missing info (if db calls fail?), etc.) - disable submit timesheet button until everything is correctly filled out
+    // 6. submit timesheet --> POST request to /api/createtimesheet
+
+    // questions:
+    // 1. are we exposing too much about the backend to the clients?
+    // 2. is this where a react context comes into play... so that we have access to the user throughout the entire application (all child components) once they log in?
+
+    try {
+      // add more frontend validation checks
+      if (signaturePad.isEmpty()) {
+        alert('you forgot to sign the pad');
+        return;
+      }
+      const dataUrl = signaturePad.toDataURL();
+      signaturePad.clear();
+
+      // process.env.REACT_APP_API_SERVER + '/timesheets'
+      const response = await axios.post(
+        'http://localhost:3008/api/createtimesheet',
+        {
+          signatureData: dataUrl,
+          // from teacher data
+          positionTitle: teacherData.role,
+          firstName: teacherData.firstName,
+          lastName: teacherData.lastName,
+          fileNumber: teacherData.fileNumber,
+          program: teacherData.assignedProgramTitle,
+          eventId: value,
+          // from event data
+          // eventId (so we can select it from the radio button and know what we selected)
+          // eventDate
+          // eventStartTime
+          // eventEndTime
+          // perhaps we could pull this on the server instead (and minimize potential malicous actors submitting other stuff)... but we still need the eventId & title for the front end. what's the best practice?
+        }
+      );
+
+      const responseData = await response.json();
+      console.log(responseData);
+      alert('timesheet submitted');
+    } catch (error) {
+      console.log(error);
+      alert('something went wrong with the timesheet creation');
     }
-    const dataUrl = signaturePad.toDataURL();
-    console.log(dataUrl);
-    signaturePad.clear();
-
-    const firstName = 'Dave';
-    const lastName = 'Idell';
-    const fileNumber = '12345';
-
-    const response = await fetch(process.env.REACT_APP_API_SERVER + '/timesheets', {
-      method: 'POST',
-      body: JSON.stringify({
-        firstName,
-        lastName,
-        fileNumber,
-        signatureData: dataUrl,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const resData = await response.json();
-    console.log(resData);
-    alert('timesheet submitted.');
   };
 
   useEffect(() => {
@@ -79,33 +119,18 @@ const TeacherTimesheetGenerator = () => {
 
         <Segment attached>
           <Form>
-            <Form.Field>
-              <Radio
-                label="5/3/21 - Units: Intro to CS from 3-4pm"
-                name="radioGroup"
-                value="001"
-                checked={value === '001'}
-                onChange={handleChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <Radio
-                label="5/4/21 - Units: Intro to CS from 3-4pm"
-                name="radioGroup"
-                value="002"
-                checked={value === '002'}
-                onChange={handleChange}
-              />
-            </Form.Field>
-            <Form.Field>
-              <Radio
-                label="5/5/21 - Units: Intro to CS from 3-4pm"
-                name="radioGroup"
-                value="003"
-                checked={value === '003'}
-                onChange={handleChange}
-              />
-            </Form.Field>
+            {events &&
+              events.map((event) => (
+                <Form.Field key={event.id}>
+                  <Radio
+                    label={`${event.date} - ${teacherData.assignedProgramTitle}: ${event.title} [${event.startTime}-${event.endTime}]`}
+                    name="radioGroup"
+                    value={event.id}
+                    checked={value === event.id}
+                    onChange={handleSelectedEventChange}
+                  />
+                </Form.Field>
+              ))}
             <Form.Group>
               <Form.Field>
                 <h5 style={{ marginBottom: '4px' }}>Sign Below</h5>

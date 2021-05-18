@@ -5,8 +5,8 @@ import TeacherMenu from './TeacherMenu';
 
 const TeacherHome = () => {
   const history = useHistory();
-  const [teacherData, setTeacherData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [teacherData, setTeacherData] = useState(null);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -15,9 +15,11 @@ const TeacherHome = () => {
 
   useEffect(() => {
     setTeacherData({
+      role: 'teacher',
       firstName: 'happy',
       lastName: 'gilmore',
       fileNumber: '1234567',
+      assignedProgramTitle: 'Integrated Units',
     });
     setLoading(false);
   }, []);
@@ -61,7 +63,7 @@ const TeacherHome = () => {
         </Message.List>
       </Message>
       <Divider />
-      <TeacherMenu />
+      <TeacherMenu teacherData={teacherData} />
     </>
   );
 };
