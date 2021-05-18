@@ -7,26 +7,31 @@ const TeacherTimesheetGenerator = (props) => {
   const { teacherData } = props;
   const canvas = useRef(null);
   const [signaturePad, setSignaturePad] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [events, setEvents] = useState([]);
   const [value, setValue] = useState('1');
   const handleSelectedEventChange = (event, { value }) => setValue(value);
 
-  // hardcoded events for dev purposes
-  const events = [
-    {
-      id: '1',
-      title: 'Introduction to CS',
-      date: '5/1/21',
-      startTime: '4:00',
-      endTime: '5:00',
-    },
-    {
-      id: '2',
-      title: 'Abstraction',
-      date: '5/2/21',
-      startTime: '3:00',
-      endTime: '4:00',
-    },
-  ];
+  useEffect(() => {
+    setSignaturePad(new SignaturePad(canvas.current));
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      // const response = await authAxios.get('http://localhost:3008/api/events');
+      const response = await axios.get('http://localhost:3008/api/events');
+      if (response.data.events === undefined) throw Error;
+      // the events request to the server must be appropriately structured to only pull the events that would be relevant to the teacher based on the program they're in (and pd/events for "all teachers")
+
+      // we received the events from the server
+      setEvents(response.data.events);
+      setLoading(false);
+    } catch (error) {
+      console.log('unable to retrieve events');
+      console.log(error);
+    }
+  };
 
   const handleSubmit = async () => {
     // steps:
@@ -80,9 +85,7 @@ const TeacherTimesheetGenerator = (props) => {
     }
   };
 
-  useEffect(() => {
-    setSignaturePad(new SignaturePad(canvas.current));
-  }, []);
+  if (loading && canvas === null) return <h1>loading...</h1>;
 
   return (
     <>
@@ -123,7 +126,7 @@ const TeacherTimesheetGenerator = (props) => {
               events.map((event) => (
                 <Form.Field key={event.id}>
                   <Radio
-                    label={`${event.date} - ${teacherData.assignedProgramTitle}: ${event.title} [${event.startTime}-${event.endTime}]`}
+                    label={`${event.date} - ${event.program}: ${event.title} [${event.startTime}-${event.endTime}]`}
                     name="radioGroup"
                     value={event.id}
                     checked={value === event.id}

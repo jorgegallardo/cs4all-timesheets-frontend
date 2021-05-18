@@ -6,9 +6,7 @@ import {
   Message,
   Segment,
   Divider,
-  Label,
   Grid,
-  Image,
 } from 'semantic-ui-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
