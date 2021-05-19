@@ -4,7 +4,6 @@ import {
   Input,
   Table,
   Button,
-  Message,
   Modal,
   Header,
 } from 'semantic-ui-react';
@@ -48,26 +47,6 @@ const AdminTimesheetApproval = () => {
 
   return (
     <>
-      <Message negative>
-        <Message.Header>jorge's notes</Message.Header>
-        <Message.List>
-          <Message.Item>
-            <p>
-              "pending approval" should be the default in the dropdown in the
-              status... unless i remove the dropdown and replace it with another
-              way of changing the status
-            </p>
-          </Message.Item>
-          <Message.Item>
-            <p>
-              only the timesheets that are sign-able/approve-able by the
-              appropriate cs4all staff member should appear here (eg.
-              facilitated event or cs4all point person for the teacher in
-              question).
-            </p>
-          </Message.Item>
-        </Message.List>
-      </Message>
       <h2>approve timesheets</h2>
       {timesheets.length === 0 ? (
         <h1>loading...</h1>
