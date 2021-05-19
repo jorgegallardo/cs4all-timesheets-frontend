@@ -37,24 +37,24 @@ const TeacherRegistration = (props) => {
 
   const cs4AllProgramOptions = [
     {
-      key: 'units',
-      text: 'units',
-      value: 'units',
+      key: 'Integrated Units',
+      text: 'Integrated Units',
+      value: 'Integrated Units',
     },
     {
-      key: 'courses',
-      text: 'courses',
-      value: 'courses',
+      key: 'Courses',
+      text: 'Courses',
+      value: 'Courses',
     },
     {
-      key: 'sep jr',
-      text: 'sep jr',
-      value: 'sep jr',
+      key: 'SEP Jr',
+      text: 'SEP Jr',
+      value: 'SEP Jr',
     },
     {
-      key: 'cs leads',
-      text: 'cs leads',
-      value: 'cs leads',
+      key: 'CS Leads',
+      text: 'CS Leads',
+      value: 'CS Leads',
     },
   ];
 
@@ -87,27 +87,31 @@ const TeacherRegistration = (props) => {
 
   const handleRegistration = async () => {
     try {
-      // const response = await axios.post(
-      //   'https://server-mongodb-practice.herokuapp.com/api/register',
-      //   {
-      //     email,
-      //     password,
-      //     firstName,
-      //     lastName,
-      //     fileNumber,
-      //   }
-      // );
-      const response = await axios.post('http://localhost:3008/api/register', {
-        email,
-        password,
-        firstName,
-        lastName,
-        fileNumber,
-        cs4AllProgramTitle,
-        cs4AllPointOfContact,
-        school,
-        // gradesTaught,
-      });
+      const response = await axios.post(
+        'https://server-mongodb-practice.herokuapp.com/api/register',
+        {
+          email,
+          password,
+          firstName,
+          lastName,
+          fileNumber,
+          cs4AllProgramTitle,
+          cs4AllPointOfContact,
+          school,
+          // gradesTaught,
+        }
+      );
+      // const response = await axios.post('http://localhost:3008/api/register', {
+      //   email,
+      //   password,
+      //   firstName,
+      //   lastName,
+      //   fileNumber,
+      //   cs4AllProgramTitle,
+      //   cs4AllPointOfContact,
+      //   school,
+      //   // gradesTaught,
+      // });
       const tokenFromServer = response.data.token;
       localStorage.setItem('token', tokenFromServer);
       resetForm();
@@ -122,7 +126,7 @@ const TeacherRegistration = (props) => {
   return (
     <>
       <h1>teacher registration</h1>
-      <Segment>
+      <Segment attached>
         <Form>
           <Grid stackable columns={2}>
             <Grid.Column>
@@ -211,10 +215,6 @@ const TeacherRegistration = (props) => {
                 hooked up.
               </p>
 
-              <Button fluid onClick={handleRegistration}>
-                create an account
-              </Button>
-
               <p style={{ marginTop: '10px' }}>
                 already have an account?{' '}
                 <span
@@ -232,6 +232,9 @@ const TeacherRegistration = (props) => {
           </Grid>
         </Form>
       </Segment>
+      <Button attached="bottom" color="blue" onClick={handleRegistration}>
+        create an account
+      </Button>
       <Divider />
       <h1>for dev purposes:</h1>
       <Button
