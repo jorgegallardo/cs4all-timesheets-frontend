@@ -125,7 +125,9 @@ const TeacherTimesheetGenerator = (props) => {
 
         <Segment attached>
           <Form>
-            {events &&
+            {events.length === 0 ? (
+              <h1>loading...</h1>
+            ) : (
               events.map((event) => (
                 <Form.Field key={event.id}>
                   <Radio
@@ -136,7 +138,9 @@ const TeacherTimesheetGenerator = (props) => {
                     onChange={handleSelectedEventChange}
                   />
                 </Form.Field>
-              ))}
+              ))
+            )}
+
             <Form.Group>
               <Form.Field>
                 <h5 style={{ marginBottom: '4px' }}>Sign Below</h5>
