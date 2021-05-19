@@ -1,7 +1,36 @@
-import React from 'react';
 import { Dropdown, Input, Table, Button } from 'semantic-ui-react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const AdminAllTimesheets = () => {
+  const [timesheets, setTimesheets] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTeacherTimesheets();
+  }, []);
+
+  const fetchTeacherTimesheets = async () => {
+    try {
+      // const response = await authAxios.get('http://localhost:3008/api/timesheets');
+      const response = await axios.get('http://localhost:3008/api/timesheets');
+      // const response = await axios.get(
+      //   'https://server-mongodb-practice.herokuapp.com/api/timesheets'
+      // );
+      if (response.data.timesheets === undefined) throw Error;
+
+      // we received a list of events
+      setTimesheets(response.data.timesheets);
+      setLoading(false);
+    } catch (error) {
+      console.log('unable to retrieve timesheets');
+      console.log(error);
+    }
+  };
+
+  if (loading) return <h1>loading...</h1>;
+
   return (
     <>
       <h2>view all timesheets</h2>
@@ -34,16 +63,37 @@ const AdminAllTimesheets = () => {
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Date</Table.HeaderCell>
-            <Table.HeaderCell>PD/Event</Table.HeaderCell>
-            <Table.HeaderCell>Facilitator</Table.HeaderCell>
+            <Table.HeaderCell>CS4All Program</Table.HeaderCell>
+            <Table.HeaderCell>PD/Event Title</Table.HeaderCell>
             <Table.HeaderCell>Teacher</Table.HeaderCell>
             <Table.HeaderCell>Timesheet</Table.HeaderCell>
             <Table.HeaderCell>Status</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
-        <Table.Body>
-          <Table.Row warning>
+        {timesheets.length === 0 ? (
+          <h1>loading...</h1>
+        ) : (
+          <Table.Body>
+            {timesheets.map((timesheet) => (
+              <Table.Row>
+                <Table.Cell>{timesheet.date}</Table.Cell>
+                <Table.Cell>{timesheet.programTitle}</Table.Cell>
+                <Table.Cell>{timesheet.title}</Table.Cell>
+                <Table.Cell>
+                  {timesheet.firstName} {timesheet.lastName}
+                </Table.Cell>
+                <Table.Cell>
+                  <Button size="mini" color="purple">
+                    view
+                  </Button>
+                </Table.Cell>
+                <Table.Cell>{timesheet.status}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        )}
+        {/* <Table.Row warning>
             <Table.Cell>5/2/21</Table.Cell>
             <Table.Cell>Units: Programming</Table.Cell>
             <Table.Cell>Jorge Gallardo</Table.Cell>
@@ -78,8 +128,7 @@ const AdminAllTimesheets = () => {
               </Button>
             </Table.Cell>
             <Table.Cell>processed</Table.Cell>
-          </Table.Row>
-        </Table.Body>
+          </Table.Row> */}
       </Table>
     </>
   );
