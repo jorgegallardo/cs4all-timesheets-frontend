@@ -48,7 +48,9 @@ const TeacherTimesheetSubmissions = () => {
         </Table.Header>
 
         <Table.Body>
-          {timesheets &&
+          {timesheets.length === 0 ? (
+            <h1>loading...</h1>
+          ) : (
             timesheets.map((timesheet) => {
               return (
                 <Table.Row key={timesheet.id}>
@@ -78,7 +80,8 @@ const TeacherTimesheetSubmissions = () => {
                   <Table.Cell>{timesheet.status}</Table.Cell>
                 </Table.Row>
               );
-            })}
+            })
+          )}
         </Table.Body>
       </Table>
     </>

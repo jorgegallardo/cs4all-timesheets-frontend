@@ -3,7 +3,7 @@ import { Button, Divider } from 'semantic-ui-react';
 import AdminViewAllTimesheets from './AdminViewAllTimesheets';
 import AdminPdEventCreator from './AdminPdEventCreator';
 import AdminPdEventList from './AdminPdEventList';
-import AdminTimesheetApproval from './AdminTimesheetApproval';
+import AdminApproveTimesheets from './AdminApproveTimesheets';
 import AdminMenuBar from './AdminMenuBar';
 import AdminReminders from './AdminReminders';
 import { useHistory } from 'react-router-dom';
@@ -34,7 +34,7 @@ const AdminHome = () => {
       <AdminReminders />
       <Divider />
       <AdminMenuBar activeTab={activeTab} setActiveTab={setActiveTab} />
-      {activeTab === 'approveTimesheets' && <AdminTimesheetApproval />}
+      {activeTab === 'approveTimesheets' && <AdminApproveTimesheets />}
       {activeTab === 'viewAllTimesheets' && <AdminViewAllTimesheets />}
       {activeTab === 'createPdEvent' && <AdminPdEventCreator />}
       {activeTab === 'viewAllPdEvents' && <AdminPdEventList />}
