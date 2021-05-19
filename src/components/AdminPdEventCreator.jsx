@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import {
-  Form,
-  Button,
-  Radio,
-  Message,
-  Segment,
-  Divider,
-  Grid,
-} from 'semantic-ui-react';
+import { Form, Button, Radio, Segment, Divider, Grid } from 'semantic-ui-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import setHours from 'date-fns/setHours';
@@ -19,6 +11,8 @@ const PdEventCreator = () => {
   const [pdEventStartTime, setPdEventStartTime] = useState('');
   const [pdEventEndTime, setPdEventEndTime] = useState('');
   const [value, setValue] = useState('');
+  // const [allEvents, setAllEvents] = useState([]);          trying to figure out how to add occurrences
+  // const [numOccurences, setNumOccurences] = useState(1);
 
   const facilitatorOptions = [
     { key: 'valerie', text: 'valerie', value: 'valerie' },
@@ -36,23 +30,13 @@ const PdEventCreator = () => {
 
   const handleChange = (e, { value }) => setValue(value);
 
+  // const onAddOccurence = () => {
+  //   setNumOccurences(numOccurences + 1);
+  //   console.log(numOccurences);
+  // };
+
   return (
     <>
-      <Message negative>
-        <Message.Header>jorge's notes</Message.Header>
-        <Message.List>
-          <Message.Item>
-            <p>
-              creating a PD/Event here will cause all of the teachers in the
-              selected program to see this PD as an option for when they are
-              trying to submit a per session timesheet. if you select "general"
-              as the cs4all program, ALL of the teachers participating in cs4all
-              training will see that PD/Event. use "general" for events such as
-              Teacher Con, CS Ed Week training, CS First, Minecraft, etc.
-            </p>
-          </Message.Item>
-        </Message.List>
-      </Message>
       <h2>create pd/event</h2>
 
       <Form>
@@ -164,6 +148,7 @@ const PdEventCreator = () => {
             </Grid.Row>
           </Grid>
         </Segment>
+        {/* <Button attached="bottom" onClick={() => onAddOccurence()}> */}
         <Button attached="bottom">add another occurence of this event</Button>
 
         <Divider />

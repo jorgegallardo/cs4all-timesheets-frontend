@@ -4,7 +4,6 @@ import axios from 'axios';
 
 const AdminAllTimesheets = () => {
   const [timesheets, setTimesheets] = useState([]);
-  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -76,7 +75,7 @@ const AdminAllTimesheets = () => {
         ) : (
           <Table.Body>
             {timesheets.map((timesheet) => (
-              <Table.Row>
+              <Table.Row key={timesheet.id}>
                 <Table.Cell>{timesheet.date}</Table.Cell>
                 <Table.Cell>{timesheet.programTitle}</Table.Cell>
                 <Table.Cell>{timesheet.title}</Table.Cell>
