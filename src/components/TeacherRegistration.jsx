@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Form,
@@ -20,8 +20,20 @@ const TeacherRegistration = (props) => {
   const [cs4AllProgramTitle, setCs4AllProgramTitle] = useState('');
   const [cs4AllPointOfContact, setCs4AllPointOfContact] = useState('');
   const [school, setSchool] = useState('');
-  // const [gradesTaught, setGradesTaught] = useState([]);
+  const [availableSchools, setAvailableSchools] = useState([]);
+  const [gradesTaught, setGradesTaught] = useState([]);
   const history = useHistory();
+
+  useEffect(() => {
+    const getSchools = async () => {
+      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/schools');
+      const schools = response.data.map(s => { return { ...s, key: s._id, text: s.name, value: s._id}; });
+      console.log('response.data=', schools);
+      setAvailableSchools(schools);
+    }
+
+    getSchools();
+  }, []);
 
   const resetForm = () => {
     setEmail('');
@@ -32,7 +44,7 @@ const TeacherRegistration = (props) => {
     setCs4AllProgramTitle('');
     setCs4AllPointOfContact('');
     setSchool('');
-    // setGradesTaught('');
+    setGradesTaught([]);
   };
 
   const cs4AllProgramOptions = [
@@ -80,15 +92,15 @@ const TeacherRegistration = (props) => {
   ];
 
   // should be pulled in from db
-  const schoolOptions = [
-    { key: 'school1', text: 'school1', value: 'school1' },
-    { key: 'school2', text: 'school2', value: 'school2' },
-  ];
+  // const schoolOptions = [
+  //   { key: 'school1', text: 'school1', value: 'school1' },
+  //   { key: 'school2', text: 'school2', value: 'school2' },
+  // ];
 
   const handleRegistration = async () => {
     try {
       const response = await axios.post(
-        'https://server-mongodb-practice.herokuapp.com/api/register',
+        process.env.REACT_APP_API_SERVER + '/users/signup',
         {
           email,
           password,
@@ -98,20 +110,9 @@ const TeacherRegistration = (props) => {
           cs4AllProgramTitle,
           cs4AllPointOfContact,
           school,
-          // gradesTaught,
+          gradesTaught,
         }
       );
-      // const response = await axios.post('http://localhost:3008/api/register', {
-      //   email,
-      //   password,
-      //   firstName,
-      //   lastName,
-      //   fileNumber,
-      //   cs4AllProgramTitle,
-      //   cs4AllPointOfContact,
-      //   school,
-      //   // gradesTaught,
-      // });
       const tokenFromServer = response.data.token;
       localStorage.setItem('token', tokenFromServer);
       resetForm();
@@ -195,7 +196,7 @@ const TeacherRegistration = (props) => {
                   fluid
                   search
                   selection
-                  options={schoolOptions}
+                  options={availableSchools}
                   onChange={(e, { value }) => setSchool(value)}
                 />
               </Form.Field>
@@ -207,6 +208,7 @@ const TeacherRegistration = (props) => {
                 multiple
                 label="Grade(s) Taught"
                 options={gradeOptions}
+                onChange={(e, { value }) => setGradesTaught(value)}
               />
 
               <p style={{ color: 'red' }}>

@@ -23,7 +23,7 @@ const Login = (props) => {
       //     password,
       //   }
       // );
-      const response = await axios.post('http://localhost:3008/api/login', {
+      const response = await axios.post(process.env.REACT_APP_API_SERVER + '/users/login', {
         email,
         password,
       });
