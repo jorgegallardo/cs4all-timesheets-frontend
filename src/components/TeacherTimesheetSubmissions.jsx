@@ -1,32 +1,62 @@
 import { useState, useEffect } from 'react';
 import { Button, Table } from 'semantic-ui-react';
-import axios from 'axios';
+// import axios from 'axios';
 
 const TeacherTimesheetSubmissions = () => {
   const [timesheets, setTimesheets] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchTeacherTimesheets();
+    const hardcodedTimesheets = [
+      {
+        id: 1,
+        title: 'Intro to CS',
+        createdOn: '4/14/21',
+        date: '4/1/21',
+        firstName: 'dr.',
+        lastName: 'dre',
+        fileNumber: '888888',
+        programTitle: 'Integrated Units',
+        startTime: '3:00',
+        endTime: '4:00',
+        facilitators: ['bob', 'george'],
+        status: 'pending approval',
+        linkToTimesheetPdf: 'lol.pdf',
+      },
+      {
+        id: 2,
+        title: 'Abstraction',
+        createdOn: '4/16/21',
+        date: '4/2/21',
+        firstName: 'dr.',
+        lastName: 'dre',
+        fileNumber: '888888',
+        programTitle: 'Integrated Units',
+        startTime: '4:00',
+        endTime: '5:00',
+        facilitators: ['amy'],
+        status: 'pending approval',
+        linkToTimesheetPdf: 'haha.pdf',
+      },
+    ];
+    setTimesheets(hardcodedTimesheets);
+    setLoading(false);
+    // const fetchTeacherTimesheets = async () => {
+    //   try {
+    //     const response = await axios.get(
+    //       process.env.REACT_APP_API_SERVER + '/timesheets'
+    //     );
+    //     if (response.data.timesheets === undefined) throw Error;
+    //     // we received a list of events
+    //     setTimesheets(response.data.timesheets);
+    //     setLoading(false);
+    //   } catch (error) {
+    //     console.log('unable to retrieve timesheets');
+    //     console.log(error);
+    //   }
+    // };
+    // fetchTeacherTimesheets();
   }, []);
-
-  const fetchTeacherTimesheets = async () => {
-    try {
-      // const response = await authAxios.get('http://localhost:3008/api/timesheets');
-      const response = await axios.get('http://localhost:3008/api/timesheets');
-      // const response = await axios.get(
-      //   'https://server-mongodb-practice.herokuapp.com/api/timesheets'
-      // );
-      if (response.data.timesheets === undefined) throw Error;
-
-      // we received a list of events
-      setTimesheets(response.data.timesheets);
-      setLoading(false);
-    } catch (error) {
-      console.log('unable to retrieve timesheets');
-      console.log(error);
-    }
-  };
 
   if (loading) return <h1>loading...</h1>;
 

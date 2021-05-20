@@ -26,11 +26,20 @@ const TeacherRegistration = (props) => {
 
   useEffect(() => {
     const getSchools = async () => {
-      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/schools');
-      const schools = response.data.map(s => { return { ...s, key: s._id, text: s.name, value: s._id}; });
-      console.log('response.data=', schools);
+      const response = await axios.get(
+        process.env.REACT_APP_API_SERVER + '/schools'
+      );
+      const schools = response.data.map((school) => {
+        return {
+          ...school,
+          key: school._id,
+          text: `${school.name} - ${school.dbn}`,
+          value: school._id,
+        };
+      });
+      // console.log('response.data=', schools);
       setAvailableSchools(schools);
-    }
+    };
 
     getSchools();
   }, []);
@@ -87,8 +96,22 @@ const TeacherRegistration = (props) => {
   ];
 
   const cs4AllStaffOptions = [
-    { key: 'jorge gallardo', text: 'jorge gallardo', value: 'jorge gallardo' },
-    { key: 'someone else', text: 'someone else', value: 'someone else' },
+    { key: 'AiMei Chang', text: 'AiMei Chang', value: 'AiMei Chang' },
+    { key: 'Amy Hobson', text: 'Amy Hobson', value: 'Amy Hobson' },
+    {
+      key: 'Christine Nunez',
+      text: 'Christine Nunez',
+      value: 'Christine Nunez',
+    },
+    { key: 'Dan Gaylord', text: 'Dan Gaylord', value: 'Dan Gaylord' },
+    { key: 'EJ Park', text: 'EJ Park', value: 'EJ Park' },
+    { key: 'Felix Alberto', text: 'Felix Alberto', value: 'Felix Alberto' },
+    { key: 'Jorge Gallardo', text: 'Jorge Gallardo', value: 'Jorge Gallardo' },
+    { key: 'Jose Olivares', text: 'Jose Olivares', value: 'Jose Olivares' },
+    { key: 'Kevin Sukhoo', text: 'Kevin Sukhoo', value: 'Kevin Sukhoo' },
+    { key: 'Marie McAnuff', text: 'Marie McAnuff', value: 'Marie McAnuff' },
+    { key: 'Melissa Parker', text: 'Melissa Parker', value: 'Melissa Parker' },
+    { key: 'Valerie Brock', text: 'Valerie Brock', value: 'Valerie Brock' },
   ];
 
   // should be pulled in from db

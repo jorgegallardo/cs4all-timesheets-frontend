@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import SignaturePad from 'signature_pad';
-import { Button, Form, Radio, Step, Segment } from 'semantic-ui-react';
+import {
+  Message,
+  Button,
+  Form,
+  Radio,
+  Step,
+  Segment,
+  Input,
+} from 'semantic-ui-react';
 import axios from 'axios';
 
 const TeacherTimesheetGenerator = (props) => {
@@ -10,7 +18,17 @@ const TeacherTimesheetGenerator = (props) => {
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState([]);
   const [value, setValue] = useState('1');
-  const handleSelectedEventChange = (event, { value }) => setValue(value);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const handleSelectedEventChange = (event, { value }) => {
+    setSelectedEvent(events[value - 1]);
+    setSelectedEventOriginalTimes({
+      startTime: events[value - 1].startTime,
+      endTime: events[value - 1].endTime,
+    });
+    setValue(value);
+  };
+  const [selectedEventOriginalTimes, setSelectedEventOriginalTimes] =
+    useState(null);
 
   useEffect(() => {
     setSignaturePad(new SignaturePad(canvas.current));
@@ -139,6 +157,59 @@ const TeacherTimesheetGenerator = (props) => {
                   />
                 </Form.Field>
               ))
+            )}
+
+            {selectedEvent && (
+              <>
+                <Message
+                  header="TIME ADJUSTMENT"
+                  content={`${selectedEvent.title} was held from ${selectedEventOriginalTimes.startTime}
+                  until ${selectedEventOriginalTimes.endTime} on ${selectedEvent.date}. However,
+                  if you entered the meeting late or left early, please change
+                  your start and end times below. All times will be matched to
+                  our Zoom attendance statistics for verification. Your timesheet will be denied if your start or end times are outside the margin of error.`}
+                />
+
+                <Form.Field width={2}>
+                  <label>Start Time</label>
+                  <Input
+                    value={selectedEvent.startTime}
+                    placeholder={selectedEventOriginalTimes.startTime}
+                    onChange={(event, { value }) => {
+                      setSelectedEvent({
+                        ...selectedEvent,
+                        startTime: value,
+                      });
+                      console.log('start:', selectedEvent.startTime);
+                    }}
+                  />
+                </Form.Field>
+                <Form.Field width={2}>
+                  <label>End Time</label>
+                  <Input
+                    value={selectedEvent.endTime}
+                    placeholder={selectedEventOriginalTimes.endTime}
+                    onChange={(event, { value }) => {
+                      console.log(setSelectedEvent.startTime);
+                      setSelectedEvent({
+                        ...selectedEvent,
+                        endTime: value,
+                      });
+                      console.log('end:', selectedEvent.endTime);
+                    }}
+                  />
+                </Form.Field>
+                <Message
+                  color="yellow"
+                  header="IMPORTANT"
+                  content="By signing below and pressing the submit timesheet button, you
+                  attest to attending the selected CS4All PD/event and understand that if you
+                  are lying, CS4All will sue you to the fullest extent possible
+                  under federal (and UFT) law."
+                />
+
+                <p></p>
+              </>
             )}
 
             <Form.Group>
