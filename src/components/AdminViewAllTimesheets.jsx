@@ -32,7 +32,7 @@ const AdminAllTimesheets = () => {
 
   return (
     <>
-      <h2>view all timesheets</h2>
+      <h2>all timesheets</h2>
       <Dropdown
         text="Filter"
         icon="filter"
@@ -92,42 +92,6 @@ const AdminAllTimesheets = () => {
             ))}
           </Table.Body>
         )}
-        {/* <Table.Row warning>
-            <Table.Cell>5/2/21</Table.Cell>
-            <Table.Cell>Units: Programming</Table.Cell>
-            <Table.Cell>Jorge Gallardo</Table.Cell>
-            <Table.Cell>Johnny Appleseed</Table.Cell>
-            <Table.Cell>
-              <Button size="mini" color="purple">
-                blah.pdf
-              </Button>
-            </Table.Cell>
-            <Table.Cell>pending approval</Table.Cell>
-          </Table.Row>
-          <Table.Row negative>
-            <Table.Cell>5/2/21</Table.Cell>
-            <Table.Cell>Units: Programming</Table.Cell>
-            <Table.Cell>Jorge Gallardo</Table.Cell>
-            <Table.Cell>Johnny Appleseed</Table.Cell>
-            <Table.Cell>
-              <Button size="mini" color="purple">
-                blah.pdf
-              </Button>
-            </Table.Cell>
-            <Table.Cell>denied</Table.Cell>
-          </Table.Row>
-          <Table.Row positive>
-            <Table.Cell>5/1/21</Table.Cell>
-            <Table.Cell>Units: Intro to CS</Table.Cell>
-            <Table.Cell>Jorge Gallardo</Table.Cell>
-            <Table.Cell>Johnny Appleseed</Table.Cell>
-            <Table.Cell>
-              <Button size="mini" color="purple">
-                blah.pdf
-              </Button>
-            </Table.Cell>
-            <Table.Cell>processed</Table.Cell>
-          </Table.Row> */}
       </Table>
     </>
   );

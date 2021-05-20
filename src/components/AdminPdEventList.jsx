@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Table, Dropdown, Button, Message } from 'semantic-ui-react';
+import { Table, Dropdown, Button } from 'semantic-ui-react';
 import axios from 'axios';
 
 // const authAxios = axios.create({
@@ -36,28 +36,7 @@ const PdEventList = () => {
 
   return (
     <>
-      <Message negative>
-        <Message.Header>jorge's notes</Message.Header>
-        <Message.List>
-          <Message.Item>
-            <p>
-              events should be editable but not easily delete-able (only the
-              creator of the event should be able to delete it and there should
-              be serious warnings)
-            </p>
-          </Message.Item>
-          <Message.Item>
-            <p>
-              pressing edit should pop up a modal that would allow for updating
-              the fields of the event. gotta make sure to store a ref to the
-              event in teacher accounts so any changes are seen across the
-              entire system. oh wait, what if a teacher has submitted a
-              timesheet already? maybe editing should not be allowed... hmmm...
-            </p>
-          </Message.Item>
-        </Message.List>
-      </Message>
-      <h2>view all pds/events</h2>
+      <h2>all pds/events</h2>
       <Dropdown
         text="Filter"
         icon="filter"

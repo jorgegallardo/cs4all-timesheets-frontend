@@ -15,13 +15,49 @@ const PdEventCreator = () => {
   // const [numOccurences, setNumOccurences] = useState(1);
 
   const facilitatorOptions = [
-    { key: 'valerie', text: 'valerie', value: 'valerie' },
-    { key: 'kevin', text: 'kevin', value: 'kevin' },
-    { key: 'felix', text: 'felix', value: 'felix' },
-    { key: 'marie', text: 'marie', value: 'marie' },
-    { key: 'amy', text: 'amy', value: 'amy' },
-    { key: 'dan', text: 'dan', value: 'dan' },
-    { key: 'jorge', text: 'jorge', value: 'jorge' },
+    { key: 'AiMei Chang', text: 'AiMei Chang', value: 'AiMei Chang' },
+    { key: 'Aja Manso', text: 'Aja Manso', value: 'Aja Manso' },
+    { key: 'Amber Laspina', text: 'Amber Laspina', value: 'Amber Laspina' },
+    { key: 'Amy Hendershot', text: 'Amy Hendershot', value: 'Amy Hendershot' },
+    { key: 'Amy Hobson', text: 'Amy Hobson', value: 'Amy Hobson' },
+    { key: 'Angela Lozano', text: 'Angela Lozano', value: 'Angela Lozano' },
+    {
+      key: 'Christine Nunez',
+      text: 'Christine Nunez',
+      value: 'Christine Nunez',
+    },
+    {
+      key: 'Christy Crawford',
+      text: 'Christy Crawford',
+      value: 'Christy Crawford',
+    },
+    { key: 'Dami Aghedo', text: 'Dami Aghedo', value: 'Dami Aghedo' },
+    { key: 'Dan Gaylord', text: 'Dan Gaylord', value: 'Dan Gaylord' },
+    { key: 'EJ Park', text: 'EJ Park', value: 'EJ Park' },
+    { key: 'Felix Alberto', text: 'Felix Alberto', value: 'Felix Alberto' },
+    { key: 'Heather Wilson', text: 'Heather Wilson', value: 'Heather Wilson' },
+    { key: 'Hiral Dillon', text: 'Hiral Dillon', value: 'Hiral Dillon' },
+    { key: 'Jill Montagna', text: 'Jill Montagna', value: 'Jill Montagna' },
+    { key: 'Jorge Gallardo', text: 'Jorge Gallardo', value: 'Jorge Gallardo' },
+    { key: 'Jose Olivares', text: 'Jose Olivares', value: 'Jose Olivares' },
+    { key: 'Kevin Sukhoo', text: 'Kevin Sukhoo', value: 'Kevin Sukhoo' },
+    { key: 'Kylie Davis', text: 'Kylie Davis', value: 'Kylie Davis' },
+    {
+      key: 'Lionel Bergeron',
+      text: 'Lionel Bergeron',
+      value: 'Lionel Bergeron',
+    },
+    { key: 'Marie McAnuff', text: 'Marie McAnuff', value: 'Marie McAnuff' },
+    { key: 'Melissa Parker', text: 'Melissa Parker', value: 'Melissa Parker' },
+    { key: 'Rachel Morales', text: 'Rachel Morales', value: 'Rachel Morales' },
+    { key: 'Roie Parchi', text: 'Roie Parchi', value: 'Roie Parchi' },
+    { key: 'Ron Summers', text: 'Ron Summers', value: 'Ron Summers' },
+    {
+      key: 'Tunisia Mitchell',
+      text: 'Tunisia Mitchell',
+      value: 'Tunisia Mitchell',
+    },
+    { key: 'Valerie Brock', text: 'Valerie Brock', value: 'Valerie Brock' },
   ];
 
   const handlePdEventCreation = () => {
@@ -37,7 +73,7 @@ const PdEventCreator = () => {
 
   return (
     <>
-      <h2>create pd/event</h2>
+      <h2>pd/event creation form</h2>
 
       <Form>
         <Form.Group widths="equal">

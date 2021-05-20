@@ -47,7 +47,7 @@ const AdminTimesheetApproval = () => {
 
   return (
     <>
-      <h2>approve timesheets</h2>
+      <h2>my teachers' timesheets</h2>
       {timesheets.length === 0 ? (
         <h1>loading...</h1>
       ) : (

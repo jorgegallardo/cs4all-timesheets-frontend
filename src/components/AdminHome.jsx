@@ -5,7 +5,6 @@ import AdminPdEventCreator from './AdminPdEventCreator';
 import AdminPdEventList from './AdminPdEventList';
 import AdminApproveTimesheets from './AdminApproveTimesheets';
 import AdminMenuBar from './AdminMenuBar';
-import AdminReminders from './AdminReminders';
 import { useHistory } from 'react-router-dom';
 
 const AdminHome = () => {
@@ -31,7 +30,6 @@ const AdminHome = () => {
         Log Out
       </Button>
       <h1>welcome, jorge (admin account)</h1>
-      <AdminReminders />
       <Divider />
       <AdminMenuBar activeTab={activeTab} setActiveTab={setActiveTab} />
       {activeTab === 'approveTimesheets' && <AdminApproveTimesheets />}
