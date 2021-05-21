@@ -7,28 +7,37 @@ import {
   Radio,
   Step,
   Segment,
-  Input,
+  Input
 } from 'semantic-ui-react';
 import axios from 'axios';
+import { parseISO, format, parse } from 'date-fns';
+import DatePicker from 'react-datepicker';
 
 const TeacherTimesheetGenerator = (props) => {
-  const { teacherData } = props;
+  // const { teacherData } = props;
   const canvas = useRef(null);
   const [signaturePad, setSignaturePad] = useState(null);
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState([]);
   const [value, setValue] = useState('1');
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEventOriginalTimes, setSelectedEventOriginalTimes] = useState(null);
+  const [selectedBeginTime, setSelectedBeginTime] = useState(new Date());
+  const [selectedEndTime, setSelectedEndTime] = useState(new Date());
+
   const handleSelectedEventChange = (event, { value }) => {
-    setSelectedEvent(events[value - 1]);
+    console.log('value=', value);
+    const selectedEvent = events.find(e => e._id === value);
+    setSelectedEvent(selectedEvent);
+    setSelectedBeginTime(parseISO(selectedEvent.begin));
+    setSelectedEndTime(parseISO(selectedEvent.end));
     setSelectedEventOriginalTimes({
-      startTime: events[value - 1].startTime,
-      endTime: events[value - 1].endTime,
+      ...selectedEvent,
+      begin: selectedEvent.begin,
+      end: selectedEvent.end,
     });
     setValue(value);
   };
-  const [selectedEventOriginalTimes, setSelectedEventOriginalTimes] =
-    useState(null);
 
   useEffect(() => {
     setSignaturePad(new SignaturePad(canvas.current));
@@ -37,16 +46,20 @@ const TeacherTimesheetGenerator = (props) => {
 
   const fetchEvents = async () => {
     try {
-      // const response = await authAxios.get('http://localhost:3008/api/events');
-      const response = await axios.get('http://localhost:3008/api/events');
-      // const response = await axios.get(
-      //   'https://server-mongodb-practice.herokuapp.com/api/events'
-      // );
-      if (response.data.events === undefined) throw Error;
-      // the events request to the server must be appropriately structured to only pull the events that would be relevant to the teacher based on the program they're in (and pd/events for "all teachers")
-
-      // we received the events from the server
-      setEvents(response.data.events);
+      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/events');
+      //console.log('response.data=', response.data);
+      const events = response.data.map(event => {
+        return {
+          ...event,
+          displayBegin: format(parseISO(event.begin), 'h:mm aaa'),
+          displayEnd: format(parseISO(event.end), 'h:mm aaa'),
+          displayDate: format(parseISO(event.begin), 'MM/dd/yy'),
+          beginTime: format(parseISO(event.begin), 'HH:mm'),
+          endTime: format(parseISO(event.end), 'HH:mm'),
+        };
+      });
+      //console.log('events=', events);
+      setEvents(events);
       setLoading(false);
     } catch (error) {
       console.log('unable to retrieve events');
@@ -74,31 +87,24 @@ const TeacherTimesheetGenerator = (props) => {
         return;
       }
       const dataUrl = signaturePad.toDataURL();
-      signaturePad.clear();
 
-      // process.env.REACT_APP_API_SERVER + '/timesheets'
-      const response = await axios.post(
-        'http://localhost:3008/api/createtimesheet',
-        {
-          signatureData: dataUrl,
-          // from teacher data
-          positionTitle: teacherData.role,
-          firstName: teacherData.firstName,
-          lastName: teacherData.lastName,
-          fileNumber: teacherData.fileNumber,
-          program: teacherData.assignedProgramTitle,
-          eventId: value,
-          // from event data
-          // eventId (so we can select it from the radio button and know what we selected)
-          // eventDate
-          // eventStartTime
-          // eventEndTime
-          // perhaps we could pull this on the server instead (and minimize potential malicous actors submitting other stuff)... but we still need the eventId & title for the front end. what's the best practice?
+      console.log('selectedEvent=', selectedEvent);
+      
+      const response = await axios.post(process.env.REACT_APP_API_SERVER + '/timesheets', {
+        signatureData: dataUrl,
+        events: [{
+          ...selectedEvent,
+          begin: selectedBeginTime,
+          end: selectedEndTime
+        }],
+      }, {
+        headers: {
+          'Authorization': localStorage.getItem('token')
         }
-      );
-
-      const responseData = await response.json();
-      console.log(responseData);
+      });
+      
+      signaturePad.clear();
+      console.log(response.data);
       alert('timesheet submitted');
     } catch (error) {
       console.log(error);
@@ -147,12 +153,12 @@ const TeacherTimesheetGenerator = (props) => {
               <h1>loading...</h1>
             ) : (
               events.map((event) => (
-                <Form.Field key={event.id}>
+                <Form.Field key={event._id}>
                   <Radio
-                    label={`${event.date} - ${event.program}: ${event.title} [${event.startTime}-${event.endTime}]`}
+                    label={`${event.displayDate} - ${event.category}: ${event.title} [${event.displayBegin}-${event.displayEnd}]`}
                     name="radioGroup"
-                    value={event.id}
-                    checked={value === event.id}
+                    value={event._id}
+                    checked={value === event._id}
                     onChange={handleSelectedEventChange}
                   />
                 </Form.Field>
@@ -163,40 +169,35 @@ const TeacherTimesheetGenerator = (props) => {
               <>
                 <Message
                   header="TIME ADJUSTMENT"
-                  content={`${selectedEvent.title} was held from ${selectedEventOriginalTimes.startTime}
-                  until ${selectedEventOriginalTimes.endTime} on ${selectedEvent.date}. However,
+                  content={`${selectedEvent.title} was held from ${selectedEventOriginalTimes.displayBegin}
+                  until ${selectedEventOriginalTimes.displayEnd} on ${selectedEvent.displayDate}. However,
                   if you entered the meeting late or left early, please change
                   your start and end times below. All times will be matched to
                   our Zoom attendance statistics for verification. Your timesheet will be denied if your start or end times are outside the margin of error.`}
                 />
 
-                <Form.Field width={2}>
+                <Form.Field width={3}>
                   <label>Start Time</label>
-                  <Input
-                    value={selectedEvent.startTime}
-                    placeholder={selectedEventOriginalTimes.startTime}
-                    onChange={(event, { value }) => {
-                      setSelectedEvent({
-                        ...selectedEvent,
-                        startTime: value,
-                      });
-                      console.log('start:', selectedEvent.startTime);
-                    }}
+                  <DatePicker
+                    selected={selectedBeginTime}
+                    onChange={(date) => setSelectedBeginTime(date)}
+                    showTimeSelect
+                    showTimeSelectOnly
+                    timeIntervals={15}
+                    timeCaption="Start time"
+                    dateFormat="h:mm aa"
                   />
                 </Form.Field>
-                <Form.Field width={2}>
+                <Form.Field width={3}>
                   <label>End Time</label>
-                  <Input
-                    value={selectedEvent.endTime}
-                    placeholder={selectedEventOriginalTimes.endTime}
-                    onChange={(event, { value }) => {
-                      console.log(setSelectedEvent.startTime);
-                      setSelectedEvent({
-                        ...selectedEvent,
-                        endTime: value,
-                      });
-                      console.log('end:', selectedEvent.endTime);
-                    }}
+                  <DatePicker
+                    selected={selectedEndTime}
+                    onChange={(date) => setSelectedEndTime(date)}
+                    showTimeSelect
+                    showTimeSelectOnly
+                    timeIntervals={15}
+                    timeCaption="End time"
+                    dateFormat="h:mm aa"
                   />
                 </Form.Field>
                 <Message

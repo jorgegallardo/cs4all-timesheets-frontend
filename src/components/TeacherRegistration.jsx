@@ -31,13 +31,11 @@ const TeacherRegistration = (props) => {
       );
       const schools = response.data.map((school) => {
         return {
-          ...school,
           key: school._id,
           text: `${school.name} - ${school.dbn}`,
           value: school._id,
         };
       });
-      // console.log('response.data=', schools);
       setAvailableSchools(schools);
     };
 
