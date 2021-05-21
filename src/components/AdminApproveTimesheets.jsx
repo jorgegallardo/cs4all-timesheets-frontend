@@ -28,7 +28,7 @@ const AdminTimesheetApproval = () => {
   const fetchTeacherTimesheets = async () => {
     try {
       const response = await axios.get(
-        process.env.REACT_APP_API_SERVER + '/v1/timesheets'
+        process.env.REACT_APP_API_SERVER + '/timesheets'
       );
       // const response = await axios.get(
       //   'https://server-mongodb-practice.herokuapp.com/api/timesheets'

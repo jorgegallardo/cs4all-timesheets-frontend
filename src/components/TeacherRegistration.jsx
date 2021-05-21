@@ -21,14 +21,13 @@ const TeacherRegistration = (props) => {
   const [cs4AllPointOfContact, setCs4AllPointOfContact] = useState('');
   const [school, setSchool] = useState('');
   const [availableSchools, setAvailableSchools] = useState([]);
+  const [availableAdmins, setAvailableAdmins] = useState([]);
   const [gradesTaught, setGradesTaught] = useState([]);
   const history = useHistory();
 
   useEffect(() => {
-    const getSchools = async () => {
-      const response = await axios.get(
-        process.env.REACT_APP_API_SERVER + '/v1/schools'
-      );
+    const getData = async () => {
+      let response = await axios.get(process.env.REACT_APP_API_SERVER + '/schools');
       const schools = response.data.map((school) => {
         return {
           key: school._id,
@@ -37,9 +36,20 @@ const TeacherRegistration = (props) => {
         };
       });
       setAvailableSchools(schools);
+
+      response = await axios.get(process.env.REACT_APP_API_SERVER + '/users/admin');
+      const admins = response.data.map((admin) => {
+        return {
+          key: admin._id,
+          text: `${admin.firstName} ${admin.lastName}`,
+          value: admin._id,
+        };
+      });
+      setAvailableAdmins(admins);
+      
     };
 
-    getSchools();
+    getData();
   }, []);
 
   const resetForm = () => {
@@ -93,24 +103,24 @@ const TeacherRegistration = (props) => {
     { key: '12', text: '12th', value: '12' },
   ];
 
-  const cs4AllStaffOptions = [
-    { key: 'AiMei Chang', text: 'AiMei Chang', value: 'AiMei Chang' },
-    { key: 'Amy Hobson', text: 'Amy Hobson', value: 'Amy Hobson' },
-    {
-      key: 'Christine Nunez',
-      text: 'Christine Nunez',
-      value: 'Christine Nunez',
-    },
-    { key: 'Dan Gaylord', text: 'Dan Gaylord', value: 'Dan Gaylord' },
-    { key: 'EJ Park', text: 'EJ Park', value: 'EJ Park' },
-    { key: 'Felix Alberto', text: 'Felix Alberto', value: 'Felix Alberto' },
-    { key: 'Jorge Gallardo', text: 'Jorge Gallardo', value: 'Jorge Gallardo' },
-    { key: 'Jose Olivares', text: 'Jose Olivares', value: 'Jose Olivares' },
-    { key: 'Kevin Sukhoo', text: 'Kevin Sukhoo', value: 'Kevin Sukhoo' },
-    { key: 'Marie McAnuff', text: 'Marie McAnuff', value: 'Marie McAnuff' },
-    { key: 'Melissa Parker', text: 'Melissa Parker', value: 'Melissa Parker' },
-    { key: 'Valerie Brock', text: 'Valerie Brock', value: 'Valerie Brock' },
-  ];
+  // const cs4AllStaffOptions = [
+  //   { key: 'AiMei Chang', text: 'AiMei Chang', value: 'AiMei Chang' },
+  //   { key: 'Amy Hobson', text: 'Amy Hobson', value: 'Amy Hobson' },
+  //   {
+  //     key: 'Christine Nunez',
+  //     text: 'Christine Nunez',
+  //     value: 'Christine Nunez',
+  //   },
+  //   { key: 'Dan Gaylord', text: 'Dan Gaylord', value: 'Dan Gaylord' },
+  //   { key: 'EJ Park', text: 'EJ Park', value: 'EJ Park' },
+  //   { key: 'Felix Alberto', text: 'Felix Alberto', value: 'Felix Alberto' },
+  //   { key: 'Jorge Gallardo', text: 'Jorge Gallardo', value: 'Jorge Gallardo' },
+  //   { key: 'Jose Olivares', text: 'Jose Olivares', value: 'Jose Olivares' },
+  //   { key: 'Kevin Sukhoo', text: 'Kevin Sukhoo', value: 'Kevin Sukhoo' },
+  //   { key: 'Marie McAnuff', text: 'Marie McAnuff', value: 'Marie McAnuff' },
+  //   { key: 'Melissa Parker', text: 'Melissa Parker', value: 'Melissa Parker' },
+  //   { key: 'Valerie Brock', text: 'Valerie Brock', value: 'Valerie Brock' },
+  // ];
 
   // should be pulled in from db
   // const schoolOptions = [
@@ -121,7 +131,7 @@ const TeacherRegistration = (props) => {
   const handleRegistration = async () => {
     try {
       const response = await axios.post(
-        process.env.REACT_APP_API_SERVER + '/v1/users/signup',
+        process.env.REACT_APP_API_SERVER + '/users/signup',
         {
           email,
           password,
@@ -206,7 +216,7 @@ const TeacherRegistration = (props) => {
                   placeholder="select your cs4all point of contact"
                   fluid
                   selection
-                  options={cs4AllStaffOptions}
+                  options={availableAdmins}
                   onChange={(e, { value }) => setCs4AllPointOfContact(value)}
                 />
               </Form.Field>

@@ -40,7 +40,7 @@ const TeacherTimesheetGenerator = (props) => {
   const fetchEvents = async () => {
     try {
       const response = await axios.get(
-        process.env.REACT_APP_API_SERVER + '/v1/events'
+        process.env.REACT_APP_API_SERVER + '/events'
       );
       //console.log('response.data=', response.data);
       const events = response.data.map((event) => {
@@ -86,7 +86,7 @@ const TeacherTimesheetGenerator = (props) => {
       console.log('selectedEvent=', selectedEvent);
 
       const response = await axios.post(
-        process.env.REACT_APP_API_SERVER + '/v1/create-timesheet',
+        process.env.REACT_APP_API_SERVER + '/create-timesheet',
         {
           signatureData: dataUrl,
           events: [
