@@ -23,10 +23,13 @@ const Login = (props) => {
       //     password,
       //   }
       // );
-      const response = await axios.post(process.env.REACT_APP_API_SERVER + '/users/login', {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        process.env.REACT_APP_API_SERVER + '/v1/users/login',
+        {
+          email,
+          password,
+        }
+      );
       const tokenFromServer = response.data.token;
       localStorage.setItem('token', tokenFromServer);
       resetForm();

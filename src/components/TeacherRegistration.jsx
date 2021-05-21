@@ -27,7 +27,7 @@ const TeacherRegistration = (props) => {
   useEffect(() => {
     const getSchools = async () => {
       const response = await axios.get(
-        process.env.REACT_APP_API_SERVER + '/schools'
+        process.env.REACT_APP_API_SERVER + '/v1/schools'
       );
       const schools = response.data.map((school) => {
         return {
@@ -121,7 +121,7 @@ const TeacherRegistration = (props) => {
   const handleRegistration = async () => {
     try {
       const response = await axios.post(
-        process.env.REACT_APP_API_SERVER + '/users/signup',
+        process.env.REACT_APP_API_SERVER + '/v1/users/signup',
         {
           email,
           password,

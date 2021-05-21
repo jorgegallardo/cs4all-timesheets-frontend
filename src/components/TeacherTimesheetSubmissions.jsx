@@ -41,21 +41,6 @@ const TeacherTimesheetSubmissions = () => {
     ];
     setTimesheets(hardcodedTimesheets);
     setLoading(false);
-    // const fetchTeacherTimesheets = async () => {
-    //   try {
-    //     const response = await axios.get(
-    //       process.env.REACT_APP_API_SERVER + '/timesheets'
-    //     );
-    //     if (response.data.timesheets === undefined) throw Error;
-    //     // we received a list of events
-    //     setTimesheets(response.data.timesheets);
-    //     setLoading(false);
-    //   } catch (error) {
-    //     console.log('unable to retrieve timesheets');
-    //     console.log(error);
-    //   }
-    // };
-    // fetchTeacherTimesheets();
   }, []);
 
   if (loading) return <h1>loading...</h1>;

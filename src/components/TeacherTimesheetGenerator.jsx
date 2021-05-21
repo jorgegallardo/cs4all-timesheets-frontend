@@ -1,16 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import SignaturePad from 'signature_pad';
-import {
-  Message,
-  Button,
-  Form,
-  Radio,
-  Step,
-  Segment,
-  Input
-} from 'semantic-ui-react';
+import { Message, Button, Form, Radio, Step, Segment } from 'semantic-ui-react';
 import axios from 'axios';
-import { parseISO, format, parse } from 'date-fns';
+import { parseISO, format } from 'date-fns';
 import DatePicker from 'react-datepicker';
 
 const TeacherTimesheetGenerator = (props) => {
@@ -21,13 +13,14 @@ const TeacherTimesheetGenerator = (props) => {
   const [events, setEvents] = useState([]);
   const [value, setValue] = useState('1');
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [selectedEventOriginalTimes, setSelectedEventOriginalTimes] = useState(null);
+  const [selectedEventOriginalTimes, setSelectedEventOriginalTimes] =
+    useState(null);
   const [selectedBeginTime, setSelectedBeginTime] = useState(new Date());
   const [selectedEndTime, setSelectedEndTime] = useState(new Date());
 
   const handleSelectedEventChange = (event, { value }) => {
     console.log('value=', value);
-    const selectedEvent = events.find(e => e._id === value);
+    const selectedEvent = events.find((e) => e._id === value);
     setSelectedEvent(selectedEvent);
     setSelectedBeginTime(parseISO(selectedEvent.begin));
     setSelectedEndTime(parseISO(selectedEvent.end));
@@ -46,9 +39,11 @@ const TeacherTimesheetGenerator = (props) => {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/events');
+      const response = await axios.get(
+        process.env.REACT_APP_API_SERVER + '/v1/events'
+      );
       //console.log('response.data=', response.data);
-      const events = response.data.map(event => {
+      const events = response.data.map((event) => {
         return {
           ...event,
           displayBegin: format(parseISO(event.begin), 'h:mm aaa'),
@@ -89,20 +84,26 @@ const TeacherTimesheetGenerator = (props) => {
       const dataUrl = signaturePad.toDataURL();
 
       console.log('selectedEvent=', selectedEvent);
-      
-      const response = await axios.post(process.env.REACT_APP_API_SERVER + '/timesheets', {
-        signatureData: dataUrl,
-        events: [{
-          ...selectedEvent,
-          begin: selectedBeginTime,
-          end: selectedEndTime
-        }],
-      }, {
-        headers: {
-          'Authorization': localStorage.getItem('token')
+
+      const response = await axios.post(
+        process.env.REACT_APP_API_SERVER + '/v1/create-timesheet',
+        {
+          signatureData: dataUrl,
+          events: [
+            {
+              ...selectedEvent,
+              begin: selectedBeginTime,
+              end: selectedEndTime,
+            },
+          ],
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem('token'),
+          },
         }
-      });
-      
+      );
+
       signaturePad.clear();
       console.log(response.data);
       alert('timesheet submitted');

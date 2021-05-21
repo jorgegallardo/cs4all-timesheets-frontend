@@ -65,6 +65,25 @@ const TeacherDetails = () => {
             </Table.Cell>
             <Table.Cell>4th</Table.Cell>
           </Table.Row>
+          <Table.Row>
+            <Table.Cell>
+              <Icon name="building outline" /> PD Hours Submitted, Awaiting
+              Approval
+            </Table.Cell>
+            <Table.Cell>12</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>
+              <Icon name="building outline" /> PD Hours Approved & Processing
+            </Table.Cell>
+            <Table.Cell>2</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>
+              <Icon name="building outline" /> PD Hours Processed
+            </Table.Cell>
+            <Table.Cell>4</Table.Cell>
+          </Table.Row>
         </Table.Body>
       </Table>
     </>
