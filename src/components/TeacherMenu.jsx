@@ -5,7 +5,6 @@ import TeacherTimesheetGenerator from './TeacherTimesheetGenerator';
 import TeacherDetails from './TeacherDetails';
 
 const TeacherMenu = (props) => {
-  const { teacherData } = props;
   const [activeTab, setActiveTab] = useState('generateTimesheet');
 
   return (
@@ -38,7 +37,7 @@ const TeacherMenu = (props) => {
         </Menu.Item>
       </Menu>
       {activeTab === 'generateTimesheet' && (
-        <TeacherTimesheetGenerator teacherData={teacherData} />
+        <TeacherTimesheetGenerator onSubmitTimesheet={() => setActiveTab('submittedTimesheets')} />
       )}
       {activeTab === 'submittedTimesheets' && <TeacherTimesheetSubmissions />}
       {activeTab === 'myDetails' && <TeacherDetails />}

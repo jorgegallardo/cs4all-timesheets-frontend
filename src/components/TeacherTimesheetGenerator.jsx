@@ -6,7 +6,7 @@ import { parseISO, format } from 'date-fns';
 import DatePicker from 'react-datepicker';
 
 const TeacherTimesheetGenerator = (props) => {
-  // const { teacherData } = props;
+  const { onSubmitTimesheet } = props;
   const canvas = useRef(null);
   const [signaturePad, setSignaturePad] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -75,6 +75,10 @@ const TeacherTimesheetGenerator = (props) => {
     // 1. are we exposing too much about the backend to the clients?
     // 2. is this where a react context comes into play... so that we have access to the user throughout the entire application (all child components) once they log in?
 
+    if (loading) {
+      return;
+    }
+
     try {
       // add more frontend validation checks
       if (signaturePad.isEmpty()) {
@@ -85,13 +89,15 @@ const TeacherTimesheetGenerator = (props) => {
 
       console.log('selectedEvent=', selectedEvent);
 
-      const response = await axios.post(
-        process.env.REACT_APP_API_SERVER + '/create-timesheet',
+      setLoading(true);
+
+      const response = await axios.post(process.env.REACT_APP_API_SERVER + '/timesheets',
         {
           signatureData: dataUrl,
           events: [
             {
               ...selectedEvent,
+              event: selectedEvent._id,
               begin: selectedBeginTime,
               end: selectedEndTime,
             },
@@ -107,9 +113,12 @@ const TeacherTimesheetGenerator = (props) => {
       signaturePad.clear();
       console.log(response.data);
       alert('timesheet submitted');
+      onSubmitTimesheet();
     } catch (error) {
       console.log(error);
       alert('something went wrong with the timesheet creation');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -228,7 +237,7 @@ const TeacherTimesheetGenerator = (props) => {
                 />
               </Form.Field>
             </Form.Group>
-            <Button onClick={handleSubmit} primary>
+            <Button onClick={handleSubmit} primary loading={loading}>
               submit timesheet
             </Button>
             <Button onClick={() => signaturePad.clear()}>
