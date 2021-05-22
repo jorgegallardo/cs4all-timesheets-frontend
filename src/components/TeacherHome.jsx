@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Divider, Label } from 'semantic-ui-react';
@@ -14,14 +15,25 @@ const TeacherHome = () => {
   };
 
   useEffect(() => {
-    setTeacherData({
-      role: 'teacher',
-      firstName: 'happy',
-      lastName: 'gilmore',
-      fileNumber: '1234567',
-      assignedProgramTitle: 'Integrated Units',
-    });
-    setLoading(false);
+    const loadData = async () => {
+      const token = localStorage.getItem('token');
+      console.log('token=', token);
+  
+      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/users/userInfo', {
+        headers: {
+          'Authorization': token
+        }
+      });
+
+      const userInfo = response.data;
+  
+      console.log('response=', response.data);
+  
+      setTeacherData(userInfo);
+      setLoading(false);
+    };
+
+    loadData();
   }, []);
 
   if (loading) {
@@ -35,10 +47,10 @@ const TeacherHome = () => {
       <h1>{`Welcome, ${teacherData.firstName} ${teacherData.lastName}`}</h1>
 
       <Label basic>
-        CS4All Program:<Label.Detail>Integrated Units</Label.Detail>
+        CS4All Program:<Label.Detail>{teacherData.programTitle}</Label.Detail>
       </Label>
       <Label basic>
-        CS4All Point of Contact:<Label.Detail>Jorge Gallardo</Label.Detail>
+        CS4All Point of Contact:<Label.Detail>{teacherData.pointOfContact.firstName + ' ' + teacherData.pointOfContact.lastName}</Label.Detail>
       </Label>
       <Divider />
       <TeacherMenu teacherData={teacherData} />
