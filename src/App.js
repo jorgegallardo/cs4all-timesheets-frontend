@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 import TeacherHome from './components/TeacherHome';
 import AdminHome from './components/AdminHome';
@@ -22,11 +22,17 @@ const App = () => {
             <Route exact path="/">
               <Homepage />
             </Route>
-            <Route path="/teacher">
+            <Route path="/teacher/:activeTab">
               <TeacherHome />
             </Route>
-            <Route path="/admin">
+            <Route path="/teacher" exact>
+              <Redirect to="/teacher/generateTimesheet" />
+            </Route>
+            <Route path="/admin/:activeTab">
               <AdminHome />
+            </Route>
+            <Route path="/admin" exact>
+              <Redirect to="/admin/approveTimesheets" />
             </Route>
             <Route path="/schools">
               <Schools />

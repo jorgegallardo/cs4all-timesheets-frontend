@@ -5,13 +5,14 @@ import AdminPdEventCreator from './AdminPdEventCreator';
 import AdminPdEventList from './AdminPdEventList';
 import AdminApproveTimesheets from './AdminApproveTimesheets';
 import AdminMenuBar from './AdminMenuBar';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
 import UserContext from '../store/user-context';
 
 const AdminHome = () => {
   const history = useHistory();
-  const [activeTab, setActiveTab] = useState('approveTimesheets');
+  const params = useParams();
+  const [activeTab, setActiveTab] = useState(params.activeTab);
   const [loading, setLoading] = useState(true);
   const { userData, setUserData } = useContext(UserContext);
 
@@ -40,6 +41,10 @@ const AdminHome = () => {
     history.push('/');
   };
 
+  useEffect(() => {
+    setActiveTab(params.activeTab);
+  }, [params.activeTab]);
+
   if (loading) {
     return <h1>loading...</h1>;
   }
@@ -50,7 +55,10 @@ const AdminHome = () => {
       </Button>
       <h1>welcome, {userData.firstName} ({userData.role} account)</h1>
       <Divider />
-      <AdminMenuBar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <AdminMenuBar activeTab={activeTab} setActiveTab={(newTab) => {
+        history.push('/admin/' + newTab);
+        setActiveTab(newTab);
+      }} />
       {activeTab === 'approveTimesheets' && <AdminApproveTimesheets />}
       {activeTab === 'viewAllTimesheets' && <AdminViewAllTimesheets />}
       {activeTab === 'createPdEvent' && <AdminPdEventCreator onEventCreated={() => { setActiveTab('viewAllPdEvents') }} />}

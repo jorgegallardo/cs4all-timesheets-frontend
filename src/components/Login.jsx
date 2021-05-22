@@ -52,6 +52,7 @@ const Login = (props) => {
       );
       const token = response.data.token;
       const currentUser = response.data.currentUser;
+      console.log('currentUser=', currentUser);
       localStorage.setItem('token', token);
       setUserData(currentUser);
       resetForm();

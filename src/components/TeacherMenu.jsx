@@ -1,18 +1,28 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Menu, Icon } from 'semantic-ui-react';
 import TeacherTimesheetSubmissions from './TeacherTimesheetSubmissions';
 import TeacherTimesheetGenerator from './TeacherTimesheetGenerator';
 import TeacherDetails from './TeacherDetails';
+import { useHistory, useParams } from 'react-router';
 
 const TeacherMenu = () => {
-  const [activeTab, setActiveTab] = useState('generateTimesheet');
+  const history = useHistory();
+  const params = useParams();
+  const [activeTab, setActiveTab] = useState(params.activeTab);
+
+  useEffect(() => {
+    setActiveTab(params.activeTab);
+  }, [params.activeTab]);
 
   return (
     <>
       <Menu icon="labeled" widths={3} pointing>
         <Menu.Item
           name="approveTimesheets"
-          onClick={() => setActiveTab('generateTimesheet')}
+          onClick={() => {
+            history.push('/teacher/generateTimesheet');
+            setActiveTab('generateTimesheet')
+          }}
           active={activeTab === 'generateTimesheet'}
         >
           <Icon name="plus" />
@@ -21,7 +31,10 @@ const TeacherMenu = () => {
 
         <Menu.Item
           name="viewAllTimesheets"
-          onClick={() => setActiveTab('submittedTimesheets')}
+          onClick={() => {
+            history.push('/teacher/submittedTimesheets');
+            setActiveTab('submittedTimesheets')
+          }}
           active={activeTab === 'submittedTimesheets'}
         >
           <Icon name="list" />
@@ -29,7 +42,10 @@ const TeacherMenu = () => {
         </Menu.Item>
         <Menu.Item
           name="myDetails"
-          onClick={() => setActiveTab('myDetails')}
+          onClick={() => {
+            history.push('/teacher/myDetails');
+            setActiveTab('myDetails')
+          }}
           active={activeTab === 'myDetails'}
         >
           <Icon name="info circle" />

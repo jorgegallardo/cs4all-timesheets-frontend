@@ -4,7 +4,7 @@ import { Form, Grid, Radio, Segment } from 'semantic-ui-react';
 import DatePicker from 'react-datepicker';
 import setHours from 'date-fns/setHours';
 import setMinutes from 'date-fns/setMinutes';
-import { format, formatISO, parseISO } from 'date-fns';
+import { formatISO, parseISO } from 'date-fns';
 
 
 const EditEvent = ({ event, onEventChange }) => {
