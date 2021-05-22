@@ -1,11 +1,28 @@
-import { useContext } from 'react';
+import axios from 'axios';
+import { useContext, useEffect, useState } from 'react';
 import { Table, Icon } from 'semantic-ui-react';
 import UserContext from '../store/user-context';
 
 const TeacherDetails = () => {
   const { userData } = useContext(UserContext);
+  const [stats, setStats] = useState({});
 
   console.log(userData);
+
+  useEffect(() => {
+    const getData = async () => {
+      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/users/userStats', {
+        headers: {
+          'Authorization': localStorage.getItem('token')
+        }
+      });
+
+      const userStats = response.data;
+      setStats(userStats);
+    };
+
+    getData();
+  }, [])
 
   return (
     <>
@@ -72,19 +89,19 @@ const TeacherDetails = () => {
               <Icon name="building outline" /> PD Hours Submitted, Awaiting
               Approval
             </Table.Cell>
-            <Table.Cell>12</Table.Cell>
+            <Table.Cell>{stats.hoursPending}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>
               <Icon name="building outline" /> PD Hours Approved &amp; Processing
             </Table.Cell>
-            <Table.Cell>2</Table.Cell>
+            <Table.Cell>{stats.hoursApproved}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>
               <Icon name="building outline" /> PD Hours Processed
             </Table.Cell>
-            <Table.Cell>4</Table.Cell>
+            <Table.Cell>{stats.hoursProcessed}</Table.Cell>
           </Table.Row>
         </Table.Body>
       </Table>
