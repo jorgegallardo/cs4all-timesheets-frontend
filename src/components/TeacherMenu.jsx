@@ -4,7 +4,7 @@ import TeacherTimesheetSubmissions from './TeacherTimesheetSubmissions';
 import TeacherTimesheetGenerator from './TeacherTimesheetGenerator';
 import TeacherDetails from './TeacherDetails';
 
-const TeacherMenu = (props) => {
+const TeacherMenu = () => {
   const [activeTab, setActiveTab] = useState('generateTimesheet');
 
   return (

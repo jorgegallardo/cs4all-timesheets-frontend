@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Button, Divider } from 'semantic-ui-react';
 import AdminViewAllTimesheets from './AdminViewAllTimesheets';
 import AdminPdEventCreator from './AdminPdEventCreator';
@@ -7,13 +7,13 @@ import AdminApproveTimesheets from './AdminApproveTimesheets';
 import AdminMenuBar from './AdminMenuBar';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import UserContext from '../store/user-context';
 
 const AdminHome = () => {
   const history = useHistory();
   const [activeTab, setActiveTab] = useState('approveTimesheets');
   const [loading, setLoading] = useState(true);
-  const [userData, setUserData] = useState(null);
-
+  const { userData, setUserData } = useContext(UserContext);
 
   useEffect(() => {
     const loadData = async () => {
@@ -33,7 +33,7 @@ const AdminHome = () => {
     };
 
     loadData();
-  }, []);
+  }, [setUserData]);
 
   const handleLogout = () => {
     localStorage.clear();

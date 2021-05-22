@@ -1,13 +1,14 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Divider, Label } from 'semantic-ui-react';
+import UserContext from '../store/user-context';
 import TeacherMenu from './TeacherMenu';
 
 const TeacherHome = () => {
   const history = useHistory();
   const [loading, setLoading] = useState(true);
-  const [teacherData, setTeacherData] = useState(null);
+  const { userData, setUserData } = useContext(UserContext);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -29,12 +30,12 @@ const TeacherHome = () => {
   
       console.log('response=', response.data);
   
-      setTeacherData(userInfo);
+      setUserData(userInfo);
       setLoading(false);
     };
 
     loadData();
-  }, []);
+  }, [setUserData]);
 
   if (loading) {
     return <h1>loading...</h1>;
@@ -44,16 +45,16 @@ const TeacherHome = () => {
       <Button floated="right" onClick={() => handleLogout()}>
         Log Out
       </Button>
-      <h1>{`Welcome, ${teacherData.firstName} ${teacherData.lastName}`}</h1>
+      <h1>{`Welcome, ${userData.firstName} ${userData.lastName}`}</h1>
 
       <Label basic>
-        CS4All Program:<Label.Detail>{teacherData.programTitle}</Label.Detail>
+        CS4All Program:<Label.Detail>{userData.programTitle}</Label.Detail>
       </Label>
       <Label basic>
-        CS4All Point of Contact:<Label.Detail>{teacherData.pointOfContact ? (teacherData.pointOfContact.firstName + ' ' + teacherData.pointOfContact.lastName) : ''}</Label.Detail>
+        CS4All Point of Contact:<Label.Detail>{userData.pointOfContact ? (userData.pointOfContact.firstName + ' ' + userData.pointOfContact.lastName) : ''}</Label.Detail>
       </Label>
       <Divider />
-      <TeacherMenu teacherData={teacherData} />
+      <TeacherMenu />
     </>
   );
 };

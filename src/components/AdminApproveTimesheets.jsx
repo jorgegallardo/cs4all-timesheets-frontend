@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import {
   Dropdown,
   Input,
@@ -9,15 +9,27 @@ import {
 } from 'semantic-ui-react';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
+import SignaturePad from 'signature_pad';
+import UserContext from '../store/user-context';
 
 const AdminTimesheetApproval = () => {
   const [timesheets, setTimesheets] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [timesheetOpen, setTimesheetOpen] = useState(false);
+  const [signatureOpen, setSignatureOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const canvas = useRef(null);
+  const [signaturePad, setSignaturePad] = useState(null);
+  const { userData, setUserData } = useContext(UserContext);
 
   useEffect(() => {
     fetchTeacherTimesheets();
   }, []);
+
+  useEffect(() => {
+    if (canvas && canvas.current) {
+      setSignaturePad(new SignaturePad(canvas.current));
+    }
+  }, [signatureOpen]);
 
   const timesheetStatusOptions = [
     { key: 1, text: 'pending', value: 1 },
@@ -49,7 +61,68 @@ const AdminTimesheetApproval = () => {
     }
   };
 
-  if (loading) return <h1>loading...</h1>;
+  const executeApproval = async (timesheet) => {
+    setLoading(true);
+
+    const response = await axios.post(process.env.REACT_APP_API_SERVER + '/timesheets/approve',
+      {
+        timesheetId: timesheet._id,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem('token'),
+        },
+      }
+    );
+
+    console.log('response.data=', response.data);
+
+    alert('timesheet approved');
+    setLoading(false);
+  };
+
+  const approveTimesheetHandler = async (timesheet) => {
+    if (userData.signatureFilename) {
+      await executeApproval(timesheet);
+      setTimesheetOpen(false);
+    } else {
+      setSignatureOpen(true);
+    }
+  };
+
+  const submitSignatureHandler = async (timesheet) => {
+    if (signaturePad.isEmpty()) {
+      alert('you forgot to sign the pad');
+      return;
+    }
+
+    const dataUrl = signaturePad.toDataURL();
+
+    const response = await axios.put(process.env.REACT_APP_API_SERVER + '/users/signature',
+      {
+        signatureData: dataUrl,
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem('token'),
+        },
+      }
+    );
+
+    signaturePad.clear();
+    console.log(response.data);
+    const signatureFilename = response.data.signatureFilename;
+    setUserData(currUserData => {
+      return {
+        ...currUserData,
+        signatureFilename
+      };
+    });
+    await executeApproval(timesheet);
+
+    setSignatureOpen(false);
+    setTimesheetOpen(false);
+  };
 
   return (
     <>
@@ -98,16 +171,15 @@ const AdminTimesheetApproval = () => {
                     {timesheet.teacher.firstName} {timesheet.teacher.lastName}
                   </Table.Cell>
                   <Table.Cell>
+
+                    <Button size="mini" color="purple" onClick={() => setTimesheetOpen(true)}>
+                      view
+                    </Button>
+
                     <Modal
                       closeIcon
-                      onClose={() => setOpen(false)}
-                      onOpen={() => setOpen(true)}
-                      open={open}
-                      trigger={
-                        <Button size="mini" color="purple">
-                          view
-                        </Button>
-                      }
+                      open={timesheetOpen}
+                      onClose={() => setTimesheetOpen(false)}
                     >
                       <Modal.Header>
                         Review Teacher Timesheet Submission
@@ -130,17 +202,58 @@ const AdminTimesheetApproval = () => {
                         ></iframe>
                       </Modal.Content>
                       <Modal.Actions>
-                        <Button color="red" onClick={() => setOpen(false)}>
+                        <Button color="red" onClick={() => setTimesheetOpen(false)}>
                           Deny
                         </Button>
                         <Button
                           content="One-Click Sign and Approve Timesheet"
                           labelPosition="left"
                           icon="checkmark"
-                          onClick={() => setOpen(false)}
+                          onClick={() => approveTimesheetHandler(timesheet)}
                           positive
+                          loading={loading}
                         />
                       </Modal.Actions>
+
+                      <Modal
+                        closeIcon
+                        open={signatureOpen}
+                        onClose={() => setSignatureOpen(false)}
+                      >
+                        <Modal.Header>
+                          We need to add your signature on file
+                        </Modal.Header>
+                        <Modal.Content>
+                          <Modal.Description>
+                            <Header>
+                              Sign here to save your signature and approve this timesheet
+                            </Header>
+                            <canvas
+                              ref={canvas}
+                              style={{
+                                border: '1px solid black',
+                                borderRadius: '5px',
+                              }}
+                              width="345"
+                              height="100"
+                            />
+                          </Modal.Description>
+                        </Modal.Content>
+                        <Modal.Actions>
+                          <Button color="red" onClick={() => setSignatureOpen(false)}>
+                            Cancel
+                          </Button>
+                          <Button
+                            content="Approve Timesheet"
+                            labelPosition="left"
+                            icon="checkmark"
+                            onClick={() => submitSignatureHandler(timesheet)}
+                            positive
+                            loading={loading}
+                          />
+                        </Modal.Actions>
+                      </Modal>
+
                     </Modal>
                   </Table.Cell>
                   <Table.Cell>

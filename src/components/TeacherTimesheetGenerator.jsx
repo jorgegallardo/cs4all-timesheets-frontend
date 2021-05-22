@@ -13,8 +13,7 @@ const TeacherTimesheetGenerator = (props) => {
   const [events, setEvents] = useState([]);
   const [value, setValue] = useState('1');
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [selectedEventOriginalTimes, setSelectedEventOriginalTimes] =
-    useState(null);
+  const [selectedEventOriginalTimes, setSelectedEventOriginalTimes] = useState(null);
   const [selectedBeginTime, setSelectedBeginTime] = useState(new Date());
   const [selectedEndTime, setSelectedEndTime] = useState(new Date());
 
