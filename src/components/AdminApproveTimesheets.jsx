@@ -268,21 +268,6 @@ const AdminTimesheetApproval = () => {
                   </Table.Cell>
                 </Table.Row>
               ))}
-
-              {/* <Table.Row negative>
-              <Table.Cell>5/1/21</Table.Cell>
-              <Table.Cell>Units: Intro to CS</Table.Cell>
-              <Table.Cell>Johnny Appleseed</Table.Cell>
-              <Table.Cell>Jorge Gallardo</Table.Cell>
-              <Table.Cell>
-                <Button size="mini" color="purple">
-                  view
-                </Button>
-              </Table.Cell>
-              <Table.Cell>
-                <Dropdown options={timesheetStatusOptions} selection fluid />
-              </Table.Cell>
-            </Table.Row> */}
             </Table.Body>
           </Table>
         </>
