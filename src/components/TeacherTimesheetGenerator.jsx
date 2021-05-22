@@ -123,8 +123,6 @@ const TeacherTimesheetGenerator = (props) => {
     }
   };
 
-  if (loading && canvas === null) return <h1>loading...</h1>;
-
   return (
     <>
       <h2>instructions</h2>
@@ -160,21 +158,17 @@ const TeacherTimesheetGenerator = (props) => {
 
         <Segment attached>
           <Form>
-            {events.length === 0 ? (
-              <h1>loading...</h1>
-            ) : (
-              events.map((event) => (
-                <Form.Field key={event._id}>
-                  <Radio
-                    label={`${event.displayDate} - ${event.category}: ${event.title} [${event.displayBegin}-${event.displayEnd}]`}
-                    name="radioGroup"
-                    value={event._id}
-                    checked={value === event._id}
-                    onChange={handleSelectedEventChange}
-                  />
-                </Form.Field>
-              ))
-            )}
+            {events.map((event) => (
+              <Form.Field key={event._id}>
+                <Radio
+                  label={`${event.displayDate} - ${event.category}: ${event.title} [${event.displayBegin}-${event.displayEnd}]`}
+                  name="radioGroup"
+                  value={event._id}
+                  checked={value === event._id}
+                  onChange={handleSelectedEventChange}
+                />
+              </Form.Field>
+            ))}
 
             {selectedEvent && (
               <>

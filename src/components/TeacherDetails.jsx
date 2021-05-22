@@ -1,6 +1,12 @@
+import { useContext } from 'react';
 import { Table, Icon } from 'semantic-ui-react';
+import UserContext from '../store/user-context';
 
 const TeacherDetails = () => {
+  const { userData } = useContext(UserContext);
+
+  console.log(userData);
+
   return (
     <>
       <Table celled striped columns={2} compact selectable>
@@ -15,55 +21,51 @@ const TeacherDetails = () => {
             <Table.Cell collapsing>
               <Icon name="envelope outline" /> CS4All Program Name
             </Table.Cell>
-            <Table.Cell>Integrated Units</Table.Cell>
+            <Table.Cell>{userData.programTitle}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell collapsing>
               <Icon name="envelope outline" /> CS4All Point of Contact
             </Table.Cell>
-            <Table.Cell>Jorge Gallardo (jgallardo2@schools.nyc.gov)</Table.Cell>
+            <Table.Cell>{userData.pointOfContact && userData.pointOfContact.firstName + ' ' + userData.pointOfContact.lastName + ' (' + userData.pointOfContact.email + ')'}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell collapsing>
               <Icon name="envelope outline" /> Email Address
             </Table.Cell>
-            <Table.Cell>hgilmore@schools.nyc.gov</Table.Cell>
+            <Table.Cell>{userData.email}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>
               <Icon name="hashtag" /> File Number
             </Table.Cell>
-            <Table.Cell>123456</Table.Cell>
+            <Table.Cell>{userData.fileNumber}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>
               <Icon name="building outline" /> DBN
             </Table.Cell>
-            <Table.Cell>17K123</Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Cell>
-              <Icon name="building outline" /> Borough Citywide Office
-            </Table.Cell>
-            <Table.Cell>Brooklyn South</Table.Cell>
+            <Table.Cell>{userData.school.dbn}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>
               <Icon name="building outline" /> District
             </Table.Cell>
-            <Table.Cell>17</Table.Cell>
+            <Table.Cell>{userData.school.district}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>
               <Icon name="building outline" /> School
             </Table.Cell>
-            <Table.Cell>Potato Elementary School</Table.Cell>
+            <Table.Cell>{userData.school.name}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>
-              <Icon name="building outline" /> Grade Taught
+              <Icon name="building outline" /> Grades Taught
             </Table.Cell>
-            <Table.Cell>4th</Table.Cell>
+            <Table.Cell>{userData.gradesTaught.map((grade, index) => {
+              return ((index > 0 ? ', ' : '') + grade);
+            })}</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>
@@ -74,7 +76,7 @@ const TeacherDetails = () => {
           </Table.Row>
           <Table.Row>
             <Table.Cell>
-              <Icon name="building outline" /> PD Hours Approved & Processing
+              <Icon name="building outline" /> PD Hours Approved &amp; Processing
             </Table.Cell>
             <Table.Cell>2</Table.Cell>
           </Table.Row>
