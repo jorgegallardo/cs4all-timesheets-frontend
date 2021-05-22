@@ -1,75 +1,110 @@
-import { useState } from 'react';
-import { Form, Button, Radio, Segment, Divider, Grid } from 'semantic-ui-react';
+import { useEffect, useState } from 'react';
+import { Form, Button, Radio, Segment, Divider, Grid, Icon } from 'semantic-ui-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import setHours from 'date-fns/setHours';
 import setMinutes from 'date-fns/setMinutes';
+import axios from 'axios';
 
-const PdEventCreator = () => {
-  const [pdEventTitle, setPdEventTitle] = useState('');
-  const [pdEventDate, setPdEventDate] = useState('');
-  const [pdEventStartTime, setPdEventStartTime] = useState('');
-  const [pdEventEndTime, setPdEventEndTime] = useState('');
-  const [value, setValue] = useState('');
-  // const [allEvents, setAllEvents] = useState([]);          trying to figure out how to add occurrences
-  // const [numOccurences, setNumOccurences] = useState(1);
+const initialOccurrence = {
+  breakHours: 0
+};
 
-  const facilitatorOptions = [
-    { key: 'AiMei Chang', text: 'AiMei Chang', value: 'AiMei Chang' },
-    { key: 'Aja Manso', text: 'Aja Manso', value: 'Aja Manso' },
-    { key: 'Amber Laspina', text: 'Amber Laspina', value: 'Amber Laspina' },
-    { key: 'Amy Hendershot', text: 'Amy Hendershot', value: 'Amy Hendershot' },
-    { key: 'Amy Hobson', text: 'Amy Hobson', value: 'Amy Hobson' },
-    { key: 'Angela Lozano', text: 'Angela Lozano', value: 'Angela Lozano' },
-    {
-      key: 'Christine Nunez',
-      text: 'Christine Nunez',
-      value: 'Christine Nunez',
-    },
-    {
-      key: 'Christy Crawford',
-      text: 'Christy Crawford',
-      value: 'Christy Crawford',
-    },
-    { key: 'Dami Aghedo', text: 'Dami Aghedo', value: 'Dami Aghedo' },
-    { key: 'Dan Gaylord', text: 'Dan Gaylord', value: 'Dan Gaylord' },
-    { key: 'EJ Park', text: 'EJ Park', value: 'EJ Park' },
-    { key: 'Felix Alberto', text: 'Felix Alberto', value: 'Felix Alberto' },
-    { key: 'Heather Wilson', text: 'Heather Wilson', value: 'Heather Wilson' },
-    { key: 'Hiral Dillon', text: 'Hiral Dillon', value: 'Hiral Dillon' },
-    { key: 'Jill Montagna', text: 'Jill Montagna', value: 'Jill Montagna' },
-    { key: 'Jorge Gallardo', text: 'Jorge Gallardo', value: 'Jorge Gallardo' },
-    { key: 'Jose Olivares', text: 'Jose Olivares', value: 'Jose Olivares' },
-    { key: 'Kevin Sukhoo', text: 'Kevin Sukhoo', value: 'Kevin Sukhoo' },
-    { key: 'Kylie Davis', text: 'Kylie Davis', value: 'Kylie Davis' },
-    {
-      key: 'Lionel Bergeron',
-      text: 'Lionel Bergeron',
-      value: 'Lionel Bergeron',
-    },
-    { key: 'Marie McAnuff', text: 'Marie McAnuff', value: 'Marie McAnuff' },
-    { key: 'Melissa Parker', text: 'Melissa Parker', value: 'Melissa Parker' },
-    { key: 'Rachel Morales', text: 'Rachel Morales', value: 'Rachel Morales' },
-    { key: 'Roie Parchi', text: 'Roie Parchi', value: 'Roie Parchi' },
-    { key: 'Ron Summers', text: 'Ron Summers', value: 'Ron Summers' },
-    {
-      key: 'Tunisia Mitchell',
-      text: 'Tunisia Mitchell',
-      value: 'Tunisia Mitchell',
-    },
-    { key: 'Valerie Brock', text: 'Valerie Brock', value: 'Valerie Brock' },
-  ];
+const PdEventCreator = ({ onEventCreated }) => {
+  const [eventTitle, setEventTitle] = useState('');
+  const [category, setCategory] = useState('');
+  const [availableFacilitators, setAvailableFacilitators] = useState([]);
+  const [facilitators, setFacilitators] = useState([]);
+  const [occurrences, setOccurrences] = useState([{...initialOccurrence}]);
 
-  const handlePdEventCreation = () => {
-    alert('event would be created now');
+  useEffect(() => {
+    const getData = async () => {
+      let response = await axios.get(process.env.REACT_APP_API_SERVER + '/users/admin');
+      const facilitators = response.data.map((user) => {
+        return {
+          key: user._id,
+          text: `${user.firstName} ${user.lastName}`,
+          value: user._id,
+        };
+      });
+      setAvailableFacilitators(facilitators);
+    };
+
+    getData();
+  }, []);
+
+  const handlePdEventCreation = async () => {
+    if (!eventTitle || !category || facilitators.length === 0 || occurrences.length === 0 || occurrences.find(o => !o.begin || !o.end || (o.breakHours + '').length === 0 )) {
+      alert('Please fill out all fields');
+      return;
+    }
+
+    await axios.post(process.env.REACT_APP_API_SERVER + '/events/batch',
+      {
+        facilitators,
+        occurrences,
+        category,
+        eventTitle
+      },
+      {
+        headers: {
+          Authorization: localStorage.getItem('token'),
+        },
+      }
+    );
+
+    alert('event created!')
+
+    onEventCreated();
   };
 
-  const handleChange = (e, { value }) => setValue(value);
+  const handleChangeCategory = (e, { value }) => setCategory(value);
 
-  // const onAddOccurence = () => {
-  //   setNumOccurences(numOccurences + 1);
-  //   console.log(numOccurences);
-  // };
+  const handleAddOccurrence = () => {
+    setOccurrences(occurrences => {
+      const newOccurrences = occurrences.concat({...initialOccurrence});
+      return newOccurrences;
+    });
+  };
+
+  const handleRemoveOccurrence = (index) => {
+    setOccurrences(occurrences => {
+      const newOccurrences = occurrences.filter((_, i) => i !== index);
+      return newOccurrences;
+    });
+  };
+
+  const handleChangeDate = (index, newDate) => {
+    setOccurrences(occurrences => {
+      const newOccurrences = [...occurrences];
+      newOccurrences[index].begin = newDate;
+      return newOccurrences;
+    });
+  }
+
+  const handleChangeBeginTime = (index, newTime) => {
+    setOccurrences(occurrences => {
+      const newOccurrences = [...occurrences];
+      newOccurrences[index].begin = newTime;
+      return newOccurrences;
+    });
+  }
+
+  const handleChangeEndTime = (index, newTime) => {
+    setOccurrences(occurrences => {
+      const newOccurrences = [...occurrences];
+      newOccurrences[index].end = newTime;
+      return newOccurrences;
+    });
+  }
+
+  const handleChangeBreakHours = (index, newBreakHours) => {
+    setOccurrences(occurrences => {
+      const newOccurrences = [...occurrences];
+      newOccurrences[index].breakHours = newBreakHours;
+      return newOccurrences;
+    });
+  }
 
   return (
     <>
@@ -82,110 +117,146 @@ const PdEventCreator = () => {
             type="text"
             required
             autoFocus
-            value={pdEventTitle}
-            onChange={(e) => setPdEventTitle(e.target.value)}
+            value={eventTitle}
+            onChange={(e) => { setEventTitle(e.target.value); }}
           />
-          {/* facilitator(s) multiple select */}
           <Form.Select
             required
             placeholder="select facilitator(s)"
             fluid
             multiple
             label="CS4All Facilitator(s)"
-            options={facilitatorOptions}
+            options={availableFacilitators}
+            onChange={(e, { value }) => { setFacilitators(value); }}
           />
         </Form.Group>
-        {/* cs4all program - to do: add required asterisk or switch to dropdown */}
         <Form.Group inline>
-          <label>CS4All Program</label>
+          <label>CS4All Program <span style={{color: 'red'}}>*</span></label>
           <Form.Field
             control={Radio}
             label="Integrated Units"
-            value="1"
-            checked={value === '1'}
-            onChange={handleChange}
+            value="units"
+            checked={category === 'units'}
+            onChange={handleChangeCategory}
           />
           <Form.Field
             control={Radio}
             label="Courses"
-            value="2"
-            checked={value === '2'}
-            onChange={handleChange}
+            value="courses"
+            checked={category === 'courses'}
+            onChange={handleChangeCategory}
           />
           <Form.Field
             control={Radio}
             label="SEP Jr"
-            value="3"
-            checked={value === '3'}
-            onChange={handleChange}
+            value="sep-jr"
+            checked={category === 'sep-jr'}
+            onChange={handleChangeCategory}
+          />
+          <Form.Field
+            control={Radio}
+            label="CS Leads"
+            value="cs-leads"
+            checked={category === 'cs-leads'}
+            onChange={handleChangeCategory}
           />
           <Form.Field
             control={Radio}
             label="open to all teachers"
-            value="4"
-            checked={value === '4'}
-            onChange={handleChange}
+            value="all-teachers"
+            checked={category === 'all-teachers'}
+            onChange={handleChangeCategory}
           />
         </Form.Group>
 
         <Segment attached>
-          <Grid stackable columns={4}>
-            <Grid.Row>
-              <Grid.Column>
-                <Form.Field>
-                  <label style={{ textAlign: 'center' }}>Occurence</label>
-                  <h1 style={{ textAlign: 'center', margin: '0' }}>1</h1>
-                </Form.Field>
-              </Grid.Column>
-              <Grid.Column>
-                <Form.Field required>
-                  <label style={{ textAlign: 'center' }}>PD/Event Date</label>
-                  <DatePicker
-                    selected={pdEventDate}
-                    onChange={(date) => setPdEventDate(date)}
-                    placeholderText="Choose date"
-                  />
-                </Form.Field>
-              </Grid.Column>
-              <Grid.Column>
-                <Form.Field required>
-                  <label style={{ textAlign: 'center' }}>Start Time</label>
-                  <DatePicker
-                    selected={pdEventStartTime}
-                    onChange={(date) => setPdEventStartTime(date)}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeIntervals={30}
-                    timeCaption="Start At"
-                    dateFormat="h:mm aa"
-                    minTime={setHours(setMinutes(new Date(), 0), 8)}
-                    maxTime={setHours(setMinutes(new Date(), 0), 21)}
-                    placeholderText="Choose start time"
-                  />
-                </Form.Field>
-              </Grid.Column>
-              <Grid.Column>
-                <Form.Field required>
-                  <label style={{ textAlign: 'center' }}>End Time</label>
-                  <DatePicker
-                    selected={pdEventEndTime}
-                    onChange={(date) => setPdEventEndTime(date)}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeIntervals={30}
-                    timeCaption="End At"
-                    dateFormat="h:mm aa"
-                    minTime={setHours(setMinutes(new Date(), 0), 9)}
-                    maxTime={setHours(setMinutes(new Date(), 0), 21)}
-                    placeholderText="Choose end time"
-                  />
-                </Form.Field>
-              </Grid.Column>
-            </Grid.Row>
+          <Grid stackable columns={5}>
+            {occurrences.map((occurrence, index) => {
+              return (
+                <Grid.Row key={index}>
+                  <Grid.Column width={3}>
+                    <Form.Field>
+                      <label style={{ textAlign: 'center' }}>Occurrence</label>
+                      <h1 style={{ textAlign: 'center', margin: '0' }}>{index + 1}</h1>
+                    </Form.Field>
+                  </Grid.Column>
+                  <Grid.Column width={3}>
+                    <Form.Field required>
+                      <label style={{ textAlign: 'center' }}>PD/Event Date</label>
+                      <DatePicker
+                        selected={occurrence.begin}
+                        onChange={(date) => handleChangeDate(index, date)}
+                        placeholderText="Choose date"
+                      />
+                    </Form.Field>
+                  </Grid.Column>
+                  <Grid.Column width={3}>
+                    <Form.Field required>
+                      <label style={{ textAlign: 'center' }}>Start Time</label>
+                      <DatePicker
+                        selected={occurrence.begin}
+                        onChange={(date) => handleChangeBeginTime(index, date)}
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={30}
+                        timeCaption="Start At"
+                        dateFormat="h:mm aa"
+                        minTime={setHours(setMinutes(new Date(), 0), 8)}
+                        maxTime={setHours(setMinutes(new Date(), 0), 21)}
+                        placeholderText="Choose start time"
+                      />
+                    </Form.Field>
+                  </Grid.Column>
+                  <Grid.Column width={3}>
+                    <Form.Field required>
+                      <label style={{ textAlign: 'center' }}>End Time</label>
+                      <DatePicker
+                        selected={occurrence.end}
+                        onChange={(date) => handleChangeEndTime(index, date)}
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={30}
+                        timeCaption="End At"
+                        dateFormat="h:mm aa"
+                        minTime={setHours(setMinutes(new Date(), 0), 9)}
+                        maxTime={setHours(setMinutes(new Date(), 0), 21)}
+                        placeholderText="Choose end time"
+                      />
+                    </Form.Field>
+                  </Grid.Column>
+                  <Grid.Column width={3}>
+                    <Form.Field required>
+                      <label style={{ textAlign: 'center' }}>Break Hours</label>
+                      <Form.Input
+                        type="number"
+                        required
+                        autoFocus
+                        value={occurrence.breakHours}
+                        onChange={(e) => { handleChangeBreakHours(index, e.target.value); }}
+                      />
+                    </Form.Field>
+                  </Grid.Column>
+                  <Grid.Column width={1}>
+                    <div style={{
+                      width: '100%',
+                      height: '100%',
+                      display: 'flex',
+                      justifyContent: 'flex-start',
+                      alignItems: 'center'
+                    }}>
+                      <h3
+                        style={{ textAlign: 'center', margin: '0', cursor: 'pointer' }}
+                        onClick={() => { handleRemoveOccurrence(index); }}
+                      ><Icon name="trash" /></h3>
+                    </div>
+                  </Grid.Column>
+                </Grid.Row>
+              );
+            })}
+            
           </Grid>
         </Segment>
-        {/* <Button attached="bottom" onClick={() => onAddOccurence()}> */}
-        <Button attached="bottom">add another occurence of this event</Button>
+        <Button attached="bottom" onClick={() => handleAddOccurrence()}>add another occurrence of this event</Button>
 
         <Divider />
         <Button color="blue" onClick={handlePdEventCreation}>

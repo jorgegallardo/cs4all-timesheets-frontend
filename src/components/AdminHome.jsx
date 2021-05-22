@@ -53,7 +53,7 @@ const AdminHome = () => {
       <AdminMenuBar activeTab={activeTab} setActiveTab={setActiveTab} />
       {activeTab === 'approveTimesheets' && <AdminApproveTimesheets />}
       {activeTab === 'viewAllTimesheets' && <AdminViewAllTimesheets />}
-      {activeTab === 'createPdEvent' && <AdminPdEventCreator />}
+      {activeTab === 'createPdEvent' && <AdminPdEventCreator onEventCreated={() => { setActiveTab('viewAllPdEvents') }} />}
       {activeTab === 'viewAllPdEvents' && <AdminPdEventList />}
       {/* future features
       <h1>teacher lookup</h1>

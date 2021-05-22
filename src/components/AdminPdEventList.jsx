@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Table, Dropdown, Button } from 'semantic-ui-react';
 import axios from 'axios';
+import { format, parseISO } from 'date-fns';
 
 // const authAxios = axios.create({
 //   headers: { 'x-access-token': localStorage.getItem('token') },
@@ -11,26 +12,29 @@ const PdEventList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchEvents();
+    const loadData = async () => {
+      try {
+        const response = await axios.get(process.env.REACT_APP_API_SERVER + '/events');
+        const events = response.data.map((event) => {
+          return {
+            ...event,
+            displayBegin: format(parseISO(event.begin), 'h:mm aaa'),
+            displayEnd: format(parseISO(event.end), 'h:mm aaa'),
+            displayDate: format(parseISO(event.begin), 'MM/dd/yy'),
+            beginTime: format(parseISO(event.begin), 'HH:mm'),
+            endTime: format(parseISO(event.end), 'HH:mm'),
+          };
+        });
+        setEvents(events);
+        setLoading(false);
+      } catch (error) {
+        console.log('unable to retrieve events');
+        console.log(error);
+      }
+    };
+
+    loadData();
   }, []);
-
-  const fetchEvents = async () => {
-    try {
-      // const response = await authAxios.get('http://localhost:3008/api/events');
-      // const response = await axios.get('http://localhost:3008/api/events');
-      const response = await axios.get(
-        'https://server-mongodb-practice.herokuapp.com/api/events'
-      );
-      if (response.data.events === undefined) throw Error;
-
-      // we received a list of events
-      setEvents(response.data.events);
-      setLoading(false);
-    } catch (error) {
-      console.log('unable to retrieve events');
-      console.log(error);
-    }
-  };
 
   if (loading) return <h1>loading...</h1>;
 
@@ -74,22 +78,25 @@ const PdEventList = () => {
           {events &&
             events.map((event) => {
               return (
-                <Table.Row key={event.id}>
-                  <Table.Cell>{event.date}</Table.Cell>
-                  <Table.Cell>{event.program}</Table.Cell>
+                <Table.Row key={event._id}>
+                  <Table.Cell>{event.displayDate}</Table.Cell>
+                  <Table.Cell>{event.category}</Table.Cell>
                   <Table.Cell>{event.title}</Table.Cell>
-                  <Table.Cell>{event.startTime}</Table.Cell>
-                  <Table.Cell>{event.endTime}</Table.Cell>
+                  <Table.Cell>{event.displayBegin}</Table.Cell>
+                  <Table.Cell>{event.displayEnd}</Table.Cell>
                   <Table.Cell>
-                    {event.facilitators.length === 1
-                      ? event.facilitators.map((facilitator) => (
-                          // use actual facilitator ids for keys, not a random num
-                          <span key={Math.random()}>{facilitator}</span>
-                        ))
-                      : event.facilitators.map((facilitator) => (
-                          <span key={Math.random()}>{facilitator}, </span>
-                          // figure out a way to remove the comma from the last item
-                        ))}
+                    {event.facilitators.map(
+                      (facilitator, index) => {
+                        return (
+                          <span key={facilitator._id}>
+                            {(index > 0 ? ', ' : '') +
+                              facilitator.firstName +
+                              ' ' +
+                              facilitator.lastName}
+                          </span>
+                        );
+                      }
+                    )}
                   </Table.Cell>
                   <Table.Cell>
                     <Button color="teal" compact>
