@@ -15,29 +15,29 @@ const PdEventList = () => {
   const [editOpen, setEditOpen] = useState([]);
   const [newEvent, setNewEvent] = useState({});
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const response = await axios.get(process.env.REACT_APP_API_SERVER + '/events');
-        const events = response.data.map((event) => {
-          return {
-            ...event,
-            displayBegin: format(parseISO(event.begin), 'h:mm aaa'),
-            displayEnd: format(parseISO(event.end), 'h:mm aaa'),
-            displayDate: format(parseISO(event.begin), 'MM/dd/yy'),
-            beginTime: format(parseISO(event.begin), 'HH:mm'),
-            endTime: format(parseISO(event.end), 'HH:mm'),
-          };
-        });
-        setEvents(events);
-        setEditOpen(events.map(e => false));
-        setLoading(false);
-      } catch (error) {
-        console.log('unable to retrieve events');
-        console.log(error);
-      }
-    };
+  const loadData = async () => {
+    try {
+      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/events');
+      const events = response.data.map((event) => {
+        return {
+          ...event,
+          displayBegin: format(parseISO(event.begin), 'h:mm aaa'),
+          displayEnd: format(parseISO(event.end), 'h:mm aaa'),
+          displayDate: format(parseISO(event.begin), 'MM/dd/yy'),
+          beginTime: format(parseISO(event.begin), 'HH:mm'),
+          endTime: format(parseISO(event.end), 'HH:mm'),
+        };
+      });
+      setEvents(events);
+      setEditOpen(events.map(e => false));
+      setLoading(false);
+    } catch (error) {
+      console.log('unable to retrieve events');
+      console.log(error);
+    }
+  };
 
+  useEffect(() => {
     loadData();
   }, []);
 
@@ -51,8 +51,8 @@ const PdEventList = () => {
         }
       });
       console.log('status=', response.status);
-      alert('event updated');
       setEditOpen(events.map(e => false));
+      loadData();
     } finally {
       setSubmitted(false);
     }
