@@ -122,6 +122,10 @@ const AdminTimesheetApproval = () => {
     setTimesheetOpen(false);
   };
 
+  if (!loading && timesheets.length === 0) {
+    return <div>No timesheets</div>
+  }
+
   return (
     <>
       <h2>my teachers' timesheets</h2>
