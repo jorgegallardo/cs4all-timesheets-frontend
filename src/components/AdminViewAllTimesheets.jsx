@@ -22,7 +22,6 @@ const AdminAllTimesheets = () => {
       );
       
       const timesheets = response.data;
-      console.log(timesheets);
 
       // we received a list of timesheets
       setTimesheets(timesheets);

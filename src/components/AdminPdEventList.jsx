@@ -1,19 +1,52 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Table, Dropdown, Button, Modal } from 'semantic-ui-react';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
 import EditEvent from './EditEvent';
+import UserContext from '../store/user-context';
 
 // const authAxios = axios.create({
 //   headers: { 'x-access-token': localStorage.getItem('token') },
 // });
 
+const filterByOptions = [
+  'all events',
+  'integrated units',
+  'courses',
+  'sepJr',
+  'cs leads',
+  'events that I facilitated',
+];
+
 const PdEventList = () => {
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [editOpen, setEditOpen] = useState([]);
   const [newEvent, setNewEvent] = useState({});
+  const [filterBy, setFilterBy] = useState(filterByOptions[0]);
+  const { userData } = useContext(UserContext);
+
+  useEffect(() => {
+    const newFilteredEvents = [...events].filter(event => {
+      if (filterBy === 'all events') {
+        return true;
+      } else if (filterBy === 'integrated units' && event.category === 'units') {
+        return true;
+      } else if (filterBy === 'courses' && event.category === 'courses') {
+        return true;
+      } else if (filterBy === 'sepJr' && event.category === 'sep-jr') {
+        return true;
+      } else if (filterBy === 'cs leads' && event.category === 'cs-leads') {
+        return true;
+      } else if (filterBy === 'events that I facilitated' && event.facilitators.filter(f => f._id === userData._id).length > 0) {
+        return true;
+      }
+      return false;
+    });
+    setFilteredEvents(newFilteredEvents);
+  }, [events, filterBy, userData._id]);
 
   const loadData = async () => {
     try {
@@ -64,7 +97,7 @@ const PdEventList = () => {
     <>
       <h2>all pds/events</h2>
       <Dropdown
-        text="Filter"
+        text={'Filter: ' + filterBy}
         icon="filter"
         floating
         labeled
@@ -74,12 +107,9 @@ const PdEventList = () => {
         <Dropdown.Menu>
           <Dropdown.Header icon="tags" content="Filter by" />
           <Dropdown.Divider />
-          <Dropdown.Item>all events</Dropdown.Item>
-          <Dropdown.Item>integrated units</Dropdown.Item>
-          <Dropdown.Item>courses</Dropdown.Item>
-          <Dropdown.Item>sepJr</Dropdown.Item>
-          <Dropdown.Item>cs leads</Dropdown.Item>
-          <Dropdown.Item>events that i facilitated</Dropdown.Item>
+          {filterByOptions.map((option, index) => {
+            return (<Dropdown.Item key={index} onClick={() => setFilterBy(option)}>{option}</Dropdown.Item>);
+          })}
         </Dropdown.Menu>
       </Dropdown>
 
@@ -97,8 +127,8 @@ const PdEventList = () => {
         </Table.Header>
 
         <Table.Body>
-          {events &&
-            events.map((event, index) => {
+          {filteredEvents &&
+            filteredEvents.map((event, index) => {
               return (
                 <Table.Row key={event._id}>
                   <Table.Cell>{event.displayDate}</Table.Cell>
