@@ -50,7 +50,7 @@ const TeacherHome = () => {
         CS4All Program:<Label.Detail>{teacherData.programTitle}</Label.Detail>
       </Label>
       <Label basic>
-        CS4All Point of Contact:<Label.Detail>{teacherData.pointOfContact.firstName + ' ' + teacherData.pointOfContact.lastName}</Label.Detail>
+        CS4All Point of Contact:<Label.Detail>{teacherData.pointOfContact ? (teacherData.pointOfContact.firstName + ' ' + teacherData.pointOfContact.lastName) : ''}</Label.Detail>
       </Label>
       <Divider />
       <TeacherMenu teacherData={teacherData} />
