@@ -38,9 +38,11 @@ const TeacherTimesheetGenerator = (props) => {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get(
-        process.env.REACT_APP_API_SERVER + '/events'
-      );
+      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/events?skipSubmittedEvents=true', {
+        headers: {
+          'Authorization': localStorage.getItem('token')
+        }
+      });
       //console.log('response.data=', response.data);
       const events = response.data.map((event) => {
         return {
