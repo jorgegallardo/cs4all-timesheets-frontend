@@ -11,6 +11,7 @@ import EditEvent from './EditEvent';
 const PdEventList = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [submitted, setSubmitted] = useState(false);
   const [editOpen, setEditOpen] = useState([]);
   const [newEvent, setNewEvent] = useState({});
 
@@ -41,7 +42,20 @@ const PdEventList = () => {
   }, []);
 
   const handleSubmitEdit = async () => {
-    console.log('newEvent=', newEvent);
+    try {
+      setSubmitted(true);
+      console.log('newEvent=', newEvent);
+      const response = await axios.put(process.env.REACT_APP_API_SERVER + '/events/' + newEvent._id, newEvent, {
+        headers: {
+          'Authorization': localStorage.getItem('token')
+        }
+      });
+      console.log('status=', response.status);
+      alert('event updated');
+      setEditOpen(events.map(e => false));
+    } finally {
+      setSubmitted(false);
+    }
   };
 
   if (loading) return <h1>loading...</h1>;
@@ -148,7 +162,7 @@ const PdEventList = () => {
                           icon="checkmark"
                           onClick={() => handleSubmitEdit(event)}
                           positive
-                          loading={loading}
+                          loading={submitted}
                         />
                       </Modal.Actions>
                     </Modal>
