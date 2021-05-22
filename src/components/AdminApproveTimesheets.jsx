@@ -50,8 +50,6 @@ const AdminTimesheetApproval = () => {
       );
       const timesheets = response.data;
 
-      console.log('timesheets=', timesheets);
-
       setTimesheets(timesheets);
     } catch (error) {
       console.log('unable to retrieve timesheets');

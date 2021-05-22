@@ -1,6 +1,7 @@
 import { Dropdown, Input, Table, Button } from 'semantic-ui-react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { format, parseISO } from 'date-fns';
 
 const AdminAllTimesheets = () => {
   const [timesheets, setTimesheets] = useState([]);
@@ -12,15 +13,19 @@ const AdminAllTimesheets = () => {
 
   const fetchTeacherTimesheets = async () => {
     try {
-      // const response = await authAxios.get('http://localhost:3008/api/timesheets');
-      const response = await axios.get('http://localhost:3008/api/timesheets');
-      // const response = await axios.get(
-      //   'https://server-mongodb-practice.herokuapp.com/api/timesheets'
-      // );
-      if (response.data.timesheets === undefined) throw Error;
+      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/timesheets',
+        {
+          headers: {
+            Authorization: localStorage.getItem('token'),
+          },
+        }
+      );
+      
+      const timesheets = response.data;
+      console.log(timesheets);
 
-      // we received a list of events
-      setTimesheets(response.data.timesheets);
+      // we received a list of timesheets
+      setTimesheets(timesheets);
       setLoading(false);
     } catch (error) {
       console.log('unable to retrieve timesheets');
@@ -75,15 +80,19 @@ const AdminAllTimesheets = () => {
         ) : (
           <Table.Body>
             {timesheets.map((timesheet) => (
-              <Table.Row key={timesheet.id}>
-                <Table.Cell>{timesheet.date}</Table.Cell>
-                <Table.Cell>{timesheet.programTitle}</Table.Cell>
-                <Table.Cell>{timesheet.title}</Table.Cell>
+              <Table.Row key={timesheet._id}>
                 <Table.Cell>
-                  {timesheet.firstName} {timesheet.lastName}
+                  {format(parseISO(timesheet.events[0].begin), 'MM/dd/yy')}
+                </Table.Cell>
+                <Table.Cell>{timesheet.events[0].event.category}</Table.Cell>
+                <Table.Cell>{timesheet.events[0].event.title}</Table.Cell>
+                <Table.Cell>
+                  {timesheet.teacher.firstName} {timesheet.teacher.lastName}
                 </Table.Cell>
                 <Table.Cell>
-                  <Button size="mini" color="purple">
+                  <Button size="mini" color="purple" onClick={() => {
+                      window.open(timesheet.filename);
+                    }}>
                     view
                   </Button>
                 </Table.Cell>
