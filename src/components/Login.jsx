@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {
   Form,
   Button,
@@ -9,6 +9,7 @@ import {
 } from 'semantic-ui-react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import UserContext from '../store/user-context';
 
 const Login = (props) => {
   const { hasAccount, setHasAccount } = props;
@@ -22,6 +23,7 @@ const Login = (props) => {
     lastName: '',
     programTitle: '',
   });
+  const { setUserData } = useContext(UserContext);
 
   const resetForm = () => {
     setEmail('');
@@ -41,13 +43,6 @@ const Login = (props) => {
 
   const handleLogin = async () => {
     try {
-      // const response = await axios.post(
-      //   'https://server-mongodb-practice.herokuapp.com/api/login',
-      //   {
-      //     email,
-      //     password,
-      //   }
-      // );
       const response = await axios.post(
         process.env.REACT_APP_API_SERVER + '/users/login',
         {
@@ -55,14 +50,18 @@ const Login = (props) => {
           password,
         }
       );
-      const tokenFromServer = response.data.token;
-      localStorage.setItem('token', tokenFromServer);
+      const token = response.data.token;
+      const currentUser = response.data.currentUser;
+      localStorage.setItem('token', token);
+      setUserData(currentUser);
       resetForm();
-      alert('login successful');
-      history.push('/teacher');
+      if (currentUser.role === 'admin') {
+        history.push('/admin');
+      } else {
+        history.push('/teacher');
+      }
     } catch (err) {
-      alert(err.message);
-      resetForm();
+      setPassword('');
       alert('login failed');
     }
   };
