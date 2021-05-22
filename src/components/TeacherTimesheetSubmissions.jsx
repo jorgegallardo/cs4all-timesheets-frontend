@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { parseISO, format}  from 'date-fns';
+import { parseISO, format } from 'date-fns';
 import { useState, useEffect } from 'react';
 import { Button, Table } from 'semantic-ui-react';
 
@@ -9,11 +9,14 @@ const TeacherTimesheetSubmissions = () => {
 
   useEffect(() => {
     const getData = async () => {
-      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/timesheets/user', {
-        headers: {
-          'Authorization': localStorage.getItem('token')
+      const response = await axios.get(
+        process.env.REACT_APP_API_SERVER + '/timesheets/user',
+        {
+          headers: {
+            Authorization: localStorage.getItem('token'),
+          },
         }
-      });
+      );
       const timesheets = response.data;
       console.log('timesheets=', timesheets);
       setTimesheets(timesheets);
@@ -85,20 +88,37 @@ const TeacherTimesheetSubmissions = () => {
               <Table.Row key={timesheet._id}>
                 <Table.Cell>{timesheet.created}</Table.Cell>
                 <Table.Cell>{timesheet.events[0].event.title}</Table.Cell>
-                <Table.Cell>{format(parseISO(timesheet.events[0].begin), 'MM/dd/yy')}</Table.Cell>
-                <Table.Cell>{format(parseISO(timesheet.events[0].begin), 'h:mm aaa')}</Table.Cell>
-                <Table.Cell>{format(parseISO(timesheet.events[0].end), 'h:mm aaa')}</Table.Cell>
                 <Table.Cell>
-                  {timesheet.events[0].event.facilitators.map((facilitator, index) => {
-                    return (
-                      <span key={facilitator._id}>
-                        {(index > 0 ? ', ' : '') + facilitator.firstName + ' ' + facilitator.lastName}
-                      </span>
-                    );
-                  })}
+                  {format(parseISO(timesheet.events[0].begin), 'MM/dd/yy')}
                 </Table.Cell>
                 <Table.Cell>
-                  <Button size="mini" color="purple" onClick={() => {window.open(timesheet.filename)}}>
+                  {format(parseISO(timesheet.events[0].begin), 'h:mm aaa')}
+                </Table.Cell>
+                <Table.Cell>
+                  {format(parseISO(timesheet.events[0].end), 'h:mm aaa')}
+                </Table.Cell>
+                <Table.Cell>
+                  {timesheet.events[0].event.facilitators.map(
+                    (facilitator, index) => {
+                      return (
+                        <span key={facilitator._id}>
+                          {(index > 0 ? ', ' : '') +
+                            facilitator.firstName +
+                            ' ' +
+                            facilitator.lastName}
+                        </span>
+                      );
+                    }
+                  )}
+                </Table.Cell>
+                <Table.Cell>
+                  <Button
+                    size="mini"
+                    color="purple"
+                    onClick={() => {
+                      window.open(timesheet.filename);
+                    }}
+                  >
                     download
                   </Button>
                 </Table.Cell>

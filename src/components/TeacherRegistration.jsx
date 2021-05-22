@@ -27,7 +27,9 @@ const TeacherRegistration = (props) => {
 
   useEffect(() => {
     const getData = async () => {
-      let response = await axios.get(process.env.REACT_APP_API_SERVER + '/schools');
+      let response = await axios.get(
+        process.env.REACT_APP_API_SERVER + '/schools'
+      );
       const schools = response.data.map((school) => {
         return {
           key: school._id,
@@ -37,7 +39,9 @@ const TeacherRegistration = (props) => {
       });
       setAvailableSchools(schools);
 
-      response = await axios.get(process.env.REACT_APP_API_SERVER + '/users/admin');
+      response = await axios.get(
+        process.env.REACT_APP_API_SERVER + '/users/admin'
+      );
       const admins = response.data.map((admin) => {
         return {
           key: admin._id,
@@ -46,7 +50,6 @@ const TeacherRegistration = (props) => {
         };
       });
       setAvailableAdmins(admins);
-      
     };
 
     getData();
@@ -66,25 +69,13 @@ const TeacherRegistration = (props) => {
 
   const cs4AllProgramOptions = [
     {
-      key: 'Integrated Units',
+      key: 'integrated-units',
       text: 'Integrated Units',
-      value: 'Integrated Units',
+      value: 'integrated-units',
     },
-    {
-      key: 'Courses',
-      text: 'Courses',
-      value: 'Courses',
-    },
-    {
-      key: 'SEP Jr',
-      text: 'SEP Jr',
-      value: 'SEP Jr',
-    },
-    {
-      key: 'CS Leads',
-      text: 'CS Leads',
-      value: 'CS Leads',
-    },
+    { key: 'courses', text: 'Courses', value: 'courses' },
+    { key: 'sep-jr', text: 'SEP Jr', value: 'sep-jr' },
+    { key: 'cs-leads', text: 'CS Leads', value: 'cs-leads' },
   ];
 
   const gradeOptions = [
