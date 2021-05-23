@@ -21,9 +21,21 @@ const TeacherRegistration = (props) => {
   const [cs4AllPointOfContact, setCs4AllPointOfContact] = useState('');
   const [school, setSchool] = useState('');
   const [availableSchools, setAvailableSchools] = useState([]);
+  const [filteredSchools, setFilteredSchools] = useState([]);
+  const [district, setDistrict] = useState('');
+  const [availableDistricts, setAvailableDistricts] = useState([]);
   const [availableAdmins, setAvailableAdmins] = useState([]);
   const [gradesTaught, setGradesTaught] = useState([]);
+  const [formValid, setFormValid] = useState(false);
   const history = useHistory();
+
+  useEffect(() => {
+    if (email && password && firstName && lastName && fileNumber && cs4AllProgramTitle && cs4AllPointOfContact && school && gradesTaught.length > 0) {
+      setFormValid(true);
+    } else {
+      setFormValid(false);
+    }
+  }, [email, password, firstName, lastName, fileNumber, cs4AllProgramTitle, cs4AllPointOfContact, school, gradesTaught]);
 
   useEffect(() => {
     const getData = async () => {
@@ -35,9 +47,24 @@ const TeacherRegistration = (props) => {
           key: school._id,
           text: `${school.name} - ${school.dbn}`,
           value: school._id,
+          district: school.district,
         };
       });
       setAvailableSchools(schools);
+
+      const districts = new Set();
+      for (const school of response.data) {
+        districts.add(school.district);
+      }
+      const districtsArray = Array.from(districts);
+      const districtsObjects = districtsArray.map((district, index) => {
+        return {
+          key: index,
+          text: district,
+          value: district,
+        };
+      });
+      setAvailableDistricts(districtsObjects);
 
       response = await axios.get(
         process.env.REACT_APP_API_SERVER + '/users/admin'
@@ -55,6 +82,15 @@ const TeacherRegistration = (props) => {
     getData();
   }, []);
 
+  useEffect(() => {
+    if (availableSchools.length === 0 || !district) {
+      return setFilteredSchools([]);
+    }
+    const newFilteredSchools = availableSchools.filter(s => s.district === district);
+    setFilteredSchools(newFilteredSchools);
+    setSchool('');
+  }, [district])
+
   const resetForm = () => {
     setEmail('');
     setPassword('');
@@ -68,11 +104,7 @@ const TeacherRegistration = (props) => {
   };
 
   const cs4AllProgramOptions = [
-    {
-      key: 'integrated-units',
-      text: 'Integrated Units',
-      value: 'integrated-units',
-    },
+    { key: 'integrated-units', text: 'Integrated Units', value: 'units' },
     { key: 'courses', text: 'Courses', value: 'courses' },
     { key: 'sep-jr', text: 'SEP Jr', value: 'sep-jr' },
     { key: 'cs-leads', text: 'CS Leads', value: 'cs-leads' },
@@ -93,31 +125,6 @@ const TeacherRegistration = (props) => {
     { key: '11', text: '11th', value: '11th' },
     { key: '12', text: '12th', value: '12' },
   ];
-
-  // const cs4AllStaffOptions = [
-  //   { key: 'AiMei Chang', text: 'AiMei Chang', value: 'AiMei Chang' },
-  //   { key: 'Amy Hobson', text: 'Amy Hobson', value: 'Amy Hobson' },
-  //   {
-  //     key: 'Christine Nunez',
-  //     text: 'Christine Nunez',
-  //     value: 'Christine Nunez',
-  //   },
-  //   { key: 'Dan Gaylord', text: 'Dan Gaylord', value: 'Dan Gaylord' },
-  //   { key: 'EJ Park', text: 'EJ Park', value: 'EJ Park' },
-  //   { key: 'Felix Alberto', text: 'Felix Alberto', value: 'Felix Alberto' },
-  //   { key: 'Jorge Gallardo', text: 'Jorge Gallardo', value: 'Jorge Gallardo' },
-  //   { key: 'Jose Olivares', text: 'Jose Olivares', value: 'Jose Olivares' },
-  //   { key: 'Kevin Sukhoo', text: 'Kevin Sukhoo', value: 'Kevin Sukhoo' },
-  //   { key: 'Marie McAnuff', text: 'Marie McAnuff', value: 'Marie McAnuff' },
-  //   { key: 'Melissa Parker', text: 'Melissa Parker', value: 'Melissa Parker' },
-  //   { key: 'Valerie Brock', text: 'Valerie Brock', value: 'Valerie Brock' },
-  // ];
-
-  // should be pulled in from db
-  // const schoolOptions = [
-  //   { key: 'school1', text: 'school1', value: 'school1' },
-  //   { key: 'school2', text: 'school2', value: 'school2' },
-  // ];
 
   const handleRegistration = async () => {
     try {
@@ -212,16 +219,27 @@ const TeacherRegistration = (props) => {
                 />
               </Form.Field>
               <Form.Field required>
+                <label>Your District</label>
+                <Dropdown
+                  placeholder="find your district"
+                  fluid
+                  search
+                  selection
+                  options={availableDistricts}
+                  onChange={(e, { value }) => setDistrict(value)}
+                />
+              </Form.Field>
+              {district && <Form.Field required>
                 <label>Your School</label>
                 <Dropdown
                   placeholder="find your school"
                   fluid
                   search
                   selection
-                  options={availableSchools}
+                  options={filteredSchools}
                   onChange={(e, { value }) => setSchool(value)}
                 />
-              </Form.Field>
+              </Form.Field>}
 
               <Form.Select
                 required
@@ -232,12 +250,6 @@ const TeacherRegistration = (props) => {
                 options={gradeOptions}
                 onChange={(e, { value }) => setGradesTaught(value)}
               />
-
-              <p style={{ color: 'red' }}>
-                NOTE: the CREATE ACCOUNT button below should be disabled until
-                all of the fields are filled/selected. grades taught not yet
-                hooked up.
-              </p>
 
               <p style={{ marginTop: '10px' }}>
                 already have an account?{' '}
@@ -256,7 +268,7 @@ const TeacherRegistration = (props) => {
           </Grid>
         </Form>
       </Segment>
-      <Button attached="bottom" color="blue" onClick={handleRegistration}>
+      <Button attached="bottom" color="blue" onClick={handleRegistration} disabled={!formValid}>
         create an account
       </Button>
       <Divider />
