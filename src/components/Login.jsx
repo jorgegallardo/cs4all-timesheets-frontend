@@ -1,12 +1,5 @@
 import { useContext, useState } from 'react';
-import {
-  Form,
-  Button,
-  Divider,
-  Grid,
-  Segment,
-  Dropdown,
-} from 'semantic-ui-react';
+import { Form, Button, Grid, Segment, Dropdown } from 'semantic-ui-react';
 import axios from 'axios';
 import { useHistory, useLocation } from 'react-router-dom';
 import UserContext from '../store/user-context';
@@ -24,6 +17,7 @@ const Login = (props) => {
     programTitle: '',
   });
   const { setUserData } = useContext(UserContext);
+  const [submitted, setSubmitted] = useState(false);
 
   const { search } = useLocation();
   const urlParams = new URLSearchParams(search);
@@ -47,6 +41,7 @@ const Login = (props) => {
 
   const handleLogin = async () => {
     try {
+      setSubmitted(true);
       const response = await axios.post(
         process.env.REACT_APP_API_SERVER + '/users/login',
         {
@@ -68,6 +63,8 @@ const Login = (props) => {
     } catch (err) {
       setPassword('');
       alert('login failed');
+    } finally {
+      setSubmitted(false);
     }
   };
 
