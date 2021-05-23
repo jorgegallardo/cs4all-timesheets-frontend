@@ -34,12 +34,32 @@ const TeacherRegistration = (props) => {
   const isAdmin = !!urlParams.get('admin');
 
   useEffect(() => {
-    if (email && password && firstName && lastName && fileNumber && cs4AllProgramTitle && cs4AllPointOfContact && school && gradesTaught.length > 0) {
+    if (
+      email &&
+      password &&
+      firstName &&
+      lastName &&
+      fileNumber &&
+      cs4AllProgramTitle &&
+      cs4AllPointOfContact &&
+      school &&
+      gradesTaught.length > 0
+    ) {
       setFormValid(true);
     } else {
       setFormValid(false);
     }
-  }, [email, password, firstName, lastName, fileNumber, cs4AllProgramTitle, cs4AllPointOfContact, school, gradesTaught]);
+  }, [
+    email,
+    password,
+    firstName,
+    lastName,
+    fileNumber,
+    cs4AllProgramTitle,
+    cs4AllPointOfContact,
+    school,
+    gradesTaught,
+  ]);
 
   useEffect(() => {
     const getData = async () => {
@@ -90,10 +110,12 @@ const TeacherRegistration = (props) => {
     if (availableSchools.length === 0 || !district) {
       return setFilteredSchools([]);
     }
-    const newFilteredSchools = availableSchools.filter(s => s.district === district);
+    const newFilteredSchools = availableSchools.filter(
+      (s) => s.district === district
+    );
     setFilteredSchools(newFilteredSchools);
     setSchool('');
-  }, [district, availableSchools])
+  }, [district, availableSchools]);
 
   const resetForm = () => {
     setEmail('');
@@ -205,7 +227,6 @@ const TeacherRegistration = (props) => {
               <Form.Field required>
                 <label>CS4All Program</label>
                 <Dropdown
-                  placeholder="select the cs4all program you're enrolled in"
                   fluid
                   selection
                   options={cs4AllProgramOptions}
@@ -215,7 +236,6 @@ const TeacherRegistration = (props) => {
               <Form.Field required>
                 <label>CS4All Point of Contact</label>
                 <Dropdown
-                  placeholder="select your cs4all point of contact"
                   fluid
                   selection
                   options={availableAdmins}
@@ -225,7 +245,6 @@ const TeacherRegistration = (props) => {
               <Form.Field required>
                 <label>Your District</label>
                 <Dropdown
-                  placeholder="find your district"
                   fluid
                   search
                   selection
@@ -233,21 +252,21 @@ const TeacherRegistration = (props) => {
                   onChange={(e, { value }) => setDistrict(value)}
                 />
               </Form.Field>
-              {district && <Form.Field required>
-                <label>Your School</label>
-                <Dropdown
-                  placeholder="find your school"
-                  fluid
-                  search
-                  selection
-                  options={filteredSchools}
-                  onChange={(e, { value }) => setSchool(value)}
-                />
-              </Form.Field>}
+              {district && (
+                <Form.Field required>
+                  <label>Your School</label>
+                  <Dropdown
+                    fluid
+                    search
+                    selection
+                    options={filteredSchools}
+                    onChange={(e, { value }) => setSchool(value)}
+                  />
+                </Form.Field>
+              )}
 
               <Form.Select
                 required
-                placeholder="select the grade(s) you teach"
                 fluid
                 multiple
                 label="Grade(s) Taught"
@@ -272,7 +291,12 @@ const TeacherRegistration = (props) => {
           </Grid>
         </Form>
       </Segment>
-      <Button attached="bottom" color="blue" onClick={handleRegistration} disabled={!formValid}>
+      <Button
+        attached="bottom"
+        color="blue"
+        onClick={handleRegistration}
+        disabled={!formValid}
+      >
         create an account
       </Button>
 
