@@ -28,6 +28,7 @@ const TeacherRegistration = (props) => {
   const [gradesTaught, setGradesTaught] = useState([]);
   const [formValid, setFormValid] = useState(false);
   const history = useHistory();
+  const [submitted, setSubmitted] = useState(false);
 
   const { search } = useLocation();
   const urlParams = new URLSearchParams(search);
@@ -132,6 +133,7 @@ const TeacherRegistration = (props) => {
 
   const handleRegistration = async () => {
     try {
+      setSubmitted(true);
       const response = await axios.post(
         process.env.REACT_APP_API_SERVER + '/users/signup',
         {
@@ -154,6 +156,8 @@ const TeacherRegistration = (props) => {
     } catch (err) {
       alert('something went wrong');
       console.log(err);
+    } finally {
+      setSubmitted(false);
     }
   };
 
@@ -272,7 +276,7 @@ const TeacherRegistration = (props) => {
           </Grid>
         </Form>
       </Segment>
-      <Button attached="bottom" color="blue" onClick={handleRegistration} disabled={!formValid}>
+      <Button attached="bottom" color="blue" onClick={handleRegistration} disabled={!formValid || submitted} loading={submitted}>
         create an account
       </Button>
 

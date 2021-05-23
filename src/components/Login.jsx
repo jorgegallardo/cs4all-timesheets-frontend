@@ -24,6 +24,7 @@ const Login = (props) => {
     programTitle: '',
   });
   const { setUserData } = useContext(UserContext);
+  const [submitted, setSubmitted] = useState(false);
 
   const { search } = useLocation();
   const urlParams = new URLSearchParams(search);
@@ -47,6 +48,7 @@ const Login = (props) => {
 
   const handleLogin = async () => {
     try {
+      setSubmitted(true);
       const response = await axios.post(
         process.env.REACT_APP_API_SERVER + '/users/login',
         {
@@ -68,6 +70,8 @@ const Login = (props) => {
     } catch (err) {
       setPassword('');
       alert('login failed');
+    } finally {
+      setSubmitted(false);
     }
   };
 
@@ -107,7 +111,7 @@ const Login = (props) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button color="blue" onClick={handleLogin} type="submit">
+        <Button color="blue" onClick={handleLogin} type="submit" loading={submitted} disabled={submitted}>
           sign in
         </Button>
         <p>
