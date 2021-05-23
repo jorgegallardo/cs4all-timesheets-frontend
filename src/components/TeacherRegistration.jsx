@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
   Form,
   Button,
@@ -28,6 +28,10 @@ const TeacherRegistration = (props) => {
   const [gradesTaught, setGradesTaught] = useState([]);
   const [formValid, setFormValid] = useState(false);
   const history = useHistory();
+
+  const { search } = useLocation();
+  const urlParams = new URLSearchParams(search);
+  const isAdmin = !!urlParams.get('admin');
 
   useEffect(() => {
     if (email && password && firstName && lastName && fileNumber && cs4AllProgramTitle && cs4AllPointOfContact && school && gradesTaught.length > 0) {
@@ -89,7 +93,7 @@ const TeacherRegistration = (props) => {
     const newFilteredSchools = availableSchools.filter(s => s.district === district);
     setFilteredSchools(newFilteredSchools);
     setSchool('');
-  }, [district])
+  }, [district, availableSchools])
 
   const resetForm = () => {
     setEmail('');
@@ -271,17 +275,22 @@ const TeacherRegistration = (props) => {
       <Button attached="bottom" color="blue" onClick={handleRegistration} disabled={!formValid}>
         create an account
       </Button>
-      <Divider />
-      <h1>for dev purposes:</h1>
-      <Button
-        content="go to teacher dashboard"
-        onClick={() => history.push('/teacher')}
-      />
-      <Button
-        content="go to admin dashboard"
-        secondary
-        onClick={() => history.push('/admin')}
-      />
+
+      {isAdmin && (
+        <>
+          <Divider />
+          <h1>for dev purposes:</h1>
+          <Button
+            content="go to teacher dashboard"
+            onClick={() => history.push('/teacher')}
+          />
+          <Button
+            content="go to admin dashboard"
+            secondary
+            onClick={() => history.push('/admin')}
+          />
+        </>
+      )}
     </>
   );
 };

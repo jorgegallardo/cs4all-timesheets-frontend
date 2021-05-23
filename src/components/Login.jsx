@@ -8,7 +8,7 @@ import {
   Dropdown,
 } from 'semantic-ui-react';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import UserContext from '../store/user-context';
 
 const Login = (props) => {
@@ -24,6 +24,10 @@ const Login = (props) => {
     programTitle: '',
   });
   const { setUserData } = useContext(UserContext);
+
+  const { search } = useLocation();
+  const urlParams = new URLSearchParams(search);
+  const isAdmin = !!urlParams.get('admin');
 
   const resetForm = () => {
     setEmail('');
@@ -86,7 +90,7 @@ const Login = (props) => {
 
   return (
     <>
-      <h1>log in with your teacher account</h1>
+      <h1>log in</h1>
       <Form>
         <Form.Input
           label="Email Address"
@@ -120,87 +124,92 @@ const Login = (props) => {
           </span>
         </p>
       </Form>
-      <Divider />
-      <h1>for dev purposes:</h1>
-      <Button
-        content="go to teacher dashboard"
-        onClick={() => history.push('/teacher')}
-      />
-      <Button
-        content="go to admin dashboard"
-        secondary
-        onClick={() => history.push('/admin')}
-      />
-      <h1>create admin:</h1>
-      <Segment attached>
-        <Form>
-          <Grid stackable columns={2}>
-            <Grid.Column>
-              <Form.Input
-                required
-                label="Email Address"
-                type="email"
-                value={adminDetails.email}
-                onChange={(e) =>
-                  setAdminDetails({ ...adminDetails, email: e.target.value })
-                }
-              />
-              <Form.Input
-                required
-                label="Password"
-                type="password"
-                value={adminDetails.password}
-                onChange={(e) =>
-                  setAdminDetails({ ...adminDetails, password: e.target.value })
-                }
-              />
-            </Grid.Column>
-            <Grid.Column>
-              <Form.Input
-                required
-                label="First Name"
-                type="text"
-                value={adminDetails.firstName}
-                onChange={(e) =>
-                  setAdminDetails({
-                    ...adminDetails,
-                    firstName: e.target.value,
-                  })
-                }
-              />
-              <Form.Input
-                required
-                label="Last Name"
-                type="text"
-                value={adminDetails.lastName}
-                onChange={(e) =>
-                  setAdminDetails({ ...adminDetails, lastName: e.target.value })
-                }
-              />
-              <Form.Field>
-                <label>CS4All Program</label>
-                <Dropdown
-                  placeholder="Select your program name."
-                  fluid
-                  selection
-                  options={cs4AllProgramOptions}
-                  onChange={(e, { value }) =>
-                    setAdminDetails({ ...adminDetails, programTitle: value })
-                  }
-                />
-              </Form.Field>
-            </Grid.Column>
-          </Grid>
-        </Form>
-      </Segment>
-      <Button
-        secondary
-        onClick={handleAdminRegistration}
-        type="submit"
-        attached="bottom"
-      >
-        create cs4all administrator account
-      </Button>
+      {isAdmin && (
+        <>
+          <Divider />
+            <h1>for dev purposes:</h1>
+            <Button
+              content="go to teacher dashboard"
+              onClick={() => history.push('/teacher')}
+            />
+            <Button
+              content="go to admin dashboard"
+              secondary
+              onClick={() => history.push('/admin')}
+            />
+            <h1>create admin:</h1>
+            <Segment attached>
+              <Form>
+                <Grid stackable columns={2}>
+                  <Grid.Column>
+                    <Form.Input
+                      required
+                      label="Email Address"
+                      type="email"
+                      value={adminDetails.email}
+                      onChange={(e) =>
+                        setAdminDetails({ ...adminDetails, email: e.target.value })
+                      }
+                    />
+                    <Form.Input
+                      required
+                      label="Password"
+                      type="password"
+                      value={adminDetails.password}
+                      onChange={(e) =>
+                        setAdminDetails({ ...adminDetails, password: e.target.value })
+                      }
+                    />
+                  </Grid.Column>
+                  <Grid.Column>
+                    <Form.Input
+                      required
+                      label="First Name"
+                      type="text"
+                      value={adminDetails.firstName}
+                      onChange={(e) =>
+                        setAdminDetails({
+                          ...adminDetails,
+                          firstName: e.target.value,
+                        })
+                      }
+                    />
+                    <Form.Input
+                      required
+                      label="Last Name"
+                      type="text"
+                      value={adminDetails.lastName}
+                      onChange={(e) =>
+                        setAdminDetails({ ...adminDetails, lastName: e.target.value })
+                      }
+                    />
+                    <Form.Field>
+                      <label>CS4All Program</label>
+                      <Dropdown
+                        placeholder="Select your program name."
+                        fluid
+                        selection
+                        options={cs4AllProgramOptions}
+                        onChange={(e, { value }) =>
+                          setAdminDetails({ ...adminDetails, programTitle: value })
+                        }
+                      />
+                    </Form.Field>
+                  </Grid.Column>
+                </Grid>
+              </Form>
+            </Segment>
+            <Button
+              secondary
+              onClick={handleAdminRegistration}
+              type="submit"
+              attached="bottom"
+            >
+              create cs4all administrator account
+            </Button>
+        </>
+      )}
+      
     </>
   );
 };
