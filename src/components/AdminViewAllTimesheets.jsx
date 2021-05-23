@@ -3,9 +3,50 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
 
+const filterByOptions = [
+  'view all',
+  'integrated units',
+  'courses',
+  'sepjr',
+  'cs leads',
+  'pending approval',
+  'approved, processing',
+  'processed',
+  'denied',
+];
+
 const AdminAllTimesheets = () => {
   const [timesheets, setTimesheets] = useState([]);
+  const [filteredTimesheets, setFilteredTimesheets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filterBy, setFilterBy] = useState(filterByOptions[0]);
+
+  useEffect(() => {
+    const newFilteredTimesheets = [...timesheets].filter(timesheet => {
+      const categories = timesheet.events.map(event => event.event.category);
+      if (filterBy === 'view all') {
+        return true;
+      } else if (filterBy === 'integrated units' && categories.indexOf('units') >= 0) {
+        return true;
+      } else if (filterBy === 'courses' && categories.indexOf('courses') >= 0) {
+        return true;
+      } else if (filterBy === 'sepjr' && categories.indexOf('sep-jr') >= 0) {
+        return true;
+      } else if (filterBy === 'cs leads' && categories.indexOf('cs-leads') >= 0) {
+        return true;
+      } else if (filterBy === 'pending approval' && timesheet.status === 'pending') {
+        return true;
+      } else if (filterBy === 'approved, processing' && timesheet.status === 'approved') {
+        return true;
+      } else if (filterBy === 'processed' && timesheet.status === 'processed') {
+        return true;
+      } else if (filterBy === 'denied' && timesheet.status === 'denied') {
+        return true;
+      }
+      return false;
+    });
+    setFilteredTimesheets(newFilteredTimesheets);
+  }, [timesheets, filterBy]);
 
   useEffect(() => {
     fetchTeacherTimesheets();
@@ -38,7 +79,7 @@ const AdminAllTimesheets = () => {
     <>
       <h2>all timesheets</h2>
       <Dropdown
-        text="Filter"
+        text={'Filter: ' + filterBy}
         icon="filter"
         floating
         labeled
@@ -50,15 +91,9 @@ const AdminAllTimesheets = () => {
           <Input icon="search" iconPosition="left" name="search" />
           <Dropdown.Header icon="tags" content="Filter by" />
           <Dropdown.Divider />
-          <Dropdown.Item>view all</Dropdown.Item>
-          <Dropdown.Item>integrated units</Dropdown.Item>
-          <Dropdown.Item>courses</Dropdown.Item>
-          <Dropdown.Item>sepjr</Dropdown.Item>
-          <Dropdown.Item>cs leads</Dropdown.Item>
-          <Dropdown.Item>pending approval</Dropdown.Item>
-          <Dropdown.Item>approved, processing</Dropdown.Item>
-          <Dropdown.Item>processed</Dropdown.Item>
-          <Dropdown.Item>denied</Dropdown.Item>
+          {filterByOptions.map((option, index) => {
+            return (<Dropdown.Item key={index} onClick={() => setFilterBy(option)}>{option}</Dropdown.Item>);
+          })}
         </Dropdown.Menu>
       </Dropdown>
 
@@ -74,32 +109,29 @@ const AdminAllTimesheets = () => {
           </Table.Row>
         </Table.Header>
 
-        {timesheets.length === 0 ? (
-          <h1>loading...</h1>
-        ) : (
-          <Table.Body>
-            {timesheets.map((timesheet) => (
-              <Table.Row key={timesheet._id}>
-                <Table.Cell>
-                  {format(parseISO(timesheet.events[0].begin), 'MM/dd/yy')}
-                </Table.Cell>
-                <Table.Cell>{timesheet.events[0].event.category}</Table.Cell>
-                <Table.Cell>{timesheet.events[0].event.title}</Table.Cell>
-                <Table.Cell>
-                  {timesheet.teacher.firstName} {timesheet.teacher.lastName}
-                </Table.Cell>
-                <Table.Cell>
-                  <Button size="mini" color="purple" onClick={() => {
-                      window.open(timesheet.filename);
-                    }}>
-                    view
-                  </Button>
-                </Table.Cell>
-                <Table.Cell>{timesheet.status}</Table.Cell>
-              </Table.Row>
-            ))}
-          </Table.Body>
-        )}
+
+        <Table.Body>
+          {filteredTimesheets.map((timesheet) => (
+            <Table.Row key={timesheet._id}>
+              <Table.Cell>
+                {format(parseISO(timesheet.events[0].begin), 'MM/dd/yy')}
+              </Table.Cell>
+              <Table.Cell>{timesheet.events[0].event.category}</Table.Cell>
+              <Table.Cell>{timesheet.events[0].event.title}</Table.Cell>
+              <Table.Cell>
+                {timesheet.teacher.firstName} {timesheet.teacher.lastName}
+              </Table.Cell>
+              <Table.Cell>
+                <Button size="mini" color="purple" onClick={() => {
+                    window.open(timesheet.filename);
+                  }}>
+                  view
+                </Button>
+              </Table.Cell>
+              <Table.Cell>{timesheet.status}</Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
       </Table>
     </>
   );
