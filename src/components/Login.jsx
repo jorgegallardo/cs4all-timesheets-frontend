@@ -106,7 +106,7 @@ const Login = (props) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button color="blue" onClick={handleLogin} type="submit">
+            <Button color="blue" onClick={handleLogin} type="submit" loading={submitted}>
               sign in
             </Button>
             <p>
