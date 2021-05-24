@@ -13,12 +13,11 @@ const TeacherTimesheetGenerator = (props) => {
   const [events, setEvents] = useState([]);
   const [value, setValue] = useState('1');
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [selectedEventOriginalTimes, setSelectedEventOriginalTimes] = useState(null);
+  const [selectedEventOriginalTimes, setSelectedEventOriginalTimes] =
+    useState(null);
   const [selectedBeginTime, setSelectedBeginTime] = useState(new Date());
   const [selectedEndTime, setSelectedEndTime] = useState(new Date());
-
   const handleSelectedEventChange = (event, { value }) => {
-    console.log('value=', value);
     const selectedEvent = events.find((e) => e._id === value);
     setSelectedEvent(selectedEvent);
     setSelectedBeginTime(parseISO(selectedEvent.begin));
@@ -38,12 +37,14 @@ const TeacherTimesheetGenerator = (props) => {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/events?skipSubmittedEvents=true', {
-        headers: {
-          'Authorization': localStorage.getItem('token')
+      const response = await axios.get(
+        process.env.REACT_APP_API_SERVER + '/events?skipSubmittedEvents=true',
+        {
+          headers: {
+            Authorization: localStorage.getItem('token'),
+          },
         }
-      });
-      //console.log('response.data=', response.data);
+      );
       const events = response.data.map((event) => {
         return {
           ...event,
@@ -54,12 +55,11 @@ const TeacherTimesheetGenerator = (props) => {
           endTime: format(parseISO(event.end), 'HH:mm'),
         };
       });
-      //console.log('events=', events);
+
       setEvents(events);
       setLoading(false);
     } catch (error) {
-      console.log('unable to retrieve events');
-      console.log(error);
+      console.error('unable to retrieve events: ' + error);
     }
   };
 
@@ -87,12 +87,9 @@ const TeacherTimesheetGenerator = (props) => {
         return;
       }
       const dataUrl = signaturePad.toDataURL();
-
-      console.log('selectedEvent=', selectedEvent);
-
       setLoading(true);
-
-      const response = await axios.post(process.env.REACT_APP_API_SERVER + '/timesheets',
+      const response = await axios.post(
+        process.env.REACT_APP_API_SERVER + '/timesheets',
         {
           signatureData: dataUrl,
           events: [
@@ -110,13 +107,12 @@ const TeacherTimesheetGenerator = (props) => {
           },
         }
       );
-
       signaturePad.clear();
       console.log(response.data);
       alert('timesheet submitted');
       onSubmitTimesheet();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       alert('something went wrong with the timesheet creation');
     } finally {
       setLoading(false);

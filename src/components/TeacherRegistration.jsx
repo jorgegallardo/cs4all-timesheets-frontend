@@ -175,9 +175,8 @@ const TeacherRegistration = (props) => {
       resetForm();
       alert('your account has been successfully created');
       history.push('/teacher');
-    } catch (err) {
-      alert('something went wrong');
-      console.log(err);
+    } catch (error) {
+      alert('something went wrong: ' + error);
     } finally {
       setSubmitted(false);
     }
@@ -295,7 +294,13 @@ const TeacherRegistration = (props) => {
           </Grid>
         </Form>
       </Segment>
-      <Button attached="bottom" color="blue" onClick={handleRegistration} disabled={!formValid || submitted} loading={submitted}>
+      <Button
+        attached="bottom"
+        color="blue"
+        onClick={handleRegistration}
+        disabled={!formValid || submitted}
+        loading={submitted}
+      >
         create an account
       </Button>
 

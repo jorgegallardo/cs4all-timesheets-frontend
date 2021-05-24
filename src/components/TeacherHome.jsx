@@ -18,18 +18,17 @@ const TeacherHome = () => {
   useEffect(() => {
     const loadData = async () => {
       const token = localStorage.getItem('token');
-      console.log('token=', token);
-  
-      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/users/userInfo', {
-        headers: {
-          'Authorization': token
+      const response = await axios.get(
+        process.env.REACT_APP_API_SERVER + '/users/userInfo',
+        {
+          headers: {
+            Authorization: token,
+          },
         }
-      });
-
+      );
       const userInfo = response.data;
-  
+
       console.log('response=', response.data);
-  
       setUserData(userInfo);
       setLoading(false);
     };
@@ -51,7 +50,14 @@ const TeacherHome = () => {
         CS4All Program:<Label.Detail>{userData.programTitle}</Label.Detail>
       </Label>
       <Label basic>
-        CS4All Point of Contact:<Label.Detail>{userData.pointOfContact ? (userData.pointOfContact.firstName + ' ' + userData.pointOfContact.lastName) : ''}</Label.Detail>
+        CS4All Point of Contact:
+        <Label.Detail>
+          {userData.pointOfContact
+            ? userData.pointOfContact.firstName +
+              ' ' +
+              userData.pointOfContact.lastName
+            : ''}
+        </Label.Detail>
       </Label>
       <Divider />
       <TeacherMenu />

@@ -52,8 +52,7 @@ const AdminTimesheetApproval = () => {
 
       setTimesheets(timesheets);
     } catch (error) {
-      console.log('unable to retrieve timesheets');
-      console.log(error);
+      console.error('unable to retrieve timesheets: ' + error);
     } finally {
       setLoading(false);
     }
@@ -62,7 +61,8 @@ const AdminTimesheetApproval = () => {
   const executeApproval = async (timesheet) => {
     setLoading(true);
 
-    const response = await axios.post(process.env.REACT_APP_API_SERVER + '/timesheets/approve',
+    const response = await axios.post(
+      process.env.REACT_APP_API_SERVER + '/timesheets/approve',
       {
         timesheetId: timesheet._id,
       },
@@ -73,8 +73,7 @@ const AdminTimesheetApproval = () => {
       }
     );
 
-    console.log('response.data=', response.data);
-
+    console.log('response=' + response);
     alert('timesheet approved');
     setLoading(false);
   };
@@ -96,7 +95,8 @@ const AdminTimesheetApproval = () => {
 
     const dataUrl = signaturePad.toDataURL();
 
-    const response = await axios.put(process.env.REACT_APP_API_SERVER + '/users/signature',
+    const response = await axios.put(
+      process.env.REACT_APP_API_SERVER + '/users/signature',
       {
         signatureData: dataUrl,
       },
@@ -110,10 +110,10 @@ const AdminTimesheetApproval = () => {
     signaturePad.clear();
     console.log(response.data);
     const signatureFilename = response.data.signatureFilename;
-    setUserData(currUserData => {
+    setUserData((currUserData) => {
       return {
         ...currUserData,
-        signatureFilename
+        signatureFilename,
       };
     });
     await executeApproval(timesheet);
@@ -123,7 +123,7 @@ const AdminTimesheetApproval = () => {
   };
 
   if (!loading && timesheets.length === 0) {
-    return <div>No timesheets</div>
+    return <div>No timesheets awaiting approval!</div>;
   }
 
   return (
@@ -173,8 +173,11 @@ const AdminTimesheetApproval = () => {
                     {timesheet.teacher.firstName} {timesheet.teacher.lastName}
                   </Table.Cell>
                   <Table.Cell>
-
-                    <Button size="mini" color="purple" onClick={() => setTimesheetOpen(true)}>
+                    <Button
+                      size="mini"
+                      color="purple"
+                      onClick={() => setTimesheetOpen(true)}
+                    >
                       view
                     </Button>
 
@@ -204,7 +207,10 @@ const AdminTimesheetApproval = () => {
                         ></iframe>
                       </Modal.Content>
                       <Modal.Actions>
-                        <Button color="red" onClick={() => setTimesheetOpen(false)}>
+                        <Button
+                          color="red"
+                          onClick={() => setTimesheetOpen(false)}
+                        >
                           Deny
                         </Button>
                         <Button
@@ -228,7 +234,8 @@ const AdminTimesheetApproval = () => {
                         <Modal.Content>
                           <Modal.Description>
                             <Header>
-                              Sign here to save your signature and approve this timesheet
+                              Sign here to save your signature and approve this
+                              timesheet
                             </Header>
                             <canvas
                               ref={canvas}
@@ -242,7 +249,10 @@ const AdminTimesheetApproval = () => {
                           </Modal.Description>
                         </Modal.Content>
                         <Modal.Actions>
-                          <Button color="red" onClick={() => setSignatureOpen(false)}>
+                          <Button
+                            color="red"
+                            onClick={() => setSignatureOpen(false)}
+                          >
                             Cancel
                           </Button>
                           <Button
@@ -255,7 +265,6 @@ const AdminTimesheetApproval = () => {
                           />
                         </Modal.Actions>
                       </Modal>
-
                     </Modal>
                   </Table.Cell>
                   <Table.Cell>

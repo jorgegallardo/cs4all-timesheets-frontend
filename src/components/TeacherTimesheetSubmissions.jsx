@@ -18,7 +18,7 @@ const TeacherTimesheetSubmissions = () => {
         }
       );
       const timesheets = response.data;
-      console.log('timesheets=', timesheets);
+
       setTimesheets(timesheets);
       setLoading(false);
     };

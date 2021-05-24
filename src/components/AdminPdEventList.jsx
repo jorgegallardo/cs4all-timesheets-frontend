@@ -29,10 +29,13 @@ const PdEventList = () => {
   const { userData } = useContext(UserContext);
 
   useEffect(() => {
-    const newFilteredEvents = [...events].filter(event => {
+    const newFilteredEvents = [...events].filter((event) => {
       if (filterBy === 'all events') {
         return true;
-      } else if (filterBy === 'integrated units' && event.category === 'units') {
+      } else if (
+        filterBy === 'integrated units' &&
+        event.category === 'units'
+      ) {
         return true;
       } else if (filterBy === 'courses' && event.category === 'courses') {
         return true;
@@ -40,7 +43,10 @@ const PdEventList = () => {
         return true;
       } else if (filterBy === 'cs leads' && event.category === 'cs-leads') {
         return true;
-      } else if (filterBy === 'events that I facilitated' && event.facilitators.filter(f => f._id === userData._id).length > 0) {
+      } else if (
+        filterBy === 'events that I facilitated' &&
+        event.facilitators.filter((f) => f._id === userData._id).length > 0
+      ) {
         return true;
       }
       return false;
@@ -50,7 +56,9 @@ const PdEventList = () => {
 
   const loadData = async () => {
     try {
-      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/events');
+      const response = await axios.get(
+        process.env.REACT_APP_API_SERVER + '/events'
+      );
       const events = response.data.map((event) => {
         return {
           ...event,
@@ -62,11 +70,10 @@ const PdEventList = () => {
         };
       });
       setEvents(events);
-      setEditOpen(events.map(e => false));
+      setEditOpen(events.map((e) => false));
       setLoading(false);
     } catch (error) {
-      console.log('unable to retrieve events');
-      console.log(error);
+      console.error('unable to retrieve events: ' + error);
     }
   };
 
@@ -77,14 +84,17 @@ const PdEventList = () => {
   const handleSubmitEdit = async () => {
     try {
       setSubmitted(true);
-      console.log('newEvent=', newEvent);
-      const response = await axios.put(process.env.REACT_APP_API_SERVER + '/events/' + newEvent._id, newEvent, {
-        headers: {
-          'Authorization': localStorage.getItem('token')
+      const response = await axios.put(
+        process.env.REACT_APP_API_SERVER + '/events/' + newEvent._id,
+        newEvent,
+        {
+          headers: {
+            Authorization: localStorage.getItem('token'),
+          },
         }
-      });
+      );
       console.log('status=', response.status);
-      setEditOpen(events.map(e => false));
+      setEditOpen(events.map((e) => false));
       loadData();
     } finally {
       setSubmitted(false);
@@ -108,7 +118,11 @@ const PdEventList = () => {
           <Dropdown.Header icon="tags" content="Filter by" />
           <Dropdown.Divider />
           {filterByOptions.map((option, index) => {
-            return (<Dropdown.Item key={index} onClick={() => setFilterBy(option)}>{option}</Dropdown.Item>);
+            return (
+              <Dropdown.Item key={index} onClick={() => setFilterBy(option)}>
+                {option}
+              </Dropdown.Item>
+            );
           })}
         </Dropdown.Menu>
       </Dropdown>
@@ -137,53 +151,63 @@ const PdEventList = () => {
                   <Table.Cell>{event.displayBegin}</Table.Cell>
                   <Table.Cell>{event.displayEnd}</Table.Cell>
                   <Table.Cell>
-                    {event.facilitators.map(
-                      (facilitator, index) => {
-                        return (
-                          <span key={facilitator._id}>
-                            {(index > 0 ? ', ' : '') +
-                              facilitator.firstName +
-                              ' ' +
-                              facilitator.lastName}
-                          </span>
-                        );
-                      }
-                    )}
+                    {event.facilitators.map((facilitator, index) => {
+                      return (
+                        <span key={facilitator._id}>
+                          {(index > 0 ? ', ' : '') +
+                            facilitator.firstName +
+                            ' ' +
+                            facilitator.lastName}
+                        </span>
+                      );
+                    })}
                   </Table.Cell>
                   <Table.Cell>
-                    <Button color="teal" compact onClick={() => setEditOpen(prevOpens => {
-                      const newEditOpens = [...prevOpens];
-                      newEditOpens[index] = true;
-                      return newEditOpens;
-                    })}>
+                    <Button
+                      color="teal"
+                      compact
+                      onClick={() =>
+                        setEditOpen((prevOpens) => {
+                          const newEditOpens = [...prevOpens];
+                          newEditOpens[index] = true;
+                          return newEditOpens;
+                        })
+                      }
+                    >
                       edit
                     </Button>
 
                     <Modal
                       closeIcon
                       open={editOpen[index]}
-                      onClose={() => setEditOpen(prevOpens => {
-                        const newEditOpens = [...prevOpens];
-                        newEditOpens[index] = false;
-                        return newEditOpens;
-                      })}
-                    >
-                      <Modal.Header>
-                        Edit your event
-                      </Modal.Header>
-                      <Modal.Content>
-                        <Modal.Description>
-
-                          <EditEvent event={event} onEventChange={(newEvent) => setNewEvent(newEvent)} />
-                          
-                        </Modal.Description>
-                      </Modal.Content>
-                      <Modal.Actions>
-                        <Button color="red" onClick={() => setEditOpen(prevOpens => {
+                      onClose={() =>
+                        setEditOpen((prevOpens) => {
                           const newEditOpens = [...prevOpens];
                           newEditOpens[index] = false;
                           return newEditOpens;
-                        })}>
+                        })
+                      }
+                    >
+                      <Modal.Header>Edit your event</Modal.Header>
+                      <Modal.Content>
+                        <Modal.Description>
+                          <EditEvent
+                            event={event}
+                            onEventChange={(newEvent) => setNewEvent(newEvent)}
+                          />
+                        </Modal.Description>
+                      </Modal.Content>
+                      <Modal.Actions>
+                        <Button
+                          color="red"
+                          onClick={() =>
+                            setEditOpen((prevOpens) => {
+                              const newEditOpens = [...prevOpens];
+                              newEditOpens[index] = false;
+                              return newEditOpens;
+                            })
+                          }
+                        >
                           Cancel
                         </Button>
                         <Button
@@ -196,13 +220,12 @@ const PdEventList = () => {
                         />
                       </Modal.Actions>
                     </Modal>
-
                   </Table.Cell>
                 </Table.Row>
               );
             })}
         </Table.Body>
-      </Table>      
+      </Table>
     </>
   );
 };

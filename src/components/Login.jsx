@@ -51,7 +51,6 @@ const Login = (props) => {
       );
       const token = response.data.token;
       const currentUser = response.data.currentUser;
-      console.log('currentUser=', currentUser);
       localStorage.setItem('token', token);
       setUserData(currentUser);
       resetForm();
@@ -79,9 +78,9 @@ const Login = (props) => {
       resetForm();
       alert('admin account successfully created');
       history.push('/admin');
-    } catch (err) {
+    } catch (error) {
       alert('something went wrong');
-      console.log(err);
+      console.error(error);
     }
   };
 
@@ -106,7 +105,12 @@ const Login = (props) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button color="blue" onClick={handleLogin} type="submit" loading={submitted}>
+            <Button
+              color="blue"
+              onClick={handleLogin}
+              type="submit"
+              loading={submitted}
+            >
               sign in
             </Button>
             <p>

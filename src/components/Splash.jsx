@@ -2,26 +2,26 @@ import timeImg from '../assets/images/time.jpg';
 import Homepage from './Homepage';
 
 const Splash = () => {
+  const divStyleForBrowser = {
+    backgroundImage:
+      'linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url(' +
+      timeImg +
+      ')',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    padding: '30px',
+    paddingRight: '150px',
+  };
+
   return (
     <>
-      <div
-        style={{
-          backgroundImage:
-            'linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url(' +
-            timeImg +
-            ')',
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: 'cover',
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'center',
-          padding: '30px',
-          paddingRight: '150px',
-        }}
-      >
+      <div style={divStyleForBrowser}>
         <div
           style={{
             textAlign: 'center',

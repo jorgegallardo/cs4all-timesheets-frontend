@@ -22,21 +22,37 @@ const AdminAllTimesheets = () => {
   const [filterBy, setFilterBy] = useState(filterByOptions[0]);
 
   useEffect(() => {
-    const newFilteredTimesheets = [...timesheets].filter(timesheet => {
-      const categories = timesheet.events.map(event => event.event.category);
+    fetchTeacherTimesheets();
+  }, []);
+
+  useEffect(() => {
+    const newFilteredTimesheets = [...timesheets].filter((timesheet) => {
+      const categories = timesheet.events.map((event) => event.event.category);
       if (filterBy === 'view all') {
         return true;
-      } else if (filterBy === 'integrated units' && categories.indexOf('units') >= 0) {
+      } else if (
+        filterBy === 'integrated units' &&
+        categories.indexOf('units') >= 0
+      ) {
         return true;
       } else if (filterBy === 'courses' && categories.indexOf('courses') >= 0) {
         return true;
       } else if (filterBy === 'sepjr' && categories.indexOf('sep-jr') >= 0) {
         return true;
-      } else if (filterBy === 'cs leads' && categories.indexOf('cs-leads') >= 0) {
+      } else if (
+        filterBy === 'cs leads' &&
+        categories.indexOf('cs-leads') >= 0
+      ) {
         return true;
-      } else if (filterBy === 'pending approval' && timesheet.status === 'pending') {
+      } else if (
+        filterBy === 'pending approval' &&
+        timesheet.status === 'pending'
+      ) {
         return true;
-      } else if (filterBy === 'approved, processing' && timesheet.status === 'approved') {
+      } else if (
+        filterBy === 'approved, processing' &&
+        timesheet.status === 'approved'
+      ) {
         return true;
       } else if (filterBy === 'processed' && timesheet.status === 'processed') {
         return true;
@@ -48,28 +64,23 @@ const AdminAllTimesheets = () => {
     setFilteredTimesheets(newFilteredTimesheets);
   }, [timesheets, filterBy]);
 
-  useEffect(() => {
-    fetchTeacherTimesheets();
-  }, []);
-
   const fetchTeacherTimesheets = async () => {
     try {
-      const response = await axios.get(process.env.REACT_APP_API_SERVER + '/timesheets',
+      const response = await axios.get(
+        process.env.REACT_APP_API_SERVER + '/timesheets',
         {
           headers: {
             Authorization: localStorage.getItem('token'),
           },
         }
       );
-      
       const timesheets = response.data;
 
       // we received a list of timesheets
       setTimesheets(timesheets);
       setLoading(false);
     } catch (error) {
-      console.log('unable to retrieve timesheets');
-      console.log(error);
+      console.error('unable to retrieve timesheets: ' + error);
     }
   };
 
@@ -92,7 +103,11 @@ const AdminAllTimesheets = () => {
           <Dropdown.Header icon="tags" content="Filter by" />
           <Dropdown.Divider />
           {filterByOptions.map((option, index) => {
-            return (<Dropdown.Item key={index} onClick={() => setFilterBy(option)}>{option}</Dropdown.Item>);
+            return (
+              <Dropdown.Item key={index} onClick={() => setFilterBy(option)}>
+                {option}
+              </Dropdown.Item>
+            );
           })}
         </Dropdown.Menu>
       </Dropdown>
@@ -109,7 +124,6 @@ const AdminAllTimesheets = () => {
           </Table.Row>
         </Table.Header>
 
-
         <Table.Body>
           {filteredTimesheets.map((timesheet) => (
             <Table.Row key={timesheet._id}>
@@ -122,9 +136,13 @@ const AdminAllTimesheets = () => {
                 {timesheet.teacher.firstName} {timesheet.teacher.lastName}
               </Table.Cell>
               <Table.Cell>
-                <Button size="mini" color="purple" onClick={() => {
+                <Button
+                  size="mini"
+                  color="purple"
+                  onClick={() => {
                     window.open(timesheet.filename);
-                  }}>
+                  }}
+                >
                   view
                 </Button>
               </Table.Cell>
