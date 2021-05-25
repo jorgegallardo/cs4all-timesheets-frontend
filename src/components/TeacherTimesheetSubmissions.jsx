@@ -26,43 +26,6 @@ const TeacherTimesheetSubmissions = () => {
     getData();
   }, []);
 
-  // useEffect(() => {
-  //   const hardcodedTimesheets = [
-  //     {
-  //       id: 1,
-  //       title: 'Intro to CS',
-  //       createdOn: '4/14/21',
-  //       date: '4/1/21',
-  //       firstName: 'dr.',
-  //       lastName: 'dre',
-  //       fileNumber: '888888',
-  //       programTitle: 'Integrated Units',
-  //       startTime: '3:00',
-  //       endTime: '4:00',
-  //       facilitators: ['bob', 'george'],
-  //       status: 'pending approval',
-  //       linkToTimesheetPdf: 'lol.pdf',
-  //     },
-  //     {
-  //       id: 2,
-  //       title: 'Abstraction',
-  //       createdOn: '4/16/21',
-  //       date: '4/2/21',
-  //       firstName: 'dr.',
-  //       lastName: 'dre',
-  //       fileNumber: '888888',
-  //       programTitle: 'Integrated Units',
-  //       startTime: '4:00',
-  //       endTime: '5:00',
-  //       facilitators: ['amy'],
-  //       status: 'pending approval',
-  //       linkToTimesheetPdf: 'haha.pdf',
-  //     },
-  //   ];
-  //   setTimesheets(hardcodedTimesheets);
-  //   setLoading(false);
-  // }, []);
-
   if (loading) return <h1>loading...</h1>;
 
   return (

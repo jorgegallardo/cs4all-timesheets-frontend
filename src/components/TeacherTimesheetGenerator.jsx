@@ -64,18 +64,6 @@ const TeacherTimesheetGenerator = (props) => {
   };
 
   const handleSubmit = async () => {
-    // steps:
-    // 1. on component load: grab/load the logged in user's (teacher) info.
-    // 2. on component load: hit the db and download the events that are relevant to that teacher
-    // 3. display events as radio button options
-    // 4. when a radio button is selected, load that info in preparation for POST request
-    // 5. frontend validation checks (empty signature, missing info (if db calls fail?), etc.) - disable submit timesheet button until everything is correctly filled out
-    // 6. submit timesheet --> POST request to /api/createtimesheet
-
-    // questions:
-    // 1. are we exposing too much about the backend to the clients?
-    // 2. is this where a react context comes into play... so that we have access to the user throughout the entire application (all child components) once they log in?
-
     if (loading) {
       return;
     }

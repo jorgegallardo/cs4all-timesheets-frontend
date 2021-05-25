@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Button, Divider } from 'semantic-ui-react';
+import { Button, Divider, Image, Header } from 'semantic-ui-react';
 import AdminViewAllTimesheets from './AdminViewAllTimesheets';
 import AdminPdEventCreator from './AdminPdEventCreator';
 import AdminPdEventList from './AdminPdEventList';
@@ -8,6 +8,7 @@ import AdminMenuBar from './AdminMenuBar';
 import { useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
 import UserContext from '../store/user-context';
+import jorge from '../assets/images/jorge.jpg';
 
 const AdminHome = () => {
   const history = useHistory();
@@ -53,9 +54,11 @@ const AdminHome = () => {
       <Button floated="right" onClick={() => handleLogout()}>
         Log Out
       </Button>
-      <h1>
-        welcome, {userData.firstName} ({userData.role} account)
-      </h1>
+      <Header as="h2">
+        <Image circular src={jorge} />
+        Welcome, {userData.firstName} ({userData.role})
+      </Header>
+
       <Divider />
       <AdminMenuBar
         activeTab={activeTab}

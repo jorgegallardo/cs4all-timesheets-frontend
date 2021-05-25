@@ -31,13 +31,6 @@ const AdminTimesheetApproval = () => {
     }
   }, [signatureOpen]);
 
-  const timesheetStatusOptions = [
-    { key: 1, text: 'pending', value: 1 },
-    { key: 2, text: 'approved', value: 2 },
-    { key: 3, text: 'processed', value: 3 },
-    { key: 4, text: 'denied', value: 4 },
-  ];
-
   const fetchTeacherTimesheets = async () => {
     try {
       const response = await axios.get(
@@ -123,12 +116,12 @@ const AdminTimesheetApproval = () => {
   };
 
   if (!loading && timesheets.length === 0) {
-    return <div>No timesheets awaiting approval!</div>;
+    return <div>Congrats, there are 0 timesheets awaiting approval!</div>;
   }
 
   return (
     <>
-      <h2>my teachers' timesheets</h2>
+      <h2>pending timesheets</h2>
       {
         <>
           <Dropdown
@@ -157,7 +150,6 @@ const AdminTimesheetApproval = () => {
                 <Table.HeaderCell>PD/Event Title</Table.HeaderCell>
                 <Table.HeaderCell>Teacher</Table.HeaderCell>
                 <Table.HeaderCell>Timesheet</Table.HeaderCell>
-                <Table.HeaderCell>Status</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
 
@@ -175,10 +167,10 @@ const AdminTimesheetApproval = () => {
                   <Table.Cell>
                     <Button
                       size="mini"
-                      color="purple"
+                      primary
                       onClick={() => setTimesheetOpen(true)}
                     >
-                      view
+                      view & approve or deny
                     </Button>
 
                     <Modal
@@ -266,18 +258,6 @@ const AdminTimesheetApproval = () => {
                         </Modal.Actions>
                       </Modal>
                     </Modal>
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Dropdown
-                      options={timesheetStatusOptions}
-                      selection
-                      fluid
-                      value={
-                        timesheetStatusOptions.find(
-                          (opt) => opt.text === timesheet.status
-                        ).value
-                      }
-                    />
                   </Table.Cell>
                 </Table.Row>
               ))}
