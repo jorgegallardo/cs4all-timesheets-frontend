@@ -1,5 +1,7 @@
 import timeImg from '../assets/images/time.jpg';
 import Homepage from './Homepage';
+import cs4allLogo from '../assets/images/cs4all_horizontal.png';
+import { Image } from 'semantic-ui-react';
 
 const Splash = () => {
   const divStyleForBrowser = {
@@ -21,6 +23,7 @@ const Splash = () => {
 
   return (
     <>
+      <Image src={cs4allLogo} style={{ position: 'fixed', zIndex: '100' }} />
       <div style={divStyleForBrowser}>
         <div
           style={{
