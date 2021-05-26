@@ -95,6 +95,14 @@ const PdEventCreator = ({ onEventCreated }) => {
     setOccurrences((occurrences) => {
       const newOccurrences = [...occurrences];
       newOccurrences[index].begin = newTime;
+      const totalHours =
+        Math.abs(newOccurrences[index].end - newOccurrences[index].begin) /
+        36e5;
+      if (totalHours > 5) {
+        newOccurrences[index].breakHours = 1;
+      } else {
+        newOccurrences[index].breakHours = 0;
+      }
       return newOccurrences;
     });
   };
@@ -103,6 +111,14 @@ const PdEventCreator = ({ onEventCreated }) => {
     setOccurrences((occurrences) => {
       const newOccurrences = [...occurrences];
       newOccurrences[index].end = newTime;
+      const totalHours =
+        Math.abs(newOccurrences[index].end - newOccurrences[index].begin) /
+        36e5;
+      if (totalHours > 5) {
+        newOccurrences[index].breakHours = 1;
+      } else {
+        newOccurrences[index].breakHours = 0;
+      }
       return newOccurrences;
     });
   };
