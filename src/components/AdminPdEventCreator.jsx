@@ -62,7 +62,8 @@ const PdEventCreator = ({ onEventCreated }) => {
       { facilitators, occurrences, category, eventTitle },
       { headers: { Authorization: localStorage.getItem('token') } }
     );
-    alert('event created!');
+    if (occurrences.length > 1) alert('events created');
+    else alert('event created');
     onEventCreated();
   };
 
