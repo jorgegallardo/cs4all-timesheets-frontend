@@ -18,7 +18,7 @@ const TeacherDetails = () => {
         }
       );
       const userStats = response.data;
-
+      console.log('received stats: ' + JSON.stringify(userStats));
       setStats(userStats);
     };
 

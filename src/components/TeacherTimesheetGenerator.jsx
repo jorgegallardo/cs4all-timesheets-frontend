@@ -158,7 +158,7 @@ const TeacherTimesheetGenerator = (props) => {
               <>
                 <Message
                   header="TIME ADJUSTMENT"
-                  content={`${selectedEvent.title} was held from ${selectedEventOriginalTimes.displayBegin}-${selectedEventOriginalTimes.displayEnd} on ${selectedEvent.displayDate}. However, if you entered the meeting late or left early, please change your start and end times below. All times will be matched to our Zoom attendance statistics for verification. Your timesheet will be denied if your start or end times are outside the margin of error.`}
+                  content={`${selectedEvent.title} was held from ${selectedEventOriginalTimes.displayBegin}-${selectedEventOriginalTimes.displayEnd} on ${selectedEvent.displayDate}. However, if you entered the meeting late or left early, please change your start and end times below, rounding to the nearest 15 minutes. All times will be matched to our Zoom attendance statistics for verification. Your timesheet will be DENIED if your start or end times are outside the margin of error.`}
                 />
 
                 <Form.Field width={3}>
@@ -168,7 +168,7 @@ const TeacherTimesheetGenerator = (props) => {
                     onChange={(date) => setSelectedBeginTime(date)}
                     showTimeSelect
                     showTimeSelectOnly
-                    timeIntervals={5}
+                    timeIntervals={15}
                     timeCaption="Start time"
                     dateFormat="h:mm aa"
                   />
@@ -180,7 +180,7 @@ const TeacherTimesheetGenerator = (props) => {
                     onChange={(date) => setSelectedEndTime(date)}
                     showTimeSelect
                     showTimeSelectOnly
-                    timeIntervals={5}
+                    timeIntervals={15}
                     timeCaption="End time"
                     dateFormat="h:mm aa"
                   />
