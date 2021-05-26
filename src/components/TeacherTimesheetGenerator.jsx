@@ -17,6 +17,12 @@ const TeacherTimesheetGenerator = (props) => {
     useState(null);
   const [selectedBeginTime, setSelectedBeginTime] = useState(new Date());
   const [selectedEndTime, setSelectedEndTime] = useState(new Date());
+
+  useEffect(() => {
+    setSignaturePad(new SignaturePad(canvas.current));
+    fetchEvents();
+  }, []);
+
   const handleSelectedEventChange = (event, { value }) => {
     const selectedEvent = events.find((e) => e._id === value);
     setSelectedEvent(selectedEvent);
@@ -29,11 +35,6 @@ const TeacherTimesheetGenerator = (props) => {
     });
     setValue(value);
   };
-
-  useEffect(() => {
-    setSignaturePad(new SignaturePad(canvas.current));
-    fetchEvents();
-  }, []);
 
   const fetchEvents = async () => {
     try {
@@ -67,7 +68,6 @@ const TeacherTimesheetGenerator = (props) => {
     if (loading) {
       return;
     }
-
     try {
       // add more frontend validation checks
       if (signaturePad.isEmpty()) {
@@ -158,33 +158,29 @@ const TeacherTimesheetGenerator = (props) => {
               <>
                 <Message
                   header="TIME ADJUSTMENT"
-                  content={`${selectedEvent.title} was held from ${selectedEventOriginalTimes.displayBegin}
-                  until ${selectedEventOriginalTimes.displayEnd} on ${selectedEvent.displayDate}. However,
-                  if you entered the meeting late or left early, please change
-                  your start and end times below. All times will be matched to
-                  our Zoom attendance statistics for verification. Your timesheet will be denied if your start or end times are outside the margin of error.`}
+                  content={`${selectedEvent.title} was held from ${selectedEventOriginalTimes.displayBegin}-${selectedEventOriginalTimes.displayEnd} on ${selectedEvent.displayDate}. However, if you entered the meeting late or left early, please change your start and end times below. All times will be matched to our Zoom attendance statistics for verification. Your timesheet will be denied if your start or end times are outside the margin of error.`}
                 />
 
                 <Form.Field width={3}>
-                  <label>Start Time</label>
+                  <label>Edit Your Start Time</label>
                   <DatePicker
                     selected={selectedBeginTime}
                     onChange={(date) => setSelectedBeginTime(date)}
                     showTimeSelect
                     showTimeSelectOnly
-                    timeIntervals={15}
+                    timeIntervals={5}
                     timeCaption="Start time"
                     dateFormat="h:mm aa"
                   />
                 </Form.Field>
                 <Form.Field width={3}>
-                  <label>End Time</label>
+                  <label>Edit Your End Time</label>
                   <DatePicker
                     selected={selectedEndTime}
                     onChange={(date) => setSelectedEndTime(date)}
                     showTimeSelect
                     showTimeSelectOnly
-                    timeIntervals={15}
+                    timeIntervals={5}
                     timeCaption="End time"
                     dateFormat="h:mm aa"
                   />
@@ -192,13 +188,8 @@ const TeacherTimesheetGenerator = (props) => {
                 <Message
                   color="yellow"
                   header="IMPORTANT"
-                  content="By signing below and pressing the submit timesheet button, you
-                  attest to attending the selected CS4All PD/event and understand that if you
-                  are lying, CS4All will sue you to the fullest extent possible
-                  under federal (and UFT) law."
+                  content="By signing below and pressing the submit timesheet button, you attest to attending the selected CS4All PD/event and understand that if you are lying, CS4All will sue you to the fullest extent possible under federal (and UFT) law."
                 />
-
-                <p></p>
               </>
             )}
 
