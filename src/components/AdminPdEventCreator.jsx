@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Form, Button, Radio, Segment, Divider, Grid, Icon } from 'semantic-ui-react';
+import {
+  Form,
+  Button,
+  Radio,
+  Segment,
+  Divider,
+  Grid,
+  Icon,
+} from 'semantic-ui-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import setHours from 'date-fns/setHours';
@@ -7,7 +15,7 @@ import setMinutes from 'date-fns/setMinutes';
 import axios from 'axios';
 
 const initialOccurrence = {
-  breakHours: 0
+  breakHours: 0,
 };
 
 const PdEventCreator = ({ onEventCreated }) => {
@@ -15,11 +23,14 @@ const PdEventCreator = ({ onEventCreated }) => {
   const [category, setCategory] = useState('');
   const [availableFacilitators, setAvailableFacilitators] = useState([]);
   const [facilitators, setFacilitators] = useState([]);
-  const [occurrences, setOccurrences] = useState([{...initialOccurrence}]);
+  const [occurrences, setOccurrences] = useState([{ ...initialOccurrence }]);
 
+  // fetch facilitators (admins) from the db on component load
   useEffect(() => {
-    const getData = async () => {
-      let response = await axios.get(process.env.REACT_APP_API_SERVER + '/users/admin');
+    const fetchFacilitators = async () => {
+      let response = await axios.get(
+        process.env.REACT_APP_API_SERVER + '/users/admin'
+      );
       const facilitators = response.data.map((user) => {
         return {
           key: user._id,
@@ -30,86 +41,83 @@ const PdEventCreator = ({ onEventCreated }) => {
       setAvailableFacilitators(facilitators);
     };
 
-    getData();
+    fetchFacilitators();
   }, []);
 
   const handlePdEventCreation = async () => {
-    if (!eventTitle || !category || facilitators.length === 0 || occurrences.length === 0 || occurrences.find(o => !o.begin || !o.end || (o.breakHours + '').length === 0 )) {
+    if (
+      !eventTitle ||
+      !category ||
+      facilitators.length === 0 ||
+      occurrences.length === 0 ||
+      occurrences.find(
+        (o) => !o.begin || !o.end || (o.breakHours + '').length === 0
+      )
+    ) {
       alert('Please fill out all fields');
       return;
     }
-
-    await axios.post(process.env.REACT_APP_API_SERVER + '/events/batch',
-      {
-        facilitators,
-        occurrences,
-        category,
-        eventTitle
-      },
-      {
-        headers: {
-          Authorization: localStorage.getItem('token'),
-        },
-      }
+    await axios.post(
+      process.env.REACT_APP_API_SERVER + '/events/batch',
+      { facilitators, occurrences, category, eventTitle },
+      { headers: { Authorization: localStorage.getItem('token') } }
     );
-
-    alert('event created!')
-
+    alert('event created!');
     onEventCreated();
   };
 
   const handleChangeCategory = (e, { value }) => setCategory(value);
 
   const handleAddOccurrence = () => {
-    setOccurrences(occurrences => {
-      const newOccurrences = occurrences.concat({...initialOccurrence});
+    setOccurrences((occurrences) => {
+      const newOccurrences = occurrences.concat({ ...initialOccurrence });
       return newOccurrences;
     });
   };
 
   const handleRemoveOccurrence = (index) => {
-    setOccurrences(occurrences => {
+    setOccurrences((occurrences) => {
       const newOccurrences = occurrences.filter((_, i) => i !== index);
       return newOccurrences;
     });
   };
 
   const handleChangeDate = (index, newDate) => {
-    setOccurrences(occurrences => {
+    setOccurrences((occurrences) => {
       const newOccurrences = [...occurrences];
-      newOccurrences[index].begin = newDate;
+      newOccurrences[index].begin = setHours(setMinutes(newDate, 0), 9);
+      newOccurrences[index].end = setHours(setMinutes(newDate, 0), 10);
       return newOccurrences;
     });
-  }
+  };
 
   const handleChangeBeginTime = (index, newTime) => {
-    setOccurrences(occurrences => {
+    setOccurrences((occurrences) => {
       const newOccurrences = [...occurrences];
       newOccurrences[index].begin = newTime;
       return newOccurrences;
     });
-  }
+  };
 
   const handleChangeEndTime = (index, newTime) => {
-    setOccurrences(occurrences => {
+    setOccurrences((occurrences) => {
       const newOccurrences = [...occurrences];
       newOccurrences[index].end = newTime;
       return newOccurrences;
     });
-  }
+  };
 
   const handleChangeBreakHours = (index, newBreakHours) => {
-    setOccurrences(occurrences => {
+    setOccurrences((occurrences) => {
       const newOccurrences = [...occurrences];
       newOccurrences[index].breakHours = newBreakHours;
       return newOccurrences;
     });
-  }
+  };
 
   return (
     <>
       <h2>pd/event creation form</h2>
-
       <Form>
         <Form.Group widths="equal">
           <Form.Input
@@ -118,20 +126,25 @@ const PdEventCreator = ({ onEventCreated }) => {
             required
             autoFocus
             value={eventTitle}
-            onChange={(e) => { setEventTitle(e.target.value); }}
+            onChange={(e) => {
+              setEventTitle(e.target.value);
+            }}
           />
           <Form.Select
             required
-            placeholder="select facilitator(s)"
             fluid
             multiple
             label="CS4All Facilitator(s)"
             options={availableFacilitators}
-            onChange={(e, { value }) => { setFacilitators(value); }}
+            onChange={(e, { value }) => {
+              setFacilitators(value);
+            }}
           />
         </Form.Group>
         <Form.Group inline>
-          <label>CS4All Program <span style={{color: 'red'}}>*</span></label>
+          <label>
+            CS4All Program <span style={{ color: 'red' }}>*</span>
+          </label>
           <Form.Field
             control={Radio}
             label="Integrated Units"
@@ -177,15 +190,24 @@ const PdEventCreator = ({ onEventCreated }) => {
                   <Grid.Column width={3}>
                     <Form.Field>
                       <label style={{ textAlign: 'center' }}>Occurrence</label>
-                      <h1 style={{ textAlign: 'center', margin: '0' }}>{index + 1}</h1>
+                      <h1 style={{ textAlign: 'center', margin: '0' }}>
+                        {index + 1}
+                      </h1>
                     </Form.Field>
                   </Grid.Column>
                   <Grid.Column width={3}>
                     <Form.Field required>
-                      <label style={{ textAlign: 'center' }}>PD/Event Date</label>
+                      <label style={{ textAlign: 'center' }}>
+                        PD/Event Date
+                      </label>
                       <DatePicker
                         selected={occurrence.begin}
-                        onChange={(date) => handleChangeDate(index, date)}
+                        onChange={(date) =>
+                          handleChangeDate(
+                            index,
+                            setHours(setMinutes(date, 0), 9)
+                          )
+                        }
                         placeholderText="Choose date"
                       />
                     </Form.Field>
@@ -201,8 +223,6 @@ const PdEventCreator = ({ onEventCreated }) => {
                         timeIntervals={30}
                         timeCaption="Start At"
                         dateFormat="h:mm aa"
-                        minTime={setHours(setMinutes(new Date(), 0), 8)}
-                        maxTime={setHours(setMinutes(new Date(), 0), 21)}
                         placeholderText="Choose start time"
                       />
                     </Form.Field>
@@ -218,8 +238,6 @@ const PdEventCreator = ({ onEventCreated }) => {
                         timeIntervals={30}
                         timeCaption="End At"
                         dateFormat="h:mm aa"
-                        minTime={setHours(setMinutes(new Date(), 0), 9)}
-                        maxTime={setHours(setMinutes(new Date(), 0), 21)}
                         placeholderText="Choose end time"
                       />
                     </Form.Field>
@@ -230,37 +248,48 @@ const PdEventCreator = ({ onEventCreated }) => {
                       <Form.Input
                         type="number"
                         required
-                        autoFocus
                         value={occurrence.breakHours}
-                        onChange={(e) => { handleChangeBreakHours(index, e.target.value); }}
+                        onChange={(e) => {
+                          handleChangeBreakHours(index, e.target.value);
+                        }}
                       />
                     </Form.Field>
                   </Grid.Column>
                   <Grid.Column width={1}>
-                    <div style={{
-                      width: '100%',
-                      height: '100%',
-                      display: 'flex',
-                      justifyContent: 'flex-start',
-                      alignItems: 'center'
-                    }}>
+                    <div
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                        alignItems: 'center',
+                      }}
+                    >
                       <h3
-                        style={{ textAlign: 'center', margin: '0', cursor: 'pointer' }}
-                        onClick={() => { handleRemoveOccurrence(index); }}
-                      ><Icon name="trash" /></h3>
+                        style={{
+                          textAlign: 'center',
+                          margin: '0',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => {
+                          handleRemoveOccurrence(index);
+                        }}
+                      >
+                        <Icon name="trash" />
+                      </h3>
                     </div>
                   </Grid.Column>
                 </Grid.Row>
               );
             })}
-            
           </Grid>
         </Segment>
-        <Button attached="bottom" onClick={() => handleAddOccurrence()}>add another occurrence of this event</Button>
-
+        <Button attached="bottom" onClick={() => handleAddOccurrence()}>
+          add occurrence
+        </Button>
         <Divider />
         <Button color="blue" onClick={handlePdEventCreation}>
-          create pd/event
+          {occurrences.length > 1 ? 'create pd/events' : 'create pd/event'}
         </Button>
       </Form>
     </>
