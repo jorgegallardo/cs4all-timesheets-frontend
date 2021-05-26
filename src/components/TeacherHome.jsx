@@ -28,7 +28,6 @@ const TeacherHome = () => {
       );
       const userInfo = response.data;
 
-      console.log('response=', response.data);
       setUserData(userInfo);
       setLoading(false);
     };

@@ -20,10 +20,10 @@ const TeacherMenu = () => {
         <Menu.Item
           name="approveTimesheets"
           onClick={() => {
-            history.push('/teacher/generateTimesheet');
-            setActiveTab('generateTimesheet')
+            history.push('/teacher/generate-timesheet');
+            setActiveTab('generate-timesheet');
           }}
-          active={activeTab === 'generateTimesheet'}
+          active={activeTab === 'generate-timesheet'}
         >
           <Icon name="plus" />
           submit timesheet
@@ -32,31 +32,33 @@ const TeacherMenu = () => {
         <Menu.Item
           name="viewAllTimesheets"
           onClick={() => {
-            history.push('/teacher/submittedTimesheets');
-            setActiveTab('submittedTimesheets')
+            history.push('/teacher/submitted-timesheets');
+            setActiveTab('submitted-timesheets');
           }}
-          active={activeTab === 'submittedTimesheets'}
+          active={activeTab === 'submitted-timesheets'}
         >
           <Icon name="list" />
           view submitted timesheets
         </Menu.Item>
         <Menu.Item
-          name="myDetails"
+          name="my-details"
           onClick={() => {
-            history.push('/teacher/myDetails');
-            setActiveTab('myDetails')
+            history.push('/teacher/my-details');
+            setActiveTab('my-details');
           }}
-          active={activeTab === 'myDetails'}
+          active={activeTab === 'my-details'}
         >
           <Icon name="info circle" />
           my details
         </Menu.Item>
       </Menu>
-      {activeTab === 'generateTimesheet' && (
-        <TeacherTimesheetGenerator onSubmitTimesheet={() => setActiveTab('submittedTimesheets')} />
+      {activeTab === 'generate-timesheet' && (
+        <TeacherTimesheetGenerator
+          onSubmitTimesheet={() => setActiveTab('submitted-timesheets')}
+        />
       )}
-      {activeTab === 'submittedTimesheets' && <TeacherTimesheetSubmissions />}
-      {activeTab === 'myDetails' && <TeacherDetails />}
+      {activeTab === 'submitted-timesheets' && <TeacherTimesheetSubmissions />}
+      {activeTab === 'my-details' && <TeacherDetails />}
     </>
   );
 };

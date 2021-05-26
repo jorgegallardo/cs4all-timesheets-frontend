@@ -13,13 +13,14 @@ import SignaturePad from 'signature_pad';
 import UserContext from '../store/user-context';
 
 const AdminTimesheetApproval = () => {
+  const { userData, setUserData } = useContext(UserContext);
   const [timesheets, setTimesheets] = useState([]);
+  const [selectedTimesheet, setSelectedTimesheet] = useState([]);
   const [timesheetOpen, setTimesheetOpen] = useState(false);
   const [signatureOpen, setSignatureOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
   const canvas = useRef(null);
   const [signaturePad, setSignaturePad] = useState(null);
-  const { userData, setUserData } = useContext(UserContext);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchTeacherTimesheets();
@@ -42,7 +43,6 @@ const AdminTimesheetApproval = () => {
         }
       );
       const timesheets = response.data;
-
       setTimesheets(timesheets);
     } catch (error) {
       console.error('unable to retrieve timesheets: ' + error);
@@ -53,7 +53,6 @@ const AdminTimesheetApproval = () => {
 
   const executeApproval = async (timesheet) => {
     setLoading(true);
-
     const response = await axios.post(
       process.env.REACT_APP_API_SERVER + '/timesheets/approve',
       {
@@ -65,9 +64,9 @@ const AdminTimesheetApproval = () => {
         },
       }
     );
-
     console.log('response=' + response);
     alert('timesheet approved');
+    fetchTeacherTimesheets();
     setLoading(false);
   };
 
@@ -85,9 +84,7 @@ const AdminTimesheetApproval = () => {
       alert('you forgot to sign the pad');
       return;
     }
-
     const dataUrl = signaturePad.toDataURL();
-
     const response = await axios.put(
       process.env.REACT_APP_API_SERVER + '/users/signature',
       {
@@ -99,172 +96,156 @@ const AdminTimesheetApproval = () => {
         },
       }
     );
-
     signaturePad.clear();
-    console.log(response.data);
     const signatureFilename = response.data.signatureFilename;
-    setUserData((currUserData) => {
+    setUserData((currentUserData) => {
       return {
-        ...currUserData,
+        ...currentUserData,
         signatureFilename,
       };
     });
     await executeApproval(timesheet);
-
     setSignatureOpen(false);
     setTimesheetOpen(false);
   };
 
-  if (!loading && timesheets.length === 0) {
-    return <div>Congrats, there are 0 timesheets awaiting approval!</div>;
-  }
-
-  return (
+  return !loading && timesheets.length === 0 ? (
+    <div>Congratulations, there are 0 timesheets awaiting approval!</div>
+  ) : (
     <>
       <h2>pending timesheets</h2>
-      {
-        <>
-          <Dropdown
-            text="Filter"
-            icon="filter"
-            floating
-            labeled
-            button
-            className="icon"
-          >
-            <Dropdown.Menu>
-              <Dropdown.Header content="Find Teacher" />
-              <Input icon="search" iconPosition="left" name="search" />
-              <Dropdown.Header icon="tags" content="Filter by" />
-              <Dropdown.Divider />
-              <Dropdown.Item>events i facilitated</Dropdown.Item>
-              <Dropdown.Item>my teachers</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+      <Dropdown
+        text="Filter"
+        icon="filter"
+        floating
+        labeled
+        button
+        className="icon"
+      >
+        <Dropdown.Menu>
+          <Dropdown.Header content="Find Teacher" />
+          <Input icon="search" iconPosition="left" name="search" />
+          <Dropdown.Header icon="tags" content="Filter by" />
+          <Dropdown.Divider />
+          <Dropdown.Item>events i facilitated</Dropdown.Item>
+          <Dropdown.Item>my teachers</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
 
-          <Table celled selectable>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Date</Table.HeaderCell>
-                <Table.HeaderCell>CS4All Program</Table.HeaderCell>
-                <Table.HeaderCell>PD/Event Title</Table.HeaderCell>
-                <Table.HeaderCell>Teacher</Table.HeaderCell>
-                <Table.HeaderCell>Timesheet</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
+      <Table celled selectable>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell>Date</Table.HeaderCell>
+            <Table.HeaderCell>CS4All Program</Table.HeaderCell>
+            <Table.HeaderCell>PD/Event Title</Table.HeaderCell>
+            <Table.HeaderCell>Teacher</Table.HeaderCell>
+            <Table.HeaderCell>Timesheet</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
 
-            <Table.Body>
-              {timesheets.map((timesheet) => (
-                <Table.Row negative key={timesheet._id}>
-                  <Table.Cell>
-                    {format(parseISO(timesheet.events[0].begin), 'MM/dd/yy')}
-                  </Table.Cell>
-                  <Table.Cell>{timesheet.events[0].event.category}</Table.Cell>
-                  <Table.Cell>{timesheet.events[0].event.title}</Table.Cell>
-                  <Table.Cell>
-                    {timesheet.teacher.firstName} {timesheet.teacher.lastName}
-                  </Table.Cell>
-                  <Table.Cell>
-                    <Button
-                      size="mini"
-                      primary
-                      onClick={() => setTimesheetOpen(true)}
-                    >
-                      view & approve or deny
+        <Table.Body>
+          {timesheets.map((timesheet) => (
+            <Table.Row negative key={timesheet._id}>
+              <Table.Cell>
+                {format(parseISO(timesheet.events[0].begin), 'MM/dd/yy')}
+              </Table.Cell>
+              <Table.Cell>{timesheet.events[0].event.category}</Table.Cell>
+              <Table.Cell>{timesheet.events[0].event.title}</Table.Cell>
+              <Table.Cell>
+                {timesheet.teacher.firstName} {timesheet.teacher.lastName}
+              </Table.Cell>
+              <Table.Cell>
+                <Button
+                  size="mini"
+                  primary
+                  onClick={() => {
+                    setSelectedTimesheet(timesheet);
+                    setTimesheetOpen(true);
+                  }}
+                >
+                  view & approve or deny
+                </Button>
+
+                <Modal
+                  closeIcon
+                  open={timesheetOpen}
+                  onClose={() => setTimesheetOpen(false)}
+                >
+                  <Modal.Header>
+                    Review Teacher Timesheet Submission
+                  </Modal.Header>
+                  <Modal.Content>
+                    <iframe
+                      title="teacher timesheet pdf"
+                      src={selectedTimesheet.filename + '#toolbar=0'}
+                      width="100%"
+                      height={window.document.body.clientHeight - 280}
+                    ></iframe>
+                  </Modal.Content>
+                  <Modal.Actions>
+                    <Button color="red" onClick={() => setTimesheetOpen(false)}>
+                      Deny
                     </Button>
+                    <Button
+                      content="One-Click Sign and Approve Timesheet"
+                      labelPosition="left"
+                      icon="checkmark"
+                      onClick={() => approveTimesheetHandler(selectedTimesheet)}
+                      positive
+                      loading={loading}
+                    />
+                  </Modal.Actions>
 
-                    <Modal
-                      closeIcon
-                      open={timesheetOpen}
-                      onClose={() => setTimesheetOpen(false)}
-                    >
-                      <Modal.Header>
-                        Review Teacher Timesheet Submission
-                      </Modal.Header>
-                      <Modal.Content>
-                        <Modal.Description>
-                          <Header>
-                            teacher timesheet PDF will be displayed here
-                          </Header>
-                          <p>
-                            note: perhaps we should add a note field in a future
-                            version IF the timesheet is to be denied
-                          </p>
-                        </Modal.Description>
-                        <iframe
-                          title="teacher timesheet pdf"
-                          src={timesheet.filename + '#toolbar=0'}
-                          width="100%"
-                          height="300px"
-                        ></iframe>
-                      </Modal.Content>
-                      <Modal.Actions>
-                        <Button
-                          color="red"
-                          onClick={() => setTimesheetOpen(false)}
-                        >
-                          Deny
-                        </Button>
-                        <Button
-                          content="One-Click Sign and Approve Timesheet"
-                          labelPosition="left"
-                          icon="checkmark"
-                          onClick={() => approveTimesheetHandler(timesheet)}
-                          positive
-                          loading={loading}
+                  <Modal
+                    closeIcon
+                    open={signatureOpen}
+                    onClose={() => setSignatureOpen(false)}
+                  >
+                    <Modal.Header>
+                      We need to add your signature on file
+                    </Modal.Header>
+                    <Modal.Content>
+                      <Modal.Description>
+                        <Header>
+                          Sign here to save your signature and approve this
+                          timesheet:
+                        </Header>
+                        <canvas
+                          ref={canvas}
+                          style={{
+                            border: '1px solid black',
+                            borderRadius: '5px',
+                          }}
+                          width="345"
+                          height="100"
                         />
-                      </Modal.Actions>
-
-                      <Modal
-                        closeIcon
-                        open={signatureOpen}
-                        onClose={() => setSignatureOpen(false)}
+                      </Modal.Description>
+                    </Modal.Content>
+                    <Modal.Actions>
+                      <Button
+                        color="red"
+                        onClick={() => setSignatureOpen(false)}
                       >
-                        <Modal.Header>
-                          We need to add your signature on file
-                        </Modal.Header>
-                        <Modal.Content>
-                          <Modal.Description>
-                            <Header>
-                              Sign here to save your signature and approve this
-                              timesheet
-                            </Header>
-                            <canvas
-                              ref={canvas}
-                              style={{
-                                border: '1px solid black',
-                                borderRadius: '5px',
-                              }}
-                              width="345"
-                              height="100"
-                            />
-                          </Modal.Description>
-                        </Modal.Content>
-                        <Modal.Actions>
-                          <Button
-                            color="red"
-                            onClick={() => setSignatureOpen(false)}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            content="Approve Timesheet"
-                            labelPosition="left"
-                            icon="checkmark"
-                            onClick={() => submitSignatureHandler(timesheet)}
-                            positive
-                            loading={loading}
-                          />
-                        </Modal.Actions>
-                      </Modal>
-                    </Modal>
-                  </Table.Cell>
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
-        </>
-      }
+                        Cancel
+                      </Button>
+                      <Button
+                        content="Approve Timesheet"
+                        labelPosition="left"
+                        icon="checkmark"
+                        onClick={() =>
+                          submitSignatureHandler(selectedTimesheet)
+                        }
+                        positive
+                        loading={loading}
+                      />
+                    </Modal.Actions>
+                  </Modal>
+                </Modal>
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
     </>
   );
 };

@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 import TeacherHome from './components/TeacherHome';
 import AdminHome from './components/AdminHome';
@@ -8,7 +13,7 @@ import { useState } from 'react';
 import Splash from './components/Splash';
 
 const App = () => {
-  const [userData, setUserData] = useState("en");
+  const [userData, setUserData] = useState('en');
   const value = { userData, setUserData };
 
   return (
