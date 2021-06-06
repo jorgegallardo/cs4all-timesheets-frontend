@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { parseISO, format } from 'date-fns';
 import { useState, useEffect } from 'react';
 import { Button, Table } from 'semantic-ui-react';
 
@@ -18,7 +17,6 @@ const TeacherTimesheetSubmissions = () => {
         }
       );
       const timesheets = response.data;
-
       setTimesheets(timesheets);
       setLoading(false);
     };
@@ -27,7 +25,6 @@ const TeacherTimesheetSubmissions = () => {
   }, []);
 
   if (loading) return <h1>loading...</h1>;
-
   return (
     <>
       <h2>previously submitted timesheets</h2>
@@ -35,12 +32,9 @@ const TeacherTimesheetSubmissions = () => {
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Submitted On</Table.HeaderCell>
-            <Table.HeaderCell>PD/Event Title</Table.HeaderCell>
-            <Table.HeaderCell>Date</Table.HeaderCell>
-            <Table.HeaderCell>Start Time</Table.HeaderCell>
-            <Table.HeaderCell>End Time</Table.HeaderCell>
-            <Table.HeaderCell>Facilitator(s)</Table.HeaderCell>
-            <Table.HeaderCell>Timesheet</Table.HeaderCell>
+            <Table.HeaderCell>PD/Event(s)</Table.HeaderCell>
+
+            <Table.HeaderCell>Timesheet PDF</Table.HeaderCell>
             <Table.HeaderCell>Payment Status</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
@@ -50,30 +44,8 @@ const TeacherTimesheetSubmissions = () => {
             return (
               <Table.Row key={timesheet._id}>
                 <Table.Cell>{timesheet.created}</Table.Cell>
-                <Table.Cell>{timesheet.events[0].event.title}</Table.Cell>
-                <Table.Cell>
-                  {format(parseISO(timesheet.events[0].begin), 'MM/dd/yy')}
-                </Table.Cell>
-                <Table.Cell>
-                  {format(parseISO(timesheet.events[0].begin), 'h:mm aaa')}
-                </Table.Cell>
-                <Table.Cell>
-                  {format(parseISO(timesheet.events[0].end), 'h:mm aaa')}
-                </Table.Cell>
-                <Table.Cell>
-                  {timesheet.events[0].event.facilitators.map(
-                    (facilitator, index) => {
-                      return (
-                        <span key={facilitator._id}>
-                          {(index > 0 ? ', ' : '') +
-                            facilitator.firstName +
-                            ' ' +
-                            facilitator.lastName}
-                        </span>
-                      );
-                    }
-                  )}
-                </Table.Cell>
+                <Table.Cell>{'insert pd/event title(s)'}</Table.Cell>
+
                 <Table.Cell>
                   <Button
                     size="mini"

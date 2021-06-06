@@ -1,6 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import SignaturePad from 'signature_pad';
-import { Message, Button, Form, Radio, Step, Segment } from 'semantic-ui-react';
+import {
+  Message,
+  Button,
+  Form,
+  Radio,
+  Step,
+  Segment,
+  Checkbox,
+} from 'semantic-ui-react';
 import axios from 'axios';
 import { parseISO, format } from 'date-fns';
 import DatePicker from 'react-datepicker';
@@ -17,6 +25,8 @@ const TeacherTimesheetGenerator = (props) => {
     useState(null);
   const [selectedBeginTime, setSelectedBeginTime] = useState(new Date());
   const [selectedEndTime, setSelectedEndTime] = useState(new Date());
+
+  const [selectedEvents, setSelectedEvents] = useState([]);
 
   useEffect(() => {
     setSignaturePad(new SignaturePad(canvas.current));
@@ -107,6 +117,50 @@ const TeacherTimesheetGenerator = (props) => {
     }
   };
 
+  const handleMultipleSelect = (event) => {
+    const currentIndex = selectedEvents.indexOf(event);
+    const checkedEvents = [...selectedEvents];
+    if (currentIndex === -1) checkedEvents.push(event);
+    else checkedEvents.splice(currentIndex, 1);
+    setSelectedEvents(checkedEvents);
+  };
+
+  const handleMultipleSubmit = async () => {
+    if (loading) {
+      return;
+    }
+    try {
+      // add more frontend validation checks
+      if (signaturePad.isEmpty()) {
+        alert('you forgot to sign the pad');
+        return;
+      }
+      const dataUrl = signaturePad.toDataURL();
+      setLoading(true);
+      const response = await axios.post(
+        process.env.REACT_APP_API_SERVER + '/timesheets/multiple',
+        {
+          signatureData: dataUrl,
+          events: selectedEvents,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem('token'),
+          },
+        }
+      );
+      signaturePad.clear();
+      console.log(response.data);
+      alert('timesheet submitted');
+      onSubmitTimesheet();
+    } catch (error) {
+      console.error(error);
+      alert('something went wrong with the timesheet creation');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <h2>instructions</h2>
@@ -140,7 +194,8 @@ const TeacherTimesheetGenerator = (props) => {
           </Step>
         </Step.Group>
 
-        <Segment attached>
+        {/* submit timesheet for one event - radio button
+        <Segment attached="bottom">
           <Form>
             {events.map((event) => (
               <Form.Field key={event._id}>
@@ -208,6 +263,79 @@ const TeacherTimesheetGenerator = (props) => {
               </Form.Field>
             </Form.Group>
             <Button onClick={handleSubmit} primary loading={loading}>
+              submit timesheet
+            </Button>
+            <Button onClick={() => signaturePad.clear()}>
+              clear signature pad
+            </Button>
+          </Form>
+        </Segment> */}
+
+        <Segment attached="bottom">
+          <Form>
+            {events.map((event) => (
+              <Form.Field key={event._id}>
+                <Checkbox
+                  label={`${event.displayDate} - ${event.category}: ${event.title} [${event.displayBegin}-${event.displayEnd}]`}
+                  onChange={() => handleMultipleSelect(event)}
+                />
+              </Form.Field>
+            ))}
+
+            {/* {selectedEvent && (     GOTTA FIGURE OUT HOW TO LET TEACHERS EDIT MULTIPLE EVENT TIMES
+              <>
+                <Message
+                  header="TIME ADJUSTMENT"
+                  content={`${selectedEvent.title} was held from ${selectedEventOriginalTimes.displayBegin}-${selectedEventOriginalTimes.displayEnd} on ${selectedEvent.displayDate}. However, if you entered the meeting late or left early, please change your start and end times below, rounding to the nearest 15 minutes. All times will be matched to our Zoom attendance statistics for verification. Your timesheet will be DENIED if your start or end times are outside the margin of error.`}
+                />
+
+                <Form.Field width={3}>
+                  <label>Edit Your Start Time</label>
+                  <DatePicker
+                    selected={selectedBeginTime}
+                    onChange={(date) => setSelectedBeginTime(date)}
+                    showTimeSelect
+                    showTimeSelectOnly
+                    timeIntervals={15}
+                    timeCaption="Start time"
+                    dateFormat="h:mm aa"
+                  />
+                </Form.Field>
+                <Form.Field width={3}>
+                  <label>Edit Your End Time</label>
+                  <DatePicker
+                    selected={selectedEndTime}
+                    onChange={(date) => setSelectedEndTime(date)}
+                    showTimeSelect
+                    showTimeSelectOnly
+                    timeIntervals={15}
+                    timeCaption="End time"
+                    dateFormat="h:mm aa"
+                  />
+                </Form.Field>
+                <Message
+                  color="yellow"
+                  header="IMPORTANT"
+                  content="By signing below and pressing the submit timesheet button, you attest to attending the selected CS4All PD/event and understand that if you are lying, CS4All will sue you to the fullest extent possible under federal (and UFT) law."
+                />
+              </>
+            )} */}
+
+            <Form.Group>
+              <Form.Field>
+                <h5 style={{ marginBottom: '4px' }}>Sign Below</h5>
+                <canvas
+                  ref={canvas}
+                  style={{
+                    border: '1px solid black',
+                    borderRadius: '5px',
+                  }}
+                  width="345"
+                  height="100"
+                />
+              </Form.Field>
+            </Form.Group>
+            <Button onClick={handleMultipleSubmit} primary loading={loading}>
               submit timesheet
             </Button>
             <Button onClick={() => signaturePad.clear()}>
