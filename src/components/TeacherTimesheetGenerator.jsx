@@ -57,6 +57,7 @@ const TeacherTimesheetGenerator = (props) => {
       const events = response.data.map((event) => {
         return {
           ...event,
+          event: event._id,
           displayBegin: format(parseISO(event.begin), 'h:mm aaa'),
           displayEnd: format(parseISO(event.end), 'h:mm aaa'),
           displayDate: format(parseISO(event.begin), 'MM/dd/yy'),
