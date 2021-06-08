@@ -33,8 +33,9 @@ const TeacherTimesheetSubmissions = () => {
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Submitted On</Table.HeaderCell>
-            <Table.HeaderCell>PD/Event(s) Title(s)</Table.HeaderCell>
+            <Table.HeaderCell>Number of Events</Table.HeaderCell>
             <Table.HeaderCell>PD/Event Date(s)</Table.HeaderCell>
+            <Table.HeaderCell>PD/Events Title(s)</Table.HeaderCell>
             <Table.HeaderCell>Timesheet PDF</Table.HeaderCell>
             <Table.HeaderCell>Payment Status</Table.HeaderCell>
           </Table.Row>
@@ -47,7 +48,8 @@ const TeacherTimesheetSubmissions = () => {
                 <Table.Cell>
                   {format(parseISO(timesheet.created), 'MM/dd/yyyy')}
                 </Table.Cell>
-                <Table.Cell>{'insert here'}</Table.Cell>
+                <Table.Cell>{timesheet.events.length}</Table.Cell>
+
                 <Table.Cell>
                   {timesheet.events.map((event, index) => {
                     return `${index > 0 ? ', ' : ''} ${format(
@@ -57,6 +59,11 @@ const TeacherTimesheetSubmissions = () => {
                   })}
                 </Table.Cell>
                 <Table.Cell>
+                  {timesheet.events.map(
+                    (e, index) => `${index > 0 ? ', ' : ''}${e.event.title}`
+                  )}
+                </Table.Cell>
+                <Table.Cell>
                   <Button
                     size="mini"
                     color="purple"
@@ -64,7 +71,7 @@ const TeacherTimesheetSubmissions = () => {
                       window.open(timesheet.filename);
                     }}
                   >
-                    download
+                    view
                   </Button>
                 </Table.Cell>
                 <Table.Cell>{timesheet.status}</Table.Cell>

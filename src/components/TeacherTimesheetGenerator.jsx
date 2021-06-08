@@ -343,6 +343,7 @@ const TeacherTimesheetGenerator = (props) => {
           </Form>
         </Segment>
       </div>
+      <pre>{JSON.stringify(events, null, 2)}</pre>
     </>
   );
 };

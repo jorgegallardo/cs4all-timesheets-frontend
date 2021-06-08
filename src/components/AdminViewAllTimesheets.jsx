@@ -45,44 +45,44 @@ const AdminAllTimesheets = () => {
     fetchTeacherTimesheets();
   }, []);
 
-  // useEffect(() => {
-  //   const newFilteredTimesheets = [...timesheets].filter((timesheet) => {
-  //     const categories = timesheet.events.map((event) => event.event.category);
-  //     if (filterBy === 'view all') {
-  //       return true;
-  //     } else if (
-  //       filterBy === 'integrated units' &&
-  //       categories.indexOf('units') >= 0
-  //     ) {
-  //       return true;
-  //     } else if (filterBy === 'courses' && categories.indexOf('courses') >= 0) {
-  //       return true;
-  //     } else if (filterBy === 'sepjr' && categories.indexOf('sep-jr') >= 0) {
-  //       return true;
-  //     } else if (
-  //       filterBy === 'cs leads' &&
-  //       categories.indexOf('cs-leads') >= 0
-  //     ) {
-  //       return true;
-  //     } else if (
-  //       filterBy === 'pending approval' &&
-  //       timesheet.status === 'pending'
-  //     ) {
-  //       return true;
-  //     } else if (
-  //       filterBy === 'approved, processing' &&
-  //       timesheet.status === 'approved'
-  //     ) {
-  //       return true;
-  //     } else if (filterBy === 'processed' && timesheet.status === 'processed') {
-  //       return true;
-  //     } else if (filterBy === 'denied' && timesheet.status === 'denied') {
-  //       return true;
-  //     }
-  //     return false;
-  //   });
-  //   setFilteredTimesheets(newFilteredTimesheets);
-  // }, [timesheets, filterBy]);
+  useEffect(() => {
+    const newFilteredTimesheets = [...timesheets].filter((timesheet) => {
+      const categories = timesheet.events.map((event) => event.event.category);
+      if (filterBy === 'view all') {
+        return true;
+      } else if (
+        filterBy === 'integrated units' &&
+        categories.indexOf('units') >= 0
+      ) {
+        return true;
+      } else if (filterBy === 'courses' && categories.indexOf('courses') >= 0) {
+        return true;
+      } else if (filterBy === 'sepjr' && categories.indexOf('sep-jr') >= 0) {
+        return true;
+      } else if (
+        filterBy === 'cs leads' &&
+        categories.indexOf('cs-leads') >= 0
+      ) {
+        return true;
+      } else if (
+        filterBy === 'pending approval' &&
+        timesheet.status === 'pending'
+      ) {
+        return true;
+      } else if (
+        filterBy === 'approved, processing' &&
+        timesheet.status === 'approved'
+      ) {
+        return true;
+      } else if (filterBy === 'processed' && timesheet.status === 'processed') {
+        return true;
+      } else if (filterBy === 'denied' && timesheet.status === 'denied') {
+        return true;
+      }
+      return false;
+    });
+    setFilteredTimesheets(newFilteredTimesheets);
+  }, [timesheets, filterBy]);
 
   if (loading) return <h1>loading...</h1>;
 
@@ -115,11 +115,12 @@ const AdminAllTimesheets = () => {
       <Table celled selectable>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>Date</Table.HeaderCell>
-            <Table.HeaderCell>CS4All Program</Table.HeaderCell>
-            <Table.HeaderCell>PD/Event Title</Table.HeaderCell>
             <Table.HeaderCell>Teacher</Table.HeaderCell>
-            <Table.HeaderCell>Timesheet</Table.HeaderCell>
+            <Table.HeaderCell>CS4All Program</Table.HeaderCell>
+            <Table.HeaderCell>Number of Events</Table.HeaderCell>
+            <Table.HeaderCell>PD/Event Date(s)</Table.HeaderCell>
+            <Table.HeaderCell>PD/Event Title(s)</Table.HeaderCell>
+            <Table.HeaderCell>Timesheet PDF</Table.HeaderCell>
             <Table.HeaderCell>Status</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
@@ -128,13 +129,24 @@ const AdminAllTimesheets = () => {
           {filteredTimesheets.map((timesheet) => (
             <Table.Row key={timesheet._id}>
               <Table.Cell>
-                {format(parseISO(timesheet.events[0].begin), 'MM/dd/yy')}
-              </Table.Cell>
-              <Table.Cell>{timesheet.events[0].event.category}</Table.Cell>
-              <Table.Cell>{timesheet.events[0].event.title}</Table.Cell>
-              <Table.Cell>
                 {timesheet.teacher.firstName} {timesheet.teacher.lastName}
               </Table.Cell>
+              <Table.Cell>{timesheet.events[0].event.category}</Table.Cell>
+              <Table.Cell>{timesheet.events.length}</Table.Cell>
+              <Table.Cell>
+                {timesheet.events.map((event, index) => {
+                  return `${index > 0 ? ', ' : ''} ${format(
+                    parseISO(event.begin),
+                    'MM/dd/yyyy'
+                  )}`;
+                })}
+              </Table.Cell>
+              <Table.Cell>
+                {timesheet.events.map(
+                  (e, index) => `${index > 0 ? ', ' : ''}${e.event.title}`
+                )}
+              </Table.Cell>
+
               <Table.Cell>
                 <Button
                   size="mini"
