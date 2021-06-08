@@ -5,7 +5,7 @@ import TeacherTimesheetGenerator from './TeacherTimesheetGenerator';
 import TeacherDetails from './TeacherDetails';
 import { useHistory, useParams } from 'react-router';
 
-const TeacherMenu = () => {
+const TeacherMenuBar = () => {
   const history = useHistory();
   const params = useParams();
   const [activeTab, setActiveTab] = useState(params.activeTab);
@@ -52,6 +52,7 @@ const TeacherMenu = () => {
           my details
         </Menu.Item>
       </Menu>
+
       {activeTab === 'generate-timesheet' && (
         <TeacherTimesheetGenerator
           onSubmitTimesheet={() => setActiveTab('submitted-timesheets')}
@@ -63,4 +64,4 @@ const TeacherMenu = () => {
   );
 };
 
-export default TeacherMenu;
+export default TeacherMenuBar;

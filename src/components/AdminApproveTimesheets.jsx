@@ -149,8 +149,10 @@ const AdminTimesheetApproval = () => {
               <Table.Cell>
                 {format(parseISO(timesheet.events[0].begin), 'MM/dd/yy')}
               </Table.Cell>
-              <Table.Cell>{timesheet.events[0].event.category}</Table.Cell>
-              <Table.Cell>{timesheet.events[0].event.title}</Table.Cell>
+              {/* <Table.Cell>{timesheet.events[0].event.category}</Table.Cell> */}
+              <Table.Cell>{'should be category?'}</Table.Cell>
+              {/* <Table.Cell>{timesheet.events[0].event.title}</Table.Cell> */}
+              <Table.Cell>{'should be title'}</Table.Cell>
               <Table.Cell>
                 {timesheet.teacher.firstName} {timesheet.teacher.lastName}
               </Table.Cell>

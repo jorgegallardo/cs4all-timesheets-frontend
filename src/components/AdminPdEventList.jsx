@@ -226,6 +226,7 @@ const PdEventList = () => {
             })}
         </Table.Body>
       </Table>
+      <pre>{JSON.stringify(events, null, 2)}</pre>
     </>
   );
 };

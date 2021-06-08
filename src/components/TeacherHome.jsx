@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Divider, Label, Header, Image } from 'semantic-ui-react';
+import { Button, Label, Header, Image } from 'semantic-ui-react';
 import UserContext from '../store/user-context';
-import TeacherMenu from './TeacherMenu';
+import TeacherMenuBar from './TeacherMenuBar';
 
 const TeacherHome = () => {
   const history = useHistory();
@@ -65,8 +65,8 @@ const TeacherHome = () => {
             : ''}
         </Label.Detail>
       </Label>
-      <Divider />
-      <TeacherMenu />
+
+      <TeacherMenuBar />
     </>
   );
 };

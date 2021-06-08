@@ -7,8 +7,8 @@ const AdminMenuBar = (props) => {
     <Menu icon="labeled" widths={4} pointing>
       <Menu.Item
         name="approveTimesheets"
-        onClick={() => setActiveTab('approveTimesheets')}
-        active={activeTab === 'approveTimesheets'}
+        onClick={() => setActiveTab('approve-timesheets')}
+        active={activeTab === 'approve-timesheets'}
       >
         <Icon name="check" />
         approve timesheets
@@ -16,8 +16,8 @@ const AdminMenuBar = (props) => {
 
       <Menu.Item
         name="viewAllTimesheets"
-        onClick={() => setActiveTab('viewAllTimesheets')}
-        active={activeTab === 'viewAllTimesheets'}
+        onClick={() => setActiveTab('timesheets-all')}
+        active={activeTab === 'timesheets-all'}
       >
         <Icon name="list" />
         view all timesheets
@@ -25,8 +25,8 @@ const AdminMenuBar = (props) => {
 
       <Menu.Item
         name="createPdEvent"
-        onClick={() => setActiveTab('createPdEvent')}
-        active={activeTab === 'createPdEvent'}
+        onClick={() => setActiveTab('event-create')}
+        active={activeTab === 'event-create'}
       >
         <Icon name="calendar alternate" />
         create pd/event
@@ -34,8 +34,8 @@ const AdminMenuBar = (props) => {
 
       <Menu.Item
         name="viewAllPdEvents"
-        onClick={() => setActiveTab('viewAllPdEvents')}
-        active={activeTab === 'viewAllPdEvents'}
+        onClick={() => setActiveTab('events-all')}
+        active={activeTab === 'events-all'}
       >
         <Icon name="eye" />
         view all pds/events

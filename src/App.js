@@ -34,7 +34,7 @@ const App = () => {
             </Container>
           </Route>
           <Route path="/teacher" exact>
-            <Redirect to="/teacher/generateTimesheet" />
+            <Redirect to="/teacher/generate-timesheet" />
           </Route>
           <Route path="/admin/:activeTab">
             <Container>
@@ -42,7 +42,7 @@ const App = () => {
             </Container>
           </Route>
           <Route path="/admin" exact>
-            <Redirect to="/admin/approveTimesheets" />
+            <Redirect to="/admin/approve-timesheets" />
           </Route>
         </Switch>
       </Router>

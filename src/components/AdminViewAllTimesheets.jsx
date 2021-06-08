@@ -21,49 +21,6 @@ const AdminAllTimesheets = () => {
   const [loading, setLoading] = useState(true);
   const [filterBy, setFilterBy] = useState(filterByOptions[0]);
 
-  useEffect(() => {
-    fetchTeacherTimesheets();
-  }, []);
-
-  useEffect(() => {
-    const newFilteredTimesheets = [...timesheets].filter((timesheet) => {
-      const categories = timesheet.events.map((event) => event.event.category);
-      if (filterBy === 'view all') {
-        return true;
-      } else if (
-        filterBy === 'integrated units' &&
-        categories.indexOf('units') >= 0
-      ) {
-        return true;
-      } else if (filterBy === 'courses' && categories.indexOf('courses') >= 0) {
-        return true;
-      } else if (filterBy === 'sepjr' && categories.indexOf('sep-jr') >= 0) {
-        return true;
-      } else if (
-        filterBy === 'cs leads' &&
-        categories.indexOf('cs-leads') >= 0
-      ) {
-        return true;
-      } else if (
-        filterBy === 'pending approval' &&
-        timesheet.status === 'pending'
-      ) {
-        return true;
-      } else if (
-        filterBy === 'approved, processing' &&
-        timesheet.status === 'approved'
-      ) {
-        return true;
-      } else if (filterBy === 'processed' && timesheet.status === 'processed') {
-        return true;
-      } else if (filterBy === 'denied' && timesheet.status === 'denied') {
-        return true;
-      }
-      return false;
-    });
-    setFilteredTimesheets(newFilteredTimesheets);
-  }, [timesheets, filterBy]);
-
   const fetchTeacherTimesheets = async () => {
     try {
       const response = await axios.get(
@@ -83,6 +40,49 @@ const AdminAllTimesheets = () => {
       console.error('unable to retrieve timesheets: ' + error);
     }
   };
+
+  useEffect(() => {
+    fetchTeacherTimesheets();
+  }, []);
+
+  // useEffect(() => {
+  //   const newFilteredTimesheets = [...timesheets].filter((timesheet) => {
+  //     const categories = timesheet.events.map((event) => event.event.category);
+  //     if (filterBy === 'view all') {
+  //       return true;
+  //     } else if (
+  //       filterBy === 'integrated units' &&
+  //       categories.indexOf('units') >= 0
+  //     ) {
+  //       return true;
+  //     } else if (filterBy === 'courses' && categories.indexOf('courses') >= 0) {
+  //       return true;
+  //     } else if (filterBy === 'sepjr' && categories.indexOf('sep-jr') >= 0) {
+  //       return true;
+  //     } else if (
+  //       filterBy === 'cs leads' &&
+  //       categories.indexOf('cs-leads') >= 0
+  //     ) {
+  //       return true;
+  //     } else if (
+  //       filterBy === 'pending approval' &&
+  //       timesheet.status === 'pending'
+  //     ) {
+  //       return true;
+  //     } else if (
+  //       filterBy === 'approved, processing' &&
+  //       timesheet.status === 'approved'
+  //     ) {
+  //       return true;
+  //     } else if (filterBy === 'processed' && timesheet.status === 'processed') {
+  //       return true;
+  //     } else if (filterBy === 'denied' && timesheet.status === 'denied') {
+  //       return true;
+  //     }
+  //     return false;
+  //   });
+  //   setFilteredTimesheets(newFilteredTimesheets);
+  // }, [timesheets, filterBy]);
 
   if (loading) return <h1>loading...</h1>;
 
@@ -151,6 +151,7 @@ const AdminAllTimesheets = () => {
           ))}
         </Table.Body>
       </Table>
+      <pre>{JSON.stringify(timesheets, null, 2)}</pre>
     </>
   );
 };

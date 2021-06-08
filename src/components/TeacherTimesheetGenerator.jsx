@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import SignaturePad from 'signature_pad';
 import {
-  Message,
+  //Message,
   Button,
   Form,
-  Radio,
+  //Radio,
   Step,
   Segment,
   Checkbox,
 } from 'semantic-ui-react';
 import axios from 'axios';
 import { parseISO, format } from 'date-fns';
-import DatePicker from 'react-datepicker';
+//import DatePicker from 'react-datepicker';
 
 const TeacherTimesheetGenerator = (props) => {
   const { onSubmitTimesheet } = props;
@@ -19,13 +19,11 @@ const TeacherTimesheetGenerator = (props) => {
   const [signaturePad, setSignaturePad] = useState(null);
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState([]);
-  const [value, setValue] = useState('1');
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [selectedEventOriginalTimes, setSelectedEventOriginalTimes] =
-    useState(null);
-  const [selectedBeginTime, setSelectedBeginTime] = useState(new Date());
-  const [selectedEndTime, setSelectedEndTime] = useState(new Date());
-
+  //const [value, setValue] = useState('1');
+  //const [selectedEvent, setSelectedEvent] = useState(null);
+  //const [selectedEventOriginalTimes, setSelectedEventOriginalTimes] = useState(null);
+  //const [selectedBeginTime, setSelectedBeginTime] = useState(new Date());
+  //const [selectedEndTime, setSelectedEndTime] = useState(new Date());
   const [selectedEvents, setSelectedEvents] = useState([]);
 
   useEffect(() => {
@@ -33,18 +31,18 @@ const TeacherTimesheetGenerator = (props) => {
     fetchEvents();
   }, []);
 
-  const handleSelectedEventChange = (event, { value }) => {
-    const selectedEvent = events.find((e) => e._id === value);
-    setSelectedEvent(selectedEvent);
-    setSelectedBeginTime(parseISO(selectedEvent.begin));
-    setSelectedEndTime(parseISO(selectedEvent.end));
-    setSelectedEventOriginalTimes({
-      ...selectedEvent,
-      begin: selectedEvent.begin,
-      end: selectedEvent.end,
-    });
-    setValue(value);
-  };
+  // const handleSelectedEventChange = (event, { value }) => {
+  //   const selectedEvent = events.find((e) => e._id === value);
+  //   setSelectedEvent(selectedEvent);
+  //   setSelectedBeginTime(parseISO(selectedEvent.begin));
+  //   setSelectedEndTime(parseISO(selectedEvent.end));
+  //   setSelectedEventOriginalTimes({
+  //     ...selectedEvent,
+  //     begin: selectedEvent.begin,
+  //     end: selectedEvent.end,
+  //   });
+  //   setValue(value);
+  // };
 
   const fetchEvents = async () => {
     try {
@@ -74,48 +72,48 @@ const TeacherTimesheetGenerator = (props) => {
     }
   };
 
-  const handleSubmit = async () => {
-    if (loading) {
-      return;
-    }
-    try {
-      // add more frontend validation checks
-      if (signaturePad.isEmpty()) {
-        alert('you forgot to sign the pad');
-        return;
-      }
-      const dataUrl = signaturePad.toDataURL();
-      setLoading(true);
-      const response = await axios.post(
-        process.env.REACT_APP_API_SERVER + '/timesheets',
-        {
-          signatureData: dataUrl,
-          events: [
-            {
-              ...selectedEvent,
-              event: selectedEvent._id,
-              begin: selectedBeginTime,
-              end: selectedEndTime,
-            },
-          ],
-        },
-        {
-          headers: {
-            Authorization: localStorage.getItem('token'),
-          },
-        }
-      );
-      signaturePad.clear();
-      console.log(response.data);
-      alert('timesheet submitted');
-      onSubmitTimesheet();
-    } catch (error) {
-      console.error(error);
-      alert('something went wrong with the timesheet creation');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const handleSubmit = async () => {
+  //   if (loading) {
+  //     return;
+  //   }
+  //   try {
+  //     // add more frontend validation checks
+  //     if (signaturePad.isEmpty()) {
+  //       alert('you forgot to sign the pad');
+  //       return;
+  //     }
+  //     const dataUrl = signaturePad.toDataURL();
+  //     setLoading(true);
+  //     const response = await axios.post(
+  //       process.env.REACT_APP_API_SERVER + '/timesheets',
+  //       {
+  //         signatureData: dataUrl,
+  //         events: [
+  //           {
+  //             ...selectedEvent,
+  //             event: selectedEvent._id,
+  //             begin: selectedBeginTime,
+  //             end: selectedEndTime,
+  //           },
+  //         ],
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: localStorage.getItem('token'),
+  //         },
+  //       }
+  //     );
+  //     signaturePad.clear();
+  //     console.log(response.data);
+  //     alert('timesheet submitted');
+  //     onSubmitTimesheet();
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert('something went wrong with the timesheet creation');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleMultipleSelect = (event) => {
     const currentIndex = selectedEvents.indexOf(event);

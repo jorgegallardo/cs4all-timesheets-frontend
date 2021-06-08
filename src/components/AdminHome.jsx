@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Button, Divider, Image, Header, Label } from 'semantic-ui-react';
+import { Button, Image, Header, Label } from 'semantic-ui-react';
 import AdminViewAllTimesheets from './AdminViewAllTimesheets';
 import AdminPdEventCreator from './AdminPdEventCreator';
 import AdminPdEventList from './AdminPdEventList';
@@ -56,7 +56,7 @@ const AdminHome = () => {
         Welcome, {userData.firstName} {userData.lastName}
       </Header>
       <Label basic>CS4All Administrator</Label>
-      <Divider />
+
       <AdminMenuBar
         activeTab={activeTab}
         setActiveTab={(newTab) => {
@@ -64,16 +64,16 @@ const AdminHome = () => {
           setActiveTab(newTab);
         }}
       />
-      {activeTab === 'approveTimesheets' && <AdminApproveTimesheets />}
-      {activeTab === 'viewAllTimesheets' && <AdminViewAllTimesheets />}
-      {activeTab === 'createPdEvent' && (
+      {activeTab === 'approve-timesheets' && <AdminApproveTimesheets />}
+      {activeTab === 'timesheets-all' && <AdminViewAllTimesheets />}
+      {activeTab === 'event-create' && (
         <AdminPdEventCreator
           onEventCreated={() => {
-            setActiveTab('viewAllPdEvents');
+            setActiveTab('events-all');
           }}
         />
       )}
-      {activeTab === 'viewAllPdEvents' && <AdminPdEventList />}
+      {activeTab === 'events-all' && <AdminPdEventList />}
     </>
   );
 };

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { Button, Table } from 'semantic-ui-react';
+import { format, parseISO } from 'date-fns';
 
 const TeacherTimesheetSubmissions = () => {
   const [timesheets, setTimesheets] = useState([]);
@@ -32,8 +33,8 @@ const TeacherTimesheetSubmissions = () => {
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Submitted On</Table.HeaderCell>
-            <Table.HeaderCell>PD/Event(s)</Table.HeaderCell>
-
+            <Table.HeaderCell>PD/Event(s) Title(s)</Table.HeaderCell>
+            <Table.HeaderCell>PD/Event Date(s)</Table.HeaderCell>
             <Table.HeaderCell>Timesheet PDF</Table.HeaderCell>
             <Table.HeaderCell>Payment Status</Table.HeaderCell>
           </Table.Row>
@@ -43,9 +44,18 @@ const TeacherTimesheetSubmissions = () => {
           {timesheets.map((timesheet) => {
             return (
               <Table.Row key={timesheet._id}>
-                <Table.Cell>{timesheet.created}</Table.Cell>
-                <Table.Cell>{'insert pd/event title(s)'}</Table.Cell>
-
+                <Table.Cell>
+                  {format(parseISO(timesheet.created), 'MM/dd/yyyy')}
+                </Table.Cell>
+                <Table.Cell>{'insert here'}</Table.Cell>
+                <Table.Cell>
+                  {timesheet.events.map((event, index) => {
+                    return `${index > 0 ? ', ' : ''} ${format(
+                      parseISO(event.begin),
+                      'MM/dd/yyyy'
+                    )}`;
+                  })}
+                </Table.Cell>
                 <Table.Cell>
                   <Button
                     size="mini"
@@ -63,6 +73,7 @@ const TeacherTimesheetSubmissions = () => {
           })}
         </Table.Body>
       </Table>
+      <pre>{JSON.stringify(timesheets, null, 2)}</pre>
     </>
   );
 };
