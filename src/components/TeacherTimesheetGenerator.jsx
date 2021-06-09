@@ -13,6 +13,9 @@ import axios from 'axios';
 import { parseISO, format } from 'date-fns';
 //import DatePicker from 'react-datepicker';
 
+let setMonth = [];
+let sameMonths = false;
+
 const TeacherTimesheetGenerator = (props) => {
   const { onSubmitTimesheet } = props;
   const canvas = useRef(null);
@@ -119,8 +122,24 @@ const TeacherTimesheetGenerator = (props) => {
   const handleMultipleSelect = (event) => {
     const currentIndex = selectedEvents.indexOf(event);
     const checkedEvents = [...selectedEvents];
-    if (currentIndex === -1) checkedEvents.push(event);
-    else checkedEvents.splice(currentIndex, 1);
+    let monthOfSelectedEvent = event.displayDate.slice(0, 2); // extract the month, push it to monthOfSelectedEvent
+
+    // if the event isn't in the array of events (by checking the currentIndex), then we're activating an event
+    if (currentIndex === -1) {
+      setMonth.push(monthOfSelectedEvent);
+      sameMonths = setMonth.every((month) => month === monthOfSelectedEvent);
+      if (sameMonths) {
+        checkedEvents.push(event); // selected, push to checkedEvents array
+      } else {
+        setMonth.splice(currentIndex, 1);
+        alert('you may only submit timesheets from the same month');
+        return;
+      }
+    } else {
+      checkedEvents.splice(currentIndex, 1); // remove event from checkedEvents array
+      setMonth.splice(currentIndex, 1); // remove the event month from array
+    }
+
     setSelectedEvents(checkedEvents);
   };
 
@@ -272,11 +291,12 @@ const TeacherTimesheetGenerator = (props) => {
 
         <Segment attached="bottom">
           <Form>
-            {events.map((event) => (
+            {events.map((event, index) => (
               <Form.Field key={event._id}>
                 <Checkbox
                   label={`${event.displayDate} - ${event.category}: ${event.title} [${event.displayBegin}-${event.displayEnd}]`}
                   onChange={() => handleMultipleSelect(event)}
+                  checked={selectedEvents.includes(event)}
                 />
               </Form.Field>
             ))}
