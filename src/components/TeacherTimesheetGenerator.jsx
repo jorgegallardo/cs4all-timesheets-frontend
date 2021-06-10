@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import SignaturePad from 'signature_pad';
 import {
-  //Message,
+  Message,
   Button,
   Form,
   //Radio,
@@ -11,7 +11,7 @@ import {
 } from 'semantic-ui-react';
 import axios from 'axios';
 import { parseISO, format } from 'date-fns';
-//import DatePicker from 'react-datepicker';
+import DatePicker from 'react-datepicker';
 
 let setMonth = [];
 let sameMonths = false;
@@ -34,19 +34,6 @@ const TeacherTimesheetGenerator = (props) => {
     fetchEvents();
   }, []);
 
-  // const handleSelectedEventChange = (event, { value }) => {
-  //   const selectedEvent = events.find((e) => e._id === value);
-  //   setSelectedEvent(selectedEvent);
-  //   setSelectedBeginTime(parseISO(selectedEvent.begin));
-  //   setSelectedEndTime(parseISO(selectedEvent.end));
-  //   setSelectedEventOriginalTimes({
-  //     ...selectedEvent,
-  //     begin: selectedEvent.begin,
-  //     end: selectedEvent.end,
-  //   });
-  //   setValue(value);
-  // };
-
   const fetchEvents = async () => {
     try {
       const response = await axios.get(
@@ -61,8 +48,8 @@ const TeacherTimesheetGenerator = (props) => {
         return {
           ...event,
           event: event._id,
-          displayBegin: format(parseISO(event.begin), 'h:mm aaa'),
-          displayEnd: format(parseISO(event.end), 'h:mm aaa'),
+          displayBegin: format(parseISO(event.begin), 'h:mmaaa'),
+          displayEnd: format(parseISO(event.end), 'h:mmaaa'),
           displayDate: format(parseISO(event.begin), 'MM/dd/yy'),
           beginTime: format(parseISO(event.begin), 'HH:mm'),
           endTime: format(parseISO(event.end), 'HH:mm'),
@@ -75,49 +62,6 @@ const TeacherTimesheetGenerator = (props) => {
       console.error('unable to retrieve events: ' + error);
     }
   };
-
-  // const handleSubmit = async () => {
-  //   if (loading) {
-  //     return;
-  //   }
-  //   try {
-  //     // add more frontend validation checks
-  //     if (signaturePad.isEmpty()) {
-  //       alert('you forgot to sign the pad');
-  //       return;
-  //     }
-  //     const dataUrl = signaturePad.toDataURL();
-  //     setLoading(true);
-  //     const response = await axios.post(
-  //       process.env.REACT_APP_API_SERVER + '/timesheets',
-  //       {
-  //         signatureData: dataUrl,
-  //         events: [
-  //           {
-  //             ...selectedEvent,
-  //             event: selectedEvent._id,
-  //             begin: selectedBeginTime,
-  //             end: selectedEndTime,
-  //           },
-  //         ],
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: localStorage.getItem('token'),
-  //         },
-  //       }
-  //     );
-  //     signaturePad.clear();
-  //     console.log(response.data);
-  //     alert('timesheet submitted');
-  //     onSubmitTimesheet();
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert('something went wrong with the timesheet creation');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleMultipleSelect = (event) => {
     const currentIndex = selectedEvents.indexOf(event);
@@ -139,6 +83,17 @@ const TeacherTimesheetGenerator = (props) => {
       checkedEvents.splice(currentIndex, 1); // remove event from checkedEvents array
       setMonth.splice(currentIndex, 1); // remove the event month from array
     }
+
+    setSelectedEvents(checkedEvents);
+  };
+
+  const handleTimeEdit = (event, startOrEnd, newDateTime) => {
+    const currentIndex = selectedEvents.indexOf(event);
+    const checkedEvents = [...selectedEvents];
+
+    if (startOrEnd === 'start')
+      checkedEvents[currentIndex].begin = newDateTime.toISOString();
+    else checkedEvents[currentIndex].end = newDateTime.toISOString();
 
     setSelectedEvents(checkedEvents);
   };
@@ -212,133 +167,56 @@ const TeacherTimesheetGenerator = (props) => {
           </Step>
         </Step.Group>
 
-        {/* submit timesheet for one event - radio button
-        <Segment attached="bottom">
-          <Form>
-            {events.map((event) => (
-              <Form.Field key={event._id}>
-                <Radio
-                  label={`${event.displayDate} - ${event.category}: ${event.title} [${event.displayBegin}-${event.displayEnd}]`}
-                  name="radioGroup"
-                  value={event._id}
-                  checked={value === event._id}
-                  onChange={handleSelectedEventChange}
-                />
-              </Form.Field>
-            ))}
-
-            {selectedEvent && (
-              <>
-                <Message
-                  header="TIME ADJUSTMENT"
-                  content={`${selectedEvent.title} was held from ${selectedEventOriginalTimes.displayBegin}-${selectedEventOriginalTimes.displayEnd} on ${selectedEvent.displayDate}. However, if you entered the meeting late or left early, please change your start and end times below, rounding to the nearest 15 minutes. All times will be matched to our Zoom attendance statistics for verification. Your timesheet will be DENIED if your start or end times are outside the margin of error.`}
-                />
-
-                <Form.Field width={3}>
-                  <label>Edit Your Start Time</label>
-                  <DatePicker
-                    selected={selectedBeginTime}
-                    onChange={(date) => setSelectedBeginTime(date)}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeIntervals={15}
-                    timeCaption="Start time"
-                    dateFormat="h:mm aa"
-                  />
-                </Form.Field>
-                <Form.Field width={3}>
-                  <label>Edit Your End Time</label>
-                  <DatePicker
-                    selected={selectedEndTime}
-                    onChange={(date) => setSelectedEndTime(date)}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeIntervals={15}
-                    timeCaption="End time"
-                    dateFormat="h:mm aa"
-                  />
-                </Form.Field>
-                <Message
-                  color="yellow"
-                  header="IMPORTANT"
-                  content="By signing below and pressing the submit timesheet button, you attest to attending the selected CS4All PD/event and understand that if you are lying, CS4All will sue you to the fullest extent possible under federal (and UFT) law."
-                />
-              </>
-            )}
-
-            <Form.Group>
-              <Form.Field>
-                <h5 style={{ marginBottom: '4px' }}>Sign Below</h5>
-                <canvas
-                  ref={canvas}
-                  style={{
-                    border: '1px solid black',
-                    borderRadius: '5px',
-                  }}
-                  width="345"
-                  height="100"
-                />
-              </Form.Field>
-            </Form.Group>
-            <Button onClick={handleSubmit} primary loading={loading}>
-              submit timesheet
-            </Button>
-            <Button onClick={() => signaturePad.clear()}>
-              clear signature pad
-            </Button>
-          </Form>
-        </Segment> */}
-
         <Segment attached="bottom">
           <Form>
             {events.map((event, index) => (
-              <Form.Field key={event._id}>
-                <Checkbox
-                  label={`${event.displayDate} - ${event.category}: ${event.title} [${event.displayBegin}-${event.displayEnd}]`}
-                  onChange={() => handleMultipleSelect(event)}
-                  checked={selectedEvents.includes(event)}
-                />
-              </Form.Field>
+              <div key={event._id} style={{ marginBottom: '15px' }}>
+                <Form.Field>
+                  <Checkbox
+                    label={`${event.displayDate} - ${event.category}: ${event.title} [${event.displayBegin}-${event.displayEnd}]`}
+                    onChange={() => handleMultipleSelect(event)}
+                    checked={selectedEvents.includes(event)}
+                  />
+                </Form.Field>
+                {selectedEvents.includes(event) && (
+                  <>
+                    <Message
+                      color="yellow"
+                      header="NOTE"
+                      content={`If you arrived to the event late or left early, please edit your start and end times below, rounding to the nearest 15 minutes. All times will be matched to our Zoom attendance statistics for verification. Your timesheet will be DENIED if your start or end times are outside the margin of error.`}
+                    />
+                    <Form.Field width={3}>
+                      <label>Edit Your Start Time</label>
+                      <DatePicker
+                        selected={parseISO(event.begin)}
+                        onChange={(startTime) =>
+                          handleTimeEdit(event, 'start', startTime)
+                        }
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={15}
+                        timeCaption="Start time"
+                        dateFormat="h:mmaaa"
+                      />
+                    </Form.Field>
+                    <Form.Field width={3}>
+                      <label>Edit Your End Time</label>
+                      <DatePicker
+                        selected={parseISO(event.end)}
+                        onChange={(endTime) =>
+                          handleTimeEdit(event, 'end', endTime)
+                        }
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={15}
+                        timeCaption="End time"
+                        dateFormat="h:mmaaa"
+                      />
+                    </Form.Field>
+                  </>
+                )}
+              </div>
             ))}
-
-            {/* {selectedEvent && (     GOTTA FIGURE OUT HOW TO LET TEACHERS EDIT MULTIPLE EVENT TIMES
-              <>
-                <Message
-                  header="TIME ADJUSTMENT"
-                  content={`${selectedEvent.title} was held from ${selectedEventOriginalTimes.displayBegin}-${selectedEventOriginalTimes.displayEnd} on ${selectedEvent.displayDate}. However, if you entered the meeting late or left early, please change your start and end times below, rounding to the nearest 15 minutes. All times will be matched to our Zoom attendance statistics for verification. Your timesheet will be DENIED if your start or end times are outside the margin of error.`}
-                />
-
-                <Form.Field width={3}>
-                  <label>Edit Your Start Time</label>
-                  <DatePicker
-                    selected={selectedBeginTime}
-                    onChange={(date) => setSelectedBeginTime(date)}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeIntervals={15}
-                    timeCaption="Start time"
-                    dateFormat="h:mm aa"
-                  />
-                </Form.Field>
-                <Form.Field width={3}>
-                  <label>Edit Your End Time</label>
-                  <DatePicker
-                    selected={selectedEndTime}
-                    onChange={(date) => setSelectedEndTime(date)}
-                    showTimeSelect
-                    showTimeSelectOnly
-                    timeIntervals={15}
-                    timeCaption="End time"
-                    dateFormat="h:mm aa"
-                  />
-                </Form.Field>
-                <Message
-                  color="yellow"
-                  header="IMPORTANT"
-                  content="By signing below and pressing the submit timesheet button, you attest to attending the selected CS4All PD/event and understand that if you are lying, CS4All will sue you to the fullest extent possible under federal (and UFT) law."
-                />
-              </>
-            )} */}
 
             <Form.Group>
               <Form.Field>
