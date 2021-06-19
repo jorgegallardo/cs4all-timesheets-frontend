@@ -4,7 +4,7 @@ const AdminMenuBar = (props) => {
   const { activeTab, setActiveTab } = props;
 
   return (
-    <Menu icon="labeled" widths={4} pointing>
+    <Menu icon="labeled" widths={5} pointing>
       <Menu.Item
         name="approveTimesheets"
         onClick={() => setActiveTab('approve-timesheets')}
@@ -39,6 +39,15 @@ const AdminMenuBar = (props) => {
       >
         <Icon name="eye" />
         view all pds/events
+      </Menu.Item>
+
+      <Menu.Item
+        name="stats"
+        onClick={() => setActiveTab('stats')}
+        active={activeTab === 'stats'}
+      >
+        <Icon name="chart bar outline" />
+        Statistics
       </Menu.Item>
     </Menu>
   );

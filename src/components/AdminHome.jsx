@@ -9,6 +9,7 @@ import { useHistory, useParams } from 'react-router-dom';
 import axios from 'axios';
 import UserContext from '../store/user-context';
 import jorge from '../assets/images/jorge.jpg';
+import AdminStatistics from './AdminStatistics';
 
 const AdminHome = () => {
   const history = useHistory();
@@ -74,6 +75,7 @@ const AdminHome = () => {
         />
       )}
       {activeTab === 'events-all' && <AdminPdEventList />}
+      {activeTab === 'stats' && <AdminStatistics />}
     </>
   );
 };
